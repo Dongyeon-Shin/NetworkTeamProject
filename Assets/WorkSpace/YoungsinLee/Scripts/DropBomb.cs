@@ -5,19 +5,20 @@ using UnityEngine.InputSystem;
 
 public class DropBomb : MonoBehaviour
 {
-
-    [SerializeField] Bomb bomb;     // 폭탄은 이후 변경 
-
-   
-   private void OnFire(InputValue value)
-   {
-        DropB();
-   }
-
-
+    private GameObject bomb;
+    private void Awake()
+    {
+        bomb = GameManager.Resource.Load<GameObject>("Assets/WorkSpace/YoungsinLee/Resource/Bomb/Bomb");
+    }
+    private void OnFire(InputValue value)
+    {
+         DropB();
+    }
+    
+    
     private void DropB() 
     {
-        GameManager.Resource.Instantiate<Bomb>("Bomb", transform.position, transform.rotation);
+        GameManager.Resource.Instantiate(bomb, transform.position, transform.rotation);
         // 이후 네트워크 식 만들기로 변경
     }
    
