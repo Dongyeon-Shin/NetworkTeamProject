@@ -61346,8 +61346,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 6234916792152759888, guid: 10cb60c3349bb8a44916958796dd4d12, type: 3}
-      propertyPath: m_Radius
-      value: 0.46
+      propertyPath: m_Center.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8925419049646192506, guid: 10cb60c3349bb8a44916958796dd4d12, type: 3}
       propertyPath: bomb
