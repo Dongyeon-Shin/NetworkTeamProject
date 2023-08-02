@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Bomb : MonoBehaviour
 {
-    private GameObject bomb;
-    private GameObject explosinPrefeb;
+    private Bomb bomb;
+    private Explosion explosion;
 
     private Vector3 vecDir;
     private Vector3 vecDir2;
@@ -17,12 +17,19 @@ public class Bomb : MonoBehaviour
     [SerializeField] float explosionTime;
     [SerializeField] int explosionlength;
 
+    // Explosion
+    [SerializeField] LayerMask explosionMask;
+    [SerializeField] float explosionDuration = 1.0f;
+    [SerializeField] int explosionRadius = 1;
+
 
 
     private void Awake()
     {
-        bomb = GameManager.Resource.Load<GameObject>("Assets/WorkSpace/YoungsinLee/Resource/Bomb/Bomb");
-        explosinPrefeb = GameManager.Resource.Load<GameObject>("Assets/WorkSpace/YoungsinLee/Resource/Bomb/Explosion"); // 이후 폭발 만들기;
+        bomb = GameManager.Resource.Load<Bomb>("Assets/WorkSpace/YoungsinLee/Resource/Bomb/Bomb");
+        explosion = GameManager.Resource.Load<Explosion>("Assets/WorkSpace/YoungsinLee/Resource/Bomb/Explosion");
+
+
         vecDir = new Vector3(transform.position.x, 0, transform.position.z);
         vecDir2 = new Vector2(transform.position.x, transform.position.z);
         StartCoroutine(ExplosionRoutine());
@@ -39,21 +46,36 @@ public class Bomb : MonoBehaviour
             return;
 
         position += direction;
-        GameManager.Resource.Instantiate(explosinPrefeb, position, Quaternion.identity);
-        // Explosion 클래스에서 애니메이션, 생성/삭제등 기능구현
-        // 여기서 length와 연동되는 함수 구현(범위)
-        Explode(position, direction, length-1);
+        
+        // 폭발 범위 디펜스게임에서 참고하기 (벽일경우 폭발Renderer가 겹치지 않게 하기
+        //if (Physics.OverlapBox(position, Vector3.one / 2f, 0f, explosionMask))
+        //{
+        //    return;
+        //}
 
+        GameManager.Resource.Instantiate(explosion, position, Quaternion.identity);
+        
+        
+        explosion.SetActiveRenderer(length > 1 ? explosion.mid : explosion.end);
+        explosion.SetDirextion(direction);
+        explosion.DestrotyAfter(explosionDuration);
+
+        Explode(position, direction, length - 1);
     }
 
 
     IEnumerator ExplosionRoutine()
     {
-        Explode(vecDir, vecDir.normalized, explosionlength); // 이후 수정필요
         bombRemaining--;
         yield return new WaitForSeconds(explosionTime);
+
+        Explode(vecDir, Vector3.up, explosionlength); // 이후 수정필요
+        Explode(vecDir, Vector3.right, explosionlength);
+        Explode(vecDir, Vector3.left, explosionlength);
+        Explode(vecDir, Vector3.down, explosionlength);
+       
         GameManager.Resource.Destroy(gameObject);
-        bombRemaining--;
+        bombRemaining++;
     }
 
     // 폭탄갯수증가 아이템 먹을시 발동

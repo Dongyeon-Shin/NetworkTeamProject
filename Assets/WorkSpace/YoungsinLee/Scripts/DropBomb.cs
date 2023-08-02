@@ -5,10 +5,15 @@ using UnityEngine.InputSystem;
 
 public class DropBomb : MonoBehaviour
 {
-    private GameObject bomb;
+    private Bomb bomb;
+
+    
+    
+
+
     private void Awake()
     {
-        bomb = GameManager.Resource.Load<GameObject>("Assets/WorkSpace/YoungsinLee/Resource/Bomb/Bomb");
+        bomb = GameManager.Resource.Load<Bomb>("Assets/WorkSpace/YoungsinLee/Resource/Bomb/Bomb");
     }
     private void OnFire(InputValue value)
     {
