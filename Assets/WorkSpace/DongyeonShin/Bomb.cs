@@ -11,6 +11,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     private Transform[] sparkParticle;
     [SerializeField]
     private int explosivePower;
+    public int ExplosivePower { set { explosivePower = value; } }
     private LayerMask penetratedLayerMask;
     private LayerMask unPenetratedLayerMask;
 
