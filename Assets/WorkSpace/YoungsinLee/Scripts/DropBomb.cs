@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Numerics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,44 +6,56 @@ public class DropBomb : MonoBehaviour, IEventListener
 {
     private Bomb bomb;
     private PlayerStat stat;
+    private GameObject ground;
 
-    [SerializeField] int bombAmount;
-    [SerializeField] int bombRemaining;
+    private LayerMask de;
+
+    private int maxBomb;
+    private int curBomb;
+    private int curPower;
 
     private void Awake()
     {
+        stat = new PlayerStat();
         bomb = GameManager.Resource.Load<Bomb>("Prefab/Bomb");
     }
     private void OnFire(InputValue value)
     {
-         DropB();
+         Drop();
     }
 
     private void OnEnable()
     {
-        bombRemaining = bombAmount;
+        
+        curBomb = maxBomb;
         GameManager.Event.AddListener(EventType.Explode, this);
     }
 
-    private void DropB() 
+    private void Drop() 
     {
-        if (bombRemaining == 0)
+        if (curBomb == 0)
             return;
+
         
-        GameManager.Resource.Instantiate(bomb, transform.position, transform.rotation);
-        
-        bombRemaining--;
+        ground.transform.position = new Vector3(0, 0, 0);
+        if (GroundChack())
+        {
+            GameManager.Resource.Instantiate(bomb, ground.transform.position, transform.rotation);
+            curBomb--;
+        }
         // ÀÌÈÄ ³×Æ®¿öÅ© ½Ä ¸¸µé±â·Î º¯°æ
     }
+
+    private bool GroundChack()
+    {
+        RaycastHit hit;
+        //ground = hit.transform.gameObject;
+        return Physics.Raycast(transform.position, Vector3.down, 1.5f, 0, QueryTriggerInteraction.Ignore);
+    }
+
     IEnumerator ExplosionRoutine()
     {
         yield return new WaitForSeconds(0.5f);
-    }
-
-    public void AddBomb()
-    {
-        
-        bombAmount++;
     }
 
     // ÆøÅº Æø¹ß½Ã °¹¼ö Ãß°¡
@@ -53,7 +63,24 @@ public class DropBomb : MonoBehaviour, IEventListener
     {
         if(EventType.Explode == eventType)
         {
-            bombRemaining++;
+            curBomb++;
         }
+    }
+
+    // ÆøÅº °ü·Ã ¾ÆÀÌÅÛ ÇÔ¼öµé 
+
+    public void AddBomb()
+    {
+        if (maxBomb >= 5)
+            return;
+        else
+            maxBomb++;
+    }
+
+    public void AddPower()
+    {
+        curPower++;
+        if (maxBomb >= 5)
+            return;
     }
 }

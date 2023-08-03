@@ -1,21 +1,31 @@
+using Photon.Pun;
+using Photon.Pun.Demo.Asteroids;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMove : MonoBehaviour
+public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
 {
-    [SerializeField] float moveSpeed;
-
     private PlayerStat stat;
     private CharacterController controller;
+    private SpeedItem speedItem;
 
     private Vector3 moveDir;
+
+    private float curSpeed;
+
 
     private void Awake()
     {
         stat = new PlayerStat();
+        GameManager.Resource.Load<SpeedItem>("");
         controller = GetComponent<CharacterController>();
+    }
+
+    private void OnEnable()
+    {
+        curSpeed = stat.speed;
     }
 
     private void FixedUpdate()
@@ -27,7 +37,7 @@ public class PlayerMove : MonoBehaviour
     void Move()
     {
         Vector3 vecFor = new Vector3(moveDir.x, 0, moveDir.z).normalized;
-        controller.Move(vecFor * moveSpeed * Time.deltaTime);
+        controller.Move(vecFor * curSpeed * Time.deltaTime);
         if (moveDir.sqrMagnitude >= 0.01f)
             transform.rotation = Quaternion.LookRotation(moveDir);
     }
@@ -52,7 +62,14 @@ public class PlayerMove : MonoBehaviour
 
     public void AddSpeed()
     {
-
+        curSpeed += 2f;
+        if (curSpeed >= 8)
+            return;
     }
 
+    public void ExplosiveReact()
+    {
+        // 죽는 애니메이션 실행
+        PhotonNetwork.Destroy(photonView);
+    }
 }
