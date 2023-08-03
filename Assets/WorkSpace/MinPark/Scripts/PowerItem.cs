@@ -12,7 +12,7 @@ public class PowerItem : PassiveItem
     {
         if (other.tag == "Player")
         {
-            other.GetComponent<PlayerStat>().Power += coefficient;
+            other.GetComponent<PlayerStat>().Power = coefficient;
             Destroy(gameObject);
         }
     }

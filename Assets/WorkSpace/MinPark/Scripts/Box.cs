@@ -2,9 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Box : MonoBehaviour
+public class Box : MonoBehaviour, IExplosiveReactivable
 {
     public GameObject item;
+
+    public void ExplosiveReact()
+    {
+        Hit();
+    }
 
     private void Hit()
     {
@@ -15,6 +20,6 @@ public class Box : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        Hit();
+        //Hit();
     }
 }
