@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+public class DropDwon : MonoBehaviour
 {
 
     private Bomb bomb;
 
-
     private void Awake()
     {
-        bomb = GameManager.Resource.Load<Bomb>("Assets/WorkSpace/YoungsinLee/Resource/Bomb/Bomb");
+        bomb = GameManager.Resource.Load<Bomb>("Prefeb/Bomb");
     }
     private void OnFire(InputValue value)
     {
