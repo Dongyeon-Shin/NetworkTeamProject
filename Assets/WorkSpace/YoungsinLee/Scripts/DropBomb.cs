@@ -7,6 +7,8 @@ using UnityEngine.InputSystem;
 public class DropBomb : MonoBehaviour, IEventListener
 {
     private Bomb bomb;
+    private PlayerStat stat;
+
     [SerializeField] int bombAmount;
     [SerializeField] int bombRemaining;
 
@@ -29,7 +31,9 @@ public class DropBomb : MonoBehaviour, IEventListener
     {
         if (bombRemaining == 0)
             return;
+        
         GameManager.Resource.Instantiate(bomb, transform.position, transform.rotation);
+        
         bombRemaining--;
         // 이후 네트워크 식 만들기로 변경
     }
@@ -40,6 +44,7 @@ public class DropBomb : MonoBehaviour, IEventListener
 
     public void AddBomb()
     {
+        
         bombAmount++;
     }
 
