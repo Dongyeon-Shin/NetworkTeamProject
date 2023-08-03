@@ -11339,9 +11339,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d509601afd6f914684fc4a6b404cf9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  power: 1
-  bomb: 1
-  speed: 1
+  power_Text: {fileID: 0}
+  speed_Text: {fileID: 0}
+  bomb_Text: {fileID: 0}
 --- !u!1001 &627867011
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23778,9 +23778,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d509601afd6f914684fc4a6b404cf9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  power: 1
-  bomb: 1
-  speed: 1
+  power_Text: {fileID: 1981827584}
+  speed_Text: {fileID: 1818048964}
+  bomb_Text: {fileID: 596608550}
 --- !u!65 &1226779101
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -29188,7 +29188,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -42402,7 +42402,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 513, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1985515241
