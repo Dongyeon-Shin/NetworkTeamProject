@@ -11,22 +11,29 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     private Transform[] sparkParticle;
     [SerializeField]
     private int explosivePower;
-    private LayerMask penetratedLayerMask;
+    public int ExplosivePower { set { explosivePower = value; } }
     private LayerMask unPenetratedLayerMask;
+    private BoxCollider bombCollider;
 
     private void Awake()
     {
-        penetratedLayerMask = LayerMask.GetMask("Player") | LayerMask.GetMask("Item");
+        bombCollider = GetComponent<BoxCollider>();
         unPenetratedLayerMask = LayerMask.GetMask("Box") | LayerMask.GetMask ("Bomb");
     }
 
     private void OnEnable()
     {
+        bombCollider.enabled = true;
         foreach (Transform t in sparkParticle)
         {
             t.localScale = new Vector3(2f, 2f, 2f);
         }
         StartCoroutine(LightTheFuseRoutine());
+    }
+
+    private void Update()
+    {
+        Debug.DrawRay(transform.position, transform.forward, Color.red, 1f);
     }
 
     IEnumerator LightTheFuseRoutine()
@@ -40,8 +47,8 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
             sparkParticle[3].localScale = new Vector3(i, i, i);
             yield return waitASecond;
         }
+        bombCollider.enabled = false;
         yield return StartCoroutine(ExplodeRoutine());
-        GameManager.Resource.Destroy(gameObject);
     }
 
     IEnumerator ExplodeRoutine()
@@ -52,6 +59,8 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         CheckObjectsInExplosionRange(Vector3.right);
         CheckObjectsInExplosionRange(Vector3.left);
         yield return null;
+        GameManager.Resource.Destroy(gameObject);
+        GameManager.Event.PostNotification(EventType.Explode, this);
     }
 
     private void CheckObjectsInExplosionRange(Vector3 direction)
@@ -66,6 +75,10 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         }
         foreach (RaycastHit raycastHit in objectsInRange)
         {
+            if (raycastHit.collider.gameObject.layer == 7)
+            {
+                Debug.Log(true);
+            }
             IExplosiveReactivable reactivableObject = raycastHit.collider.GetComponent<IExplosiveReactivable>();
             if (reactivableObject != null)
             {
@@ -98,6 +111,8 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
 
     public void ExplosiveReact()
     {
+        StopAllCoroutines();
+        bombCollider.enabled = false;
         StartCoroutine(ExplodeRoutine());
     }
 }
