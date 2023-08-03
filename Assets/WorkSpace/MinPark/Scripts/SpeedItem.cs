@@ -12,7 +12,7 @@ public class SpeedItem : PassiveItem
     {
         if (other.tag == "Player")
         {
-            other.GetComponent<PlayerStat>().Speed += coefficient;
+            other.GetComponent<PlayerStat>().Speed = coefficient;
             Destroy(gameObject);
         }
     }

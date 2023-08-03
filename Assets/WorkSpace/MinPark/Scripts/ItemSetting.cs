@@ -1,4 +1,4 @@
-//using Photon.Pun;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +22,7 @@ public class ItemSetting : MonoBehaviour
             itemArray[i++] = item;
         }
         ItemSet();
+
     }
     public void ItemSet()
     {
