@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7278118310321685331}
   - component: {fileID: 6308335980690637049}
   - component: {fileID: 5403406603317108798}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: spark3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5120,7 +5120,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 707179248331368131}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: particle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5157,7 +5157,7 @@ GameObject:
   - component: {fileID: 7466379078484346781}
   - component: {fileID: 8396952900497580528}
   - component: {fileID: 7380624246973928030}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: spark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9978,7 +9978,7 @@ GameObject:
   - component: {fileID: 6029027085467167969}
   - component: {fileID: 6171624133292263020}
   - component: {fileID: 3683528019503971989}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: sparkle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14799,7 +14799,7 @@ GameObject:
   - component: {fileID: 1113351785514670152}
   - component: {fileID: 3659909760250491132}
   - component: {fileID: 5074880361845745812}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: spark2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19908,8 +19908,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4864630041713910579}
-  - component: {fileID: 8548761262291440670}
-  m_Layer: 0
+  - component: {fileID: 1558929372}
+  - component: {fileID: 1558929371}
+  m_Layer: 7
   m_Name: Bomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19933,8 +19934,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &8548761262291440670
-MeshCollider:
+--- !u!65 &1558929372
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -19943,10 +19944,28 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2834383223314437085, guid: 8018b22f0f7d545e1975bf5b6186c050, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 0.4, y: 0.4, z: 0.4}
+  m_Center: {x: 0, y: 0.25, z: 0}
+--- !u!114 &1558929371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993671180460632902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03ca96792e4df594db150119844420f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fuseLength: 3
+  sparkParticle:
+  - {fileID: 6029027085467167969}
+  - {fileID: 7278118310321685331}
+  - {fileID: 1113351785514670152}
+  - {fileID: 7466379078484346781}
+  explosivePower: 1
 --- !u!1001 &7108916046651584769
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20001,6 +20020,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ffdfad76d2f7648d19c79be026141ab7, type: 3}
       propertyPath: m_Name
       value: bomb
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ffdfad76d2f7648d19c79be026141ab7, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ffdfad76d2f7648d19c79be026141ab7, type: 3}

@@ -1,4 +1,4 @@
-//using Photon.Pun;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,15 +13,18 @@ public class ItemSetting : MonoBehaviour
     private void Start()
     {
         // 방장만 아이템을 생성
-        //if (PhotonNetwork.IsMasterClient)
-        items = GetComponent<Items>();
-        itemArray = new GameObject[items.item.Length];
-        int i = 0;
-        foreach (GameObject item in items.item)
+        if (PhotonNetwork.IsMasterClient)
         {
-            itemArray[i++] = item;
+            items = GetComponent<Items>();
+            itemArray = new GameObject[items.item.Length];
+            int i = 0;
+            foreach (GameObject item in items.item)
+            {
+                itemArray[i++] = item;
+            }
+            ItemSet();
         }
-        ItemSet();
+        
     }
     public void ItemSet()
     {
