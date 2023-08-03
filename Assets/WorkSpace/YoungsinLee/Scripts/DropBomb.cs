@@ -10,7 +10,7 @@ public class DropBomb : MonoBehaviour
 
     private void Awake()
     {
-        bomb = GameManager.Resource.Load<Bomb>("Assets/WorkSpace/YoungsinLee/Resource/Bomb/Bomb");
+        bomb = GameManager.Resource.Load<Bomb>("Bomb/Bomb");
     }
     private void OnFire(InputValue value)
     {
