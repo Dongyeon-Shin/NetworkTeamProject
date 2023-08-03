@@ -19942,7 +19942,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3993671180460632902}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.4, y: 0.4, z: 0.4}
@@ -19959,15 +19959,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03ca96792e4df594db150119844420f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bombAmount: 0
-  bombRemaining: 0
-  explosionTime: 0
-  explosionlength: 0
-  explosionMask:
-    serializedVersion: 2
-    m_Bits: 0
-  explosionDuration: 1
-  explosionRadius: 1
+  fuseLength: 3
+  sparkParticle:
+  - {fileID: 6029027085467167969}
+  - {fileID: 7278118310321685331}
+  - {fileID: 1113351785514670152}
+  - {fileID: 7466379078484346781}
+  explosivePower: 1
 --- !u!1001 &7108916046651584769
 PrefabInstance:
   m_ObjectHideFlags: 0
