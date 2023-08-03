@@ -11,8 +11,6 @@ public class PlayerMove : MonoBehaviour
 
     private Vector3 moveDir;
 
-    private float curSpeed;
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Bomb"))
@@ -43,15 +41,13 @@ public class PlayerMove : MonoBehaviour
         //}
 
         Vector3 vecFor = new Vector3(moveDir.x, 0, moveDir.z).normalized;
-
         controller.Move(vecFor * moveSpeed * Time.deltaTime);
         transform.rotation = Quaternion.LookRotation(moveDir);
     }
 
-    void OnMove(InputValue value)
+    public void OnMove(InputValue value)
     {
         moveDir.x = value.Get<Vector2>().x;
         moveDir.z = value.Get<Vector2>().y;
-    
     }
 }
