@@ -60,6 +60,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         CheckObjectsInExplosionRange(Vector3.left);
         yield return null;
         GameManager.Resource.Destroy(gameObject);
+        GameManager.Event.PostNotification(EventType.Explode, this);
     }
 
     private void CheckObjectsInExplosionRange(Vector3 direction)
