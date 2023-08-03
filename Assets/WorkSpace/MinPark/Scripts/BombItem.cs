@@ -13,6 +13,7 @@ public class BombItem : PassiveItem
         if (other.tag == "Player")
         {
             other.GetComponent<PlayerStat>().Bomb = coefficient;
+            other.GetComponent <PlayerStat>().ItemInterfaceSet();
             Destroy(gameObject);
         }
     }
