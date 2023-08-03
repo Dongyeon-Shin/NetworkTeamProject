@@ -41,6 +41,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
             yield return waitASecond;
         }
         yield return StartCoroutine(ExplodeRoutine());
+        GameManager.Event.PostNotification(EventType.Explode, this);
         GameManager.Resource.Destroy(gameObject);
     }
 

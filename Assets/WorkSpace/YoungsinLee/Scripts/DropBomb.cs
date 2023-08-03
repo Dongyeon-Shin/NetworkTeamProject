@@ -21,6 +21,7 @@ public class DropBomb : MonoBehaviour
 
     private void OnEnable()
     {
+        //if()
         bombRemaining = bombAmount;
     }
 
@@ -30,11 +31,11 @@ public class DropBomb : MonoBehaviour
             return;
         GameManager.Resource.Instantiate(bomb, transform.position, transform.rotation);
         bombRemaining--;
+        //if(bomb.)
         // 이후 네트워크 식 만들기로 변경
     }
     IEnumerator ExplosionRoutine()
     {
-        
         yield return new WaitForSeconds(0.5f);
     }
 
