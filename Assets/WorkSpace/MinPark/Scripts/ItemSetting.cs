@@ -13,18 +13,16 @@ public class ItemSetting : MonoBehaviour
     private void Start()
     {
         // 방장만 아이템을 생성
-        if (PhotonNetwork.IsMasterClient)
+        //if (PhotonNetwork.IsMasterClient)
+        items = GetComponent<Items>();
+        itemArray = new GameObject[items.item.Length];
+        int i = 0;
+        foreach (GameObject item in items.item)
         {
-            items = GetComponent<Items>();
-            itemArray = new GameObject[items.item.Length];
-            int i = 0;
-            foreach (GameObject item in items.item)
-            {
-                itemArray[i++] = item;
-            }
-            ItemSet();
+            itemArray[i++] = item;
         }
-        
+        ItemSet();
+
     }
     public void ItemSet()
     {
