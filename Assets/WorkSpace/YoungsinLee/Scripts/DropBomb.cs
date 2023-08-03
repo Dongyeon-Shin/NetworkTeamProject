@@ -7,9 +7,6 @@ public class DropBomb : MonoBehaviour
 {
     private Bomb bomb;
 
-    
-    
-
 
     private void Awake()
     {
