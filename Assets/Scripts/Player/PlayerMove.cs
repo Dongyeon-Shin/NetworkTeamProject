@@ -46,7 +46,6 @@ public class PlayerMove : MonoBehaviour
 
         controller.Move(vecFor * moveSpeed * Time.deltaTime);
         transform.rotation = Quaternion.LookRotation(moveDir);
-
     }
 
     void OnMove(InputValue value)
