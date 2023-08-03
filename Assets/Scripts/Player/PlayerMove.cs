@@ -13,6 +13,14 @@ public class PlayerMove : MonoBehaviour
 
     private float curSpeed;
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Bomb"))
+        {
+            other.isTrigger = false;
+        }
+    }
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
