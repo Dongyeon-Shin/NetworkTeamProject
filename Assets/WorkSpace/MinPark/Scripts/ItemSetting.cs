@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemSetting : MonoBehaviour
+public class ItemSetting : MonoBehaviourPun
 {
     // 박스 갯수 58개
     private Items items;
@@ -41,10 +41,19 @@ public class ItemSetting : MonoBehaviour
                     // 배치할 아이템을 선택
                     trans.GetComponent<Box>().item = itemArray[Random.Range(0, itemArray.Length)];
                     itemCount -= 1;
+
+                    // 포톤 버젼
+                    //GameObject item = itemArray[Random.Range(0, itemArray.Length)];
+                    //photonView.RPC("ItemInsertion", RpcTarget.All, trans, item);
                 }
             }
         }
         if (itemCount > 0)
             ItemSet();
+    }
+    [PunRPC]
+    private void ItemInsertion(Transform trans, GameObject item)
+    {
+        trans.GetComponent<Box>().item = item;
     }
 }
