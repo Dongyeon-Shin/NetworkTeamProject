@@ -25,7 +25,7 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
 
     private void OnEnable()
     {
-        curSpeed = stat.speed;
+        curSpeed = stat.Speed;
     }
 
     private void FixedUpdate()
@@ -62,9 +62,10 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
 
     public void AddSpeed()
     {
-        curSpeed += 2f;
         if (curSpeed >= 8)
             return;
+        else
+            curSpeed += 2f;
     }
 
     public void ExplosiveReact()

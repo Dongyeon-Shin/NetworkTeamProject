@@ -26,7 +26,8 @@ public class DropBomb : MonoBehaviour, IEventListener
 
     private void OnEnable()
     {
-        
+        curPower = stat.Power;
+        maxBomb = stat.Bomb;
         curBomb = maxBomb;
         GameManager.Event.AddListener(EventType.Explode, this);
     }
@@ -71,7 +72,7 @@ public class DropBomb : MonoBehaviour, IEventListener
 
     public void AddBomb()
     {
-        if (maxBomb >= 5)
+        if (maxBomb >= 6)
             return;
         else
             maxBomb++;
@@ -79,8 +80,9 @@ public class DropBomb : MonoBehaviour, IEventListener
 
     public void AddPower()
     {
-        curPower++;
-        if (maxBomb >= 5)
+        if (curPower >= 5)
             return;
+        else
+            curPower++; ;
     }
 }
