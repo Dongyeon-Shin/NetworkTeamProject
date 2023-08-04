@@ -5,9 +5,18 @@ using UnityEngine;
 
 public class PlayerStat : MonoBehaviour
 {
+    public TMP_Text[] texts = new TMP_Text[3];
     public TMP_Text power_Text;
     public TMP_Text speed_Text;
     public TMP_Text bomb_Text;
+
+    private void Start()
+    {
+        texts = GameScene.gameInterFace.GetComponentsInChildren<TMP_Text>();
+        power_Text = texts[0];
+        speed_Text = texts[1];
+        bomb_Text = texts[2];
+    }
 
     // 테스트용
     private int power = 1;
