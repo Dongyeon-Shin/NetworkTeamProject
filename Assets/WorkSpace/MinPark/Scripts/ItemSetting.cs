@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ItemSetting : MonoBehaviour
 {
-    // ¹Ú½º °¹¼ö 88°³
+    // ¹Ú½º °¹¼ö 58°³
     private Items items;
     private GameObject[] itemArray;
     private int itemCount=30;
