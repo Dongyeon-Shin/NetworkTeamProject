@@ -8,8 +8,8 @@ using UnityEngine.InputSystem;
 public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
 {
     private PlayerStat stat;
-    private CharacterController controller;
     private SpeedItem speedItem;
+    private Rigidbody rb;
 
     private Vector3 moveDir;
 
@@ -18,14 +18,20 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
 
     private void Awake()
     {
+        rb = GetComponent<Rigidbody>();
         stat = new PlayerStat();
         GameManager.Resource.Load<SpeedItem>("");
-        controller = GetComponent<CharacterController>();
     }
 
     private void OnEnable()
     {
         curSpeed = stat.Speed;
+    }
+
+    private void Update()
+    {
+        if (curSpeed >= 8)
+            return;
     }
 
     private void FixedUpdate()
@@ -37,7 +43,9 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
     void Move()
     {
         Vector3 vecFor = new Vector3(moveDir.x, 0, moveDir.z).normalized;
-        controller.Move(vecFor * curSpeed * Time.deltaTime);
+        Vector3 vecRb = rb.position;
+
+        rb.MovePosition(vecRb + vecFor * curSpeed * Time.deltaTime);
         if (moveDir.sqrMagnitude >= 0.01f)
             transform.rotation = Quaternion.LookRotation(moveDir);
     }
@@ -59,15 +67,6 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
             other.isTrigger = false;
         }
     }
-
-    public void AddSpeed()
-    {
-        if (curSpeed >= 8)
-            return;
-        else
-            curSpeed += 2f;
-    }
-
     public void ExplosiveReact()
     {
         // 죽는 애니메이션 실행

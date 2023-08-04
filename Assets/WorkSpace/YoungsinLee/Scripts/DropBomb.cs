@@ -6,9 +6,9 @@ public class DropBomb : MonoBehaviour, IEventListener
 {
     private Bomb bomb;
     private PlayerStat stat;
-    private GameObject ground;
 
     private LayerMask de;
+    private Vector3 groundDir;
 
     private int maxBomb;
     private int curBomb;
@@ -19,44 +19,60 @@ public class DropBomb : MonoBehaviour, IEventListener
         stat = new PlayerStat();
         bomb = GameManager.Resource.Load<Bomb>("Prefab/Bomb");
     }
+
     private void OnFire(InputValue value)
     {
          Drop();
     }
 
+    private void Update()
+    {
+        if (maxBomb >= 6)
+            return;
+        if (curPower >= 5)
+            return;
+    }
+
     private void OnEnable()
     {
-        curPower = stat.Power;
         maxBomb = stat.Bomb;
         curBomb = maxBomb;
         GameManager.Event.AddListener(EventType.Explode, this);
     }
 
-    private void Drop() 
-    {
-        if (curBomb == 0)
-            return;
-
-        
-        ground.transform.position = new Vector3(0, 0, 0);
-        if (GroundChack())
-        {
-            GameManager.Resource.Instantiate(bomb, ground.transform.position, transform.rotation);
-            curBomb--;
-        }
-        // 이후 네트워크 식 만들기로 변경
-    }
-
-    private bool GroundChack()
+    private void GroundChack()
     {
         RaycastHit hit;
-        //ground = hit.transform.gameObject;
-        return Physics.Raycast(transform.position, Vector3.down, 1.5f, 0, QueryTriggerInteraction.Ignore);
+        Debug.DrawRay(transform.position, Vector3.down, Color.red, 0.5f);
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f))
+        {
+            if (hit.collider != null && hit.collider.gameObject != null)
+            {
+                groundDir = new Vector3(hit.collider.gameObject.transform.position.x, 0, hit.collider.gameObject.transform.position.z);
+            }
+            else
+            {
+                Debug.Log("밑에 오브젝트가 암것도 없음");
+            }
+        }
+        else
+        {
+            Debug.Log("암것도 안부딪힘");
+        }
     }
 
     IEnumerator ExplosionRoutine()
     {
         yield return new WaitForSeconds(0.5f);
+    }
+
+    private void Drop()
+    {
+        if (curBomb == 0)
+            return;
+        GameManager.Resource.Instantiate(bomb, transform.position, transform.rotation);
+        curBomb--;
+        // 이후 네트워크 식 만들기로 변경
     }
 
     // 폭탄 폭발시 갯수 추가
@@ -70,19 +86,4 @@ public class DropBomb : MonoBehaviour, IEventListener
 
     // 폭탄 관련 아이템 함수들 
 
-    public void AddBomb()
-    {
-        if (maxBomb >= 6)
-            return;
-        else
-            maxBomb++;
-    }
-
-    public void AddPower()
-    {
-        if (curPower >= 5)
-            return;
-        else
-            curPower++; ;
-    }
 }
