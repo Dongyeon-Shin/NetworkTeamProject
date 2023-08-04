@@ -31,11 +31,6 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         StartCoroutine(LightTheFuseRoutine());
     }
 
-    private void Update()
-    {
-        Debug.DrawRay(transform.position, transform.forward, Color.red, 1f);
-    }
-
     IEnumerator LightTheFuseRoutine()
     {
         WaitForSeconds waitASecond = new WaitForSeconds(1);
@@ -75,10 +70,6 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         }
         foreach (RaycastHit raycastHit in objectsInRange)
         {
-            if (raycastHit.collider.gameObject.layer == 7)
-            {
-                Debug.Log(true);
-            }
             IExplosiveReactivable reactivableObject = raycastHit.collider.GetComponent<IExplosiveReactivable>();
             if (reactivableObject != null)
             {
