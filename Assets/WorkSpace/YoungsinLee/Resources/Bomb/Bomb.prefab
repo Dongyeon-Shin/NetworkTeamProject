@@ -19909,8 +19909,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1226926628322254598}
   - component: {fileID: 2605056855605569579}
-  - component: {fileID: 818075864539128305}
   - component: {fileID: 9011406715883613692}
+  - component: {fileID: -6396637286418413495}
   m_Layer: 0
   m_Name: Bomb
   m_TagString: Untagged
@@ -19949,21 +19949,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2834383223314437085, guid: 8018b22f0f7d545e1975bf5b6186c050, type: 3}
---- !u!114 &818075864539128305
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7343144189867235187}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5bcdaf1b4b258f4fabf3c1388e97992, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bombAmount: 0
-  bombRemaining: 0
-  explosionTime: 0
 --- !u!136 &9011406715883613692
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -19978,6 +19963,18 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-6396637286418413495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7343144189867235187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60146177f889eb5479f6aed8404998de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3468819554169081140
 PrefabInstance:
   m_ObjectHideFlags: 0

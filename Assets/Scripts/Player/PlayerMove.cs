@@ -10,6 +10,7 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
     private PlayerStat stat;
     private SpeedItem speedItem;
     private Rigidbody rb;
+    private PlayerInput playerInput;
 
     private Vector3 moveDir;
 
@@ -20,6 +21,9 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
     {
         stat = GetComponent<PlayerStat>();
         rb = GetComponent<Rigidbody>();
+        playerInput = GetComponent<PlayerInput>();
+        if (!photonView.IsMine)
+            Destroy(playerInput);
     }
 
     private void OnEnable()
@@ -58,14 +62,6 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
     {
         moveDir.x = value.Get<Vector2>().x;
         moveDir.z = value.Get<Vector2>().y;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
-            other.isTrigger = true;
-        else
-            other.isTrigger = false;
     }
 
     private void OnTriggerStay(Collider other)
