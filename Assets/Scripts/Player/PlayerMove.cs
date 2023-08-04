@@ -18,7 +18,7 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
 
     private void Awake()
     {
-        stat = new PlayerStat();
+        stat = GetComponent<PlayerStat>();
         rb = GetComponent<Rigidbody>();
     }
 
@@ -64,6 +64,8 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
             other.isTrigger = true;
+        else
+            other.isTrigger = false;
     }
 
     private void OnTriggerStay(Collider other)
