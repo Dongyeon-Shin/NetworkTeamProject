@@ -31,15 +31,17 @@ public class DropDwon : MonoBehaviour, IEventListener
     {
         if (bombRemaining == 0)
             return;
-
-        GameManager.Resource.Instantiate(bomb, transform.position, transform.rotation);
+        GameManager.Resource.Instantiate(bomb, CheckStandingBlockPosition(), transform.rotation);
 
         bombRemaining--;
         // 이후 네트워크 식 만들기로 변경
     }
-    IEnumerator ExplosionRoutine()
+
+    private Vector3 CheckStandingBlockPosition()
     {
-        yield return new WaitForSeconds(0.5f);
+        RaycastHit hitInfo;
+        Physics.Raycast(transform.position + Vector3.up, Vector3.down, out hitInfo, 2f, 1);
+        return new Vector3(hitInfo.transform.position.x, transform.position.y, hitInfo.transform.position.z);
     }
 
     public void AddBomb()
