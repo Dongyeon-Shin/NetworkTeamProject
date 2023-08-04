@@ -12,6 +12,7 @@ public class SpeedItem : PassiveItem
     {
         if (other.tag == "Player")
         {
+            //if(photonView.IsMine)
             other.GetComponent<PlayerStat>().Speed = coefficient;
             other.GetComponent<PlayerStat>().ItemInterfaceSet();
             Destroy(gameObject);
