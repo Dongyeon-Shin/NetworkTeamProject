@@ -65,11 +65,6 @@ public class DropBomb : MonoBehaviourPun, IEventListener
         }
     }
 
-    IEnumerator ExplosionRoutine()
-    {
-        yield return new WaitForSeconds(0.5f);
-    }
-
     private void Drop()
     {
         if (curBomb == 0)
