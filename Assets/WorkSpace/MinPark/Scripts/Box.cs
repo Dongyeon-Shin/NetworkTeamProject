@@ -18,8 +18,4 @@ public class Box : MonoBehaviour, IExplosiveReactivable
             Instantiate(item, transform.position, Quaternion.Euler(0, 0, 0));
         Destroy(gameObject);
     }
-    private void OnTriggerEnter(Collider other)
-    {
-        //Hit();
-    }
 }
