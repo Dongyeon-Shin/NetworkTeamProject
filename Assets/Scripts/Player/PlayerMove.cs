@@ -18,9 +18,8 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
         stat = new PlayerStat();
-        GameManager.Resource.Load<SpeedItem>("");
+        rb = GetComponent<Rigidbody>();
     }
 
     private void OnEnable()
