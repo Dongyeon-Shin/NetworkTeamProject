@@ -12,9 +12,12 @@ public class BombItem : PassiveItem
     {
         if (other.tag == "Player")
         {
+            //if(photonView.IsMine)
             other.GetComponent<PlayerStat>().Bomb = coefficient;
             other.GetComponent <PlayerStat>().ItemInterfaceSet();
             Destroy(gameObject);
+            // 포톤 사용시 위에 대신 아래꺼 사용
+            //Destroy();
         }
     }
 }
