@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class DropBomb : MonoBehaviour, IEventListener
+public class DropBomb : MonoBehaviourPun, IEventListener
 {
     private Bomb bomb;
     private PlayerStat stat;
