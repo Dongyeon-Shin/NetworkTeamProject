@@ -18,9 +18,11 @@ public class PlayerStat : MonoBehaviour
         bomb_Text = texts[2];
     }
 
-    // 테스트용
+    [SerializeField]
     private int power = 1;
+    [SerializeField]
     private int bomb = 1;
+    [SerializeField]
     private int speed = 1;
 
     public int Power { get { return power; } set {  power += value; } }

@@ -19,10 +19,9 @@ public class GameScene : BaseScene
         yield return new WaitForSecondsRealtime(1f);
         GameObject map = GameManager.Resource.Load<GameObject>("Map/SampleMap");
         gameInterFace = GameManager.Resource.Load<GameObject>("Map/GameInterFace");
-        GameManager.Resource.Instantiate(gameInterFace);
+        gameInterFace = GameManager.Resource.Instantiate(gameInterFace);
         GameManager.Resource.Instantiate(map);
         GameObject player = GameManager.Resource.Load<GameObject>("Map/Player");
-        Debug.Log(gameInterFace);
         GameManager.Resource.Instantiate(player);
         progress = 0.7f;
         yield return new WaitForSecondsRealtime(2f);
