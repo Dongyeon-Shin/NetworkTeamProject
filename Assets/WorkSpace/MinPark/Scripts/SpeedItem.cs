@@ -15,6 +15,8 @@ public class SpeedItem : PassiveItem
             other.GetComponent<PlayerStat>().Speed = coefficient;
             other.GetComponent<PlayerStat>().ItemInterfaceSet();
             Destroy(gameObject);
+            // 포톤 사용시 위에 대신 아래꺼 사용
+            //Destroy();
         }
     }
 }

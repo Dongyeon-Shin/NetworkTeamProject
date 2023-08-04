@@ -11,6 +11,8 @@ public abstract class PassiveItem : MonoBehaviourPun, IExplosiveReactivable
     public void ExplosiveReact()
     {
         Destroy(gameObject);
+        //포톤 사용시 아래의 디스트로이 사용
+        //Destroy();
     }
     protected void Destroy()
     {
