@@ -5,7 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/WorkSpace/MinPark/TestScene.unity
     guid: 7d858f6fdff7caf4f9f01a3a21d94b9c
+  - enabled: 1
+    path: Assets/WorkSpace/YoungjuneBae/UIScene.unity
+    guid: 5e932e4dc85ce2c47856c18974cc59b5
   m_configObjects: {}

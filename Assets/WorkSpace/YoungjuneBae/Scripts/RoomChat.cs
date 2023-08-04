@@ -4,42 +4,62 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Realtime;
+using TMPro;
 
 public class RoomChat : MonoBehaviourPunCallbacks
 {
-    [SerializeField] Text chatLog;
-    [SerializeField] InputField input;
+    [SerializeField] RectTransform content;
+    [SerializeField] Text chatPrefab;
+    [SerializeField] public InputField input;
 
-    ScrollRect scrollRect;
+    string playerID;
 
     private void Start()
     {
         PhotonNetwork.IsMessageQueueRunning = true;
-        scrollRect=GameObject.FindObjectOfType<ScrollRect>();
+        PhotonNetwork.ConnectUsingSettings();//네트워크 연결 테스트용
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Return)&&!input.isFocused) 
+        if (Input.GetKeyDown(KeyCode.Return) && input.isFocused == false)
         {
-            SendChat();
+            input.ActivateInputField();
         }
+    }
+    public override void OnConnectedToMaster()//네트워크 연결 테스트용    
+    {
+        RoomOptions options = new RoomOptions();
+        options.MaxPlayers = 5;
+
+        int nRandomKey = Random.Range(0, 100);
+
+        playerID = "user" + nRandomKey;
+
+        PhotonNetwork.LocalPlayer.NickName = playerID;
+        PhotonNetwork.JoinOrCreateRoom("Room1", options, null);
     }
 
     public void SendChat()
     {
-        if (input.text.Equals(""))
-            return;
-        string msg=string.Format("[{0}] : {1}",PhotonNetwork.LocalPlayer.NickName, input.text);
-        photonView.RPC("ReceiveMsg",RpcTarget.Others,msg);
-        ReceiveMsg(msg);
-        input.ActivateInputField();
-        input.text = "";
+        if(Input.GetKeyDown(KeyCode.Return))
+        {
+            string strMessage = playerID + " : " + input.text;
+
+            photonView.RPC("ReceiveMsg", RpcTarget.All, strMessage);
+            input.text = "";
+        }
+    }
+
+    public void OutPutMsg(string strMessage)
+    {
+        Text text = Instantiate(chatPrefab, content);
+
+        text.text = strMessage;
     }
     [PunRPC]
-    public void ReceiveMsg(string msg)
+    public void ReceiveMsg(string strMessage)
     {
-        chatLog.text =msg+"\n";
-        scrollRect.verticalNormalizedPosition = 0.0f;
+        OutPutMsg(strMessage);
     }
 }
