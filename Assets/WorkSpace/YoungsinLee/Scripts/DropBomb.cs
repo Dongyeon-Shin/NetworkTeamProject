@@ -21,7 +21,7 @@ public class DropBomb : MonoBehaviourPun, IEventListener
         if (!photonView.IsMine)
             Destroy(playerInput);
         stat = GetComponent<TestStat>();
-        //bombPrefab = GameManager.Resource.Load<Bomb>("Prefab/TastBomb");
+        bombPrefab = GameManager.Resource.Load<TastBomb>("Prefab/Bomb");
     }
 
     private void OnFire(InputValue value)
