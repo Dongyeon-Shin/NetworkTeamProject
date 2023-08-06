@@ -1,12 +1,13 @@
 using Photon.Pun;
-using Photon.Pun.Demo.Asteroids;
 using Photon.Realtime;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class DropBomb : MonoBehaviourPun, IEventListener
 {
+    public int tastBomb;
+
+
     private TastBomb bombPrefab;
     private TestStat stat;
 
@@ -31,7 +32,7 @@ public class DropBomb : MonoBehaviourPun, IEventListener
 
     private void OnEnable()
     {
-        //curBomb = stat.Bomb;
+        curBomb = tastBomb;
         GameManager.Event.AddListener(EventType.Explode, this);
     }
 
@@ -70,7 +71,7 @@ public class DropBomb : MonoBehaviourPun, IEventListener
     {
         if (curBomb == 0)
             return;
-        photonView.RPC("ResultCreateBomb", RpcTarget.All, transform.position, transform.rotation);
+        photonView.RPC("RequestCreateBomb", RpcTarget.MasterClient, transform.position, transform.rotation);
         //GameManager.Resource.Instantiate(bomb, GroundChack(), transform.rotation);
         curBomb--;
         // 네트워크 식
@@ -82,7 +83,7 @@ public class DropBomb : MonoBehaviourPun, IEventListener
         float sentTime = (float)info.SentServerTime;
         // 반장이 직접 판단하지 않고 서버를 한번 걸치는 식으로 서버를 통해 판단하게 설정(공평성을 위해)
         photonView.RPC("ResultCreateBomb", RpcTarget.AllViaServer, position, rotation, sentTime, info.Sender);
-
+    
     }
 
 
@@ -90,8 +91,8 @@ public class DropBomb : MonoBehaviourPun, IEventListener
     private void ResultCreateBomb(Vector3 position, Quaternion rotation, float sentTime, Player player)
     {
         float lag = (float)(PhotonNetwork.Time - sentTime);
-
-        TastBomb bomb = Instantiate(bombPrefab, position, rotation); // 값을 정해서 보내면 더욱 정확한 타이밍을 맞출수있음
+        position = GroundChack();
+        Instantiate(bombPrefab, position, rotation); // 값을 정해서 보내면 더욱 정확한 타이밍을 맞출수있음
        // bomb.SetPlayer(player);
         Debug.Log($"{photonView.Owner.NickName}발싸!");
     }
