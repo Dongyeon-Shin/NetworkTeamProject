@@ -114,12 +114,7 @@ public class TastBomb : MonoBehaviour
     }
 
     public void ApplyLag()
-<<<<<<< HEAD
     {
-        transform.position;
-=======
-    {1
 
->>>>>>> feat : 플레이어 네트워크 적용중
     }
 }
