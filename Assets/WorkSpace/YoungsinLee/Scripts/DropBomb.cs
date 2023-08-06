@@ -21,7 +21,7 @@ public class DropBomb : MonoBehaviourPun, IEventListener
         if (!photonView.IsMine)
             Destroy(playerInput);
         stat = GetComponent<TestStat>();
-        bombPrefab = GameManager.Resource.Load<TastBomb>("Prefab/Bomb");
+        bombPrefab = GameManager.Resource.Load<TastBomb>("Bomb/Bomb");
     }
 
     private void OnFire(InputValue value)
@@ -70,12 +70,10 @@ public class DropBomb : MonoBehaviourPun, IEventListener
     {
         if (curBomb == 0)
             return;
+        photonView.RPC("ResultCreateBomb", RpcTarget.All, transform.position, transform.rotation);
         //GameManager.Resource.Instantiate(bomb, GroundChack(), transform.rotation);
         curBomb--;
-
         // 네트워크 식
-        photonView.RPC("RequestCreateBomb", RpcTarget.MasterClient, transform.position, transform.rotation);
-
     }
 
     [PunRPC]
@@ -95,9 +93,9 @@ public class DropBomb : MonoBehaviourPun, IEventListener
 
         TastBomb bomb = Instantiate(bombPrefab, position, rotation); // 값을 정해서 보내면 더욱 정확한 타이밍을 맞출수있음
        // bomb.SetPlayer(player);
-       // bomb.ApplyLag(lag);
         Debug.Log($"{photonView.Owner.NickName}발싸!");
     }
+
     
 
     // 폭탄 폭발시 갯수 추가

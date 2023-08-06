@@ -112,9 +112,4 @@ public class TastBomb : MonoBehaviour
     {
         this.player = player;
     }
-
-    public void ApplyLag()
-    {
-
-    }
 }
