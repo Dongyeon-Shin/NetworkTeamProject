@@ -40,4 +40,18 @@ public class TestManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.Instantiate("Player/Player", position, rotation);
     }
+    public override void OnLeftRoom()
+    {
+        Debug.Log("너 나가진거야");
+        PhotonNetwork.LoadLevel("LobbyScene");
+    }
+
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        Debug.Log($"Disconnected : {cause}");
+        PhotonNetwork.LoadLevel("LobbyScene");
+    }
+    
+
 }

@@ -2,7 +2,7 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
+public class PlayerMove : MonoBehaviourPun
 {
     private TestStat stat;
     private SpeedItem speedItem;
@@ -90,9 +90,5 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
         if (other.gameObject.layer == LayerMask.NameToLayer("Bomb"))
             other.isTrigger = false;
     }
-    public void ExplosiveReact()
-    {
-        // 죽는 애니메이션 실행
-        PhotonNetwork.Destroy(photonView);
-    }
+    
 }
