@@ -30,7 +30,6 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         {
             t.localScale = new Vector3(2f, 2f, 2f);
         }
-        StartCoroutine(LightTheFuseRoutine());
     }
 
     IEnumerator LightTheFuseRoutine()
@@ -45,11 +44,11 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
             yield return waitASecond;
         }
         bombCollider.enabled = false;
-        yield return StartCoroutine(ExplodeRoutine());
     }
 
     public IEnumerator ExplodeRoutine()
     {
+        yield return LightTheFuseRoutine();
         Explode(0, Vector3.zero);
         CheckObjectsInExplosionRange(Vector3.forward);
         CheckObjectsInExplosionRange(Vector3.back);
@@ -57,7 +56,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         CheckObjectsInExplosionRange(Vector3.left);
         yield return null;
         GameManager.Resource.Destroy(gameObject);
-        GameManager.Event.PostNotification(EventType.Explode, this);
+        //GameManager.Event.PostNotification(EventType.Explode, this);
     }
 
     private void CheckObjectsInExplosionRange(Vector3 direction)

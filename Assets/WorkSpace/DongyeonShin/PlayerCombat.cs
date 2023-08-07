@@ -32,7 +32,7 @@ public class PlayerCombat : MonoBehaviour, IExplosiveReactivable
     // TODO: 실험적인 코드 테스트 필요
     IEnumerator RetrieveBombRoutine(Bomb bomb)
     {
-        yield return bomb.ExplodeRoutine();
+        yield return StartCoroutine (bomb.ExplodeRoutine());
         plantingBombs.Pop();
     }
 
