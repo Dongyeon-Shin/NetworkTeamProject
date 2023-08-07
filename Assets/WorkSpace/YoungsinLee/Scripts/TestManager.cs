@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TeatManager : MonoBehaviourPunCallbacks
+public class TestManager : MonoBehaviourPunCallbacks
 {
     private void Start()
     {
