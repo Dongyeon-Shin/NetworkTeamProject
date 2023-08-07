@@ -1,15 +1,14 @@
 using Photon.Pun;
-using Photon.Pun.Demo.Asteroids;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
 {
-    private PlayerStat stat;
+    private TestStat stat;
     private SpeedItem speedItem;
     private Rigidbody rb;
+    private PlayerInput playerInput;
+    private Animator animator;
 
     private Vector3 moveDir;
 
@@ -18,19 +17,17 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
 
     private void Awake()
     {
-        stat = new PlayerStat();
+        stat = GetComponent<TestStat>();
         rb = GetComponent<Rigidbody>();
+        playerInput = GetComponent<PlayerInput>();
+        animator = GetComponent<Animator>();
+        if (!photonView.IsMine)
+            Destroy(playerInput);
     }
 
     private void OnEnable()
     {
         curSpeed = stat.Speed;
-    }
-
-    private void Update()
-    {
-        if (curSpeed >= 8)
-            return;
     }
 
     private void FixedUpdate()
@@ -41,12 +38,15 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
 
     void Move()
     {
+        curSpeed = stat.Speed;
         Vector3 vecFor = new Vector3(moveDir.x, 0, moveDir.z).normalized;
         Vector3 vecRb = rb.position;
 
         rb.MovePosition(vecRb + vecFor * 5 * Time.deltaTime);
         if (moveDir.sqrMagnitude >= 0.01f)
             transform.rotation = Quaternion.LookRotation(moveDir);
+
+
     }
 
     public void OnSetting(InputValue value)
@@ -54,16 +54,29 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
         // GameManager.UI.ShowInGameUI<InGameUI>("");   // 이후 추가
     }
 
+    public void OnChatting() 
+    {
+        
+    }
+
     public void OnMove(InputValue value)
     {
         moveDir.x = value.Get<Vector2>().x;
         moveDir.z = value.Get<Vector2>().y;
-    }
+        if (moveDir.x > 0 || moveDir.z > 0 || moveDir.x < 0 || moveDir.z < 0)
+        {
+            animator.SetBool("Move", true);
+        }
+        
+        else if (moveDir.x == 0 && moveDir.z == 0)
+        {
+            animator.SetBool("Move", false);
+        }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
-            other.isTrigger = true;
+        else
+        {
+            animator.SetBool("Move", false);
+        }
     }
 
     private void OnTriggerStay(Collider other)

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5653549995598482969}
   - component: {fileID: -3937348690967950597}
   - component: {fileID: -2372712124873644899}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PowerItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}

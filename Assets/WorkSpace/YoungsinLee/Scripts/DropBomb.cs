@@ -1,24 +1,28 @@
 using Photon.Pun;
-using System.Collections;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class DropBomb : MonoBehaviourPun, IEventListener
 {
-    private Bomb bomb;
-    private PlayerStat stat;
+    public int tastBomb;
+
+
+    private TestBomb bombPrefab;
+    private TestStat stat;
 
     private LayerMask de;
     private Vector3 groundDir;
 
-    private int maxBomb;
     private int curBomb;
-    private int curPower;
+    private PlayerInput playerInput;
 
     private void Awake()
     {
-        stat = new PlayerStat();
-        bomb = GameManager.Resource.Load<Bomb>("Prefab/Bomb");
+        if (!photonView.IsMine)
+            Destroy(playerInput);
+        stat = GetComponent<TestStat>();
+        bombPrefab = GameManager.Resource.Load<TestBomb>("Bomb/Bomb");
     }
 
     private void OnFire(InputValue value)
@@ -26,19 +30,16 @@ public class DropBomb : MonoBehaviourPun, IEventListener
          Drop();
     }
 
-    private void Update()
-    {
-        if (maxBomb >= 6)
-            return;
-        if (curPower >= 5)
-            return;
-    }
-
     private void OnEnable()
     {
-        maxBomb = stat.Bomb;
-        curBomb = maxBomb;
+        curBomb = stat.Bomb;
         GameManager.Event.AddListener(EventType.Explode, this);
+    }
+
+    private void CheckBomb()
+    {
+        if (stat.Bomb >= 6)
+            return;
     }
 
     private Vector3 GroundChack()
@@ -69,10 +70,35 @@ public class DropBomb : MonoBehaviourPun, IEventListener
     {
         if (curBomb == 0)
             return;
-        GameManager.Resource.Instantiate(bomb, GroundChack(), transform.rotation);
+        if(curBomb > stat.Bomb)
+            curBomb = stat.Bomb;
+        photonView.RPC("RequestCreateBomb", RpcTarget.MasterClient, transform.position, transform.rotation);
+        //GameManager.Resource.Instantiate(bomb, GroundChack(), transform.rotation);
         curBomb--;
-        // 이후 네트워크 식 만들기로 변경
+        // 네트워크 식
     }
+
+    [PunRPC]
+    private void RequestCreateBomb(Vector3 position, Quaternion rotation, PhotonMessageInfo info)
+    {
+        float sentTime = (float)info.SentServerTime;
+        // 반장이 직접 판단하지 않고 서버를 한번 걸치는 식으로 서버를 통해 판단하게 설정(공평성을 위해)
+        photonView.RPC("ResultCreateBomb", RpcTarget.AllViaServer, position, rotation, sentTime, info.Sender);
+    
+    }
+
+
+    [PunRPC]
+    private void ResultCreateBomb(Vector3 position, Quaternion rotation, float sentTime, Player player)
+    {
+        float lag = (float)(PhotonNetwork.Time - sentTime);
+        position = GroundChack();
+        Instantiate(bombPrefab, position, rotation); // 값을 정해서 보내면 더욱 정확한 타이밍을 맞출수있음
+        bombPrefab.SetPlayer(player);
+        Debug.Log($"{photonView.Owner.NickName}발싸!");
+    }
+
+    
 
     // 폭탄 폭발시 갯수 추가
     public void OnEvent(EventType eventType, Component Sender, object Param = null)
