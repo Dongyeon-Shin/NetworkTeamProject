@@ -44,6 +44,7 @@ public class RoomChat : MonoBehaviourPunCallbacks
     {
         if(Input.GetKeyDown(KeyCode.Return))
         {
+            
             string strMessage = playerID + " : " + input.text;
 
             photonView.RPC("ReceiveMsg", RpcTarget.All, strMessage);
@@ -61,5 +62,10 @@ public class RoomChat : MonoBehaviourPunCallbacks
     public void ReceiveMsg(string strMessage)
     {
         OutPutMsg(strMessage);
+    }
+
+    public void InputSelect()
+    {
+        input.Select();
     }
 }
