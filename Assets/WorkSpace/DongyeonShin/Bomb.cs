@@ -13,18 +13,20 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     private int explosivePower;
     public int ExplosivePower { set { explosivePower = value; } }
     private LayerMask unPenetratedObjectsLayerMask;
+    private LayerMask boxLayerMask;
     private BoxCollider bombCollider;
+    private bool readyToExplode;
+    private Coroutine lightTheFuseRoutine;
 
     private void Awake()
     {
         bombCollider = GetComponent<BoxCollider>();
-        // TODO: 지금 외벽이 Box 레이어고 상자가 Default 레이어로 바뀌어 있는듯?
-        unPenetratedObjectsLayerMask = LayerMask.GetMask("Box") | LayerMask.GetMask ("Bomb");
+        unPenetratedObjectsLayerMask = 1 | LayerMask.GetMask ("Bomb");
+        boxLayerMask = LayerMask.GetMask("Box");
     }
 
     private void OnEnable()
     {
-
         bombCollider.enabled = true;
         foreach (Transform t in sparkParticle)
         {
@@ -35,6 +37,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     IEnumerator LightTheFuseRoutine()
     {
         WaitForSeconds waitASecond = new WaitForSeconds(1);
+        readyToExplode = false;
         for (int i = 1; i <= fuseLength; i++)
         {
             sparkParticle[0].localScale = new Vector3(i, i, i);
@@ -44,11 +47,13 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
             yield return waitASecond;
         }
         bombCollider.enabled = false;
+        readyToExplode = true;
     }
 
     public IEnumerator ExplodeRoutine()
     {
-        yield return LightTheFuseRoutine();
+        lightTheFuseRoutine = StartCoroutine(LightTheFuseRoutine());
+        yield return new WaitUntil(()=>  readyToExplode);
         Explode(0, Vector3.zero);
         CheckObjectsInExplosionRange(Vector3.forward);
         CheckObjectsInExplosionRange(Vector3.back);
@@ -56,14 +61,12 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         CheckObjectsInExplosionRange(Vector3.left);
         yield return null;
         GameManager.Resource.Destroy(gameObject);
-        //GameManager.Event.PostNotification(EventType.Explode, this);
     }
 
     private void CheckObjectsInExplosionRange(Vector3 direction)
     {
 
-        RaycastHit[] objectsInRange = Physics.RaycastAll(transform.position, direction, explosivePower);
-        int explosionRange = 0;
+        RaycastHit[] objectsInRange = Physics.RaycastAll(transform.position + new Vector3(0f, 0.5f, 0f), direction, explosivePower);
         if (objectsInRange.Length == 0)
         {
             Explode(explosivePower, direction);
@@ -78,22 +81,56 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
                 reactivableObject.ExplosiveReact();
                 if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
                 {
-                    Explode(explosionRange, direction);
-                    return;
+                    if (direction.z > 0)
+                    {
+                        Explode(raycastHit.transform.position.z - transform.position.z -1, direction);
+                        return;
+                    }
+                    else if (direction.z < 0)
+                    {
+                        Explode(transform.position.z - raycastHit.transform.position.z - 1, direction);
+                        return;
+                    }
+                    else if (direction.x > 0)
+                    {
+                        Explode(raycastHit.transform.position.x - transform.position.x - 1, direction);
+                        return;
+                    }
+                    else
+                    {
+                        Explode(transform.position.x - raycastHit.transform.position.x - 1, direction);
+                        return;
+                    }
                 }
-                else if (reactivableObjectLayerMask == 1)
+                else if ((reactivableObjectLayerMask & boxLayerMask) > 0)
                 {
-                    explosionRange++;
-                    Explode(explosionRange, direction);
-                    return;
+                    if (direction.z > 0)
+                    {
+                        Explode(raycastHit.transform.position.z - transform.position.z, direction);
+                        return;                                                       
+                    }                                                                 
+                    else if (direction.z < 0)                                         
+                    {                                                                 
+                        Explode(transform.position.z - raycastHit.transform.position.z, direction);
+                        return;                                                       
+                    }                                                                 
+                    else if (direction.x > 0)                                         
+                    {                                                                 
+                        Explode(raycastHit.transform.position.x - transform.position.x, direction);
+                        return;                                                       
+                    }                                                                 
+                    else                                                              
+                    {                                                                 
+                        Explode(transform.position.x - raycastHit.transform.position.x, direction);
+                        return;
+                    }
                 }
-                explosionRange++;
             }
         }
-        Explode(explosionRange, direction);
+        Explode(explosivePower, direction);
     }
 
-    private void Explode(int explosionRange, Vector3 direction)
+    private void Explode(float explosionRange, Vector3 direction)
     {
         if (direction == Vector3.zero)
         {
@@ -110,9 +147,8 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
 
     public void ExplosiveReact()
     {
-        StopAllCoroutines();
+        StopCoroutine(lightTheFuseRoutine);
         bombCollider.enabled = false;
-        StartCoroutine(ExplodeRoutine());
+        readyToExplode = true;
     }
-
 }
