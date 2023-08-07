@@ -30,12 +30,6 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
         curSpeed = stat.Speed;
     }
 
-    private void Update()
-    {
-        if (curSpeed >= 8)
-            return;
-    }
-
     private void FixedUpdate()
     {
         Move();
