@@ -6087,6 +6087,10 @@ PrefabInstance:
       propertyPath: m_SlopeLimit
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3479399804916371979, guid: 10cb60c3349bb8a44916958796dd4d12, type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6234916792152759888, guid: 10cb60c3349bb8a44916958796dd4d12, type: 3}
       propertyPath: m_Radius
       value: 0.4
@@ -11226,7 +11230,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1540d1c5f3d00469cc9a54410bbb35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
 --- !u!114 &622854311
 MonoBehaviour:
   m_ObjectHideFlags: 0
