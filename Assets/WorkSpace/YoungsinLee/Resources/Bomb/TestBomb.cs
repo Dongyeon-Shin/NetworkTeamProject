@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TastBomb : MonoBehaviour
+public class TestBomb : MonoBehaviour
 {
     [SerializeField]
     [Range(0, 10)]

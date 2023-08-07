@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
 {
-    private PlayerStat stat;
+    private TestStat stat;
     private SpeedItem speedItem;
     private Rigidbody rb;
     private PlayerInput playerInput;
@@ -16,7 +16,7 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
 
     private void Awake()
     {
-        stat = GetComponent<PlayerStat>();
+        stat = GetComponent<TestStat>();
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
         if (!photonView.IsMine)

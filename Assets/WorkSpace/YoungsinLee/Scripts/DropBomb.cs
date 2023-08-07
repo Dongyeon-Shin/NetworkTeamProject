@@ -8,7 +8,7 @@ public class DropBomb : MonoBehaviourPun, IEventListener
     public int tastBomb;
 
 
-    private TastBomb bombPrefab;
+    private TestBomb bombPrefab;
     private TestStat stat;
 
     private LayerMask de;
@@ -22,7 +22,7 @@ public class DropBomb : MonoBehaviourPun, IEventListener
         if (!photonView.IsMine)
             Destroy(playerInput);
         stat = GetComponent<TestStat>();
-        bombPrefab = GameManager.Resource.Load<TastBomb>("Bomb/Bomb");
+        bombPrefab = GameManager.Resource.Load<TestBomb>("Bomb/Bomb");
     }
 
     private void OnFire(InputValue value)
@@ -32,7 +32,7 @@ public class DropBomb : MonoBehaviourPun, IEventListener
 
     private void OnEnable()
     {
-        curBomb = tastBomb;
+        curBomb = stat.Bomb;
         GameManager.Event.AddListener(EventType.Explode, this);
     }
 
@@ -40,7 +40,6 @@ public class DropBomb : MonoBehaviourPun, IEventListener
     {
         if (stat.Bomb >= 6)
             return;
-
     }
 
     private Vector3 GroundChack()
@@ -71,6 +70,8 @@ public class DropBomb : MonoBehaviourPun, IEventListener
     {
         if (curBomb == 0)
             return;
+        if(curBomb > stat.Bomb)
+            curBomb = stat.Bomb;
         photonView.RPC("RequestCreateBomb", RpcTarget.MasterClient, transform.position, transform.rotation);
         //GameManager.Resource.Instantiate(bomb, GroundChack(), transform.rotation);
         curBomb--;
@@ -93,7 +94,7 @@ public class DropBomb : MonoBehaviourPun, IEventListener
         float lag = (float)(PhotonNetwork.Time - sentTime);
         position = GroundChack();
         Instantiate(bombPrefab, position, rotation); // 값을 정해서 보내면 더욱 정확한 타이밍을 맞출수있음
-       // bomb.SetPlayer(player);
+        bombPrefab.SetPlayer(player);
         Debug.Log($"{photonView.Owner.NickName}발싸!");
     }
 
