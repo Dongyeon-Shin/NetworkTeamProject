@@ -12,17 +12,19 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     [SerializeField]
     private int explosivePower;
     public int ExplosivePower { set { explosivePower = value; } }
-    private LayerMask unPenetratedLayerMask;
+    private LayerMask unPenetratedObjectsLayerMask;
     private BoxCollider bombCollider;
 
     private void Awake()
     {
         bombCollider = GetComponent<BoxCollider>();
-        unPenetratedLayerMask = LayerMask.GetMask("Box") | LayerMask.GetMask ("Bomb");
+        // TODO: 지금 외벽이 Box 레이어고 상자가 Default 레이어로 바뀌어 있는듯?
+        unPenetratedObjectsLayerMask = LayerMask.GetMask("Box") | LayerMask.GetMask ("Bomb");
     }
 
     private void OnEnable()
     {
+
         bombCollider.enabled = true;
         foreach (Transform t in sparkParticle)
         {
@@ -63,7 +65,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
 
         RaycastHit[] objectsInRange = Physics.RaycastAll(transform.position, direction, explosivePower);
         int explosionRange = 0;
-        if (objectsInRange == null)
+        if (objectsInRange.Length == 0)
         {
             Explode(explosivePower, direction);
             return;
@@ -75,9 +77,16 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
             {
                 LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
                 reactivableObject.ExplosiveReact();
-                if ((reactivableObjectLayerMask & unPenetratedLayerMask) > 0)
+                if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
                 {
-                    break;
+                    Explode(explosionRange, direction);
+                    return;
+                }
+                else if (reactivableObjectLayerMask == 1)
+                {
+                    explosionRange++;
+                    Explode(explosionRange, direction);
+                    return;
                 }
                 explosionRange++;
             }
@@ -93,7 +102,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
             return;
         }
         Vector3 position = transform.position;
-        for (int i = 0; i <= explosionRange; i++)
+        for (int i = 0; i < explosionRange; i++)
         {
             position += direction;
             GameManager.Resource.Instantiate(Resources.Load("Particle/ExplosionParticle"), position, transform.rotation);
@@ -106,4 +115,5 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         bombCollider.enabled = false;
         StartCoroutine(ExplodeRoutine());
     }
+
 }
