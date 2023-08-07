@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8132562741494124977}
   - component: {fileID: 7954055340849749230}
   - component: {fileID: 6711552508328408441}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SpeedItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,5 +108,5 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.28553954, y: 0.52763426, z: 0.037928898}
-  m_Center: {x: -0.020492632, y: 0.26381713, z: -0.000000013969838}
+  m_Size: {x: 0.5, y: 0.5, z: 0.5}
+  m_Center: {x: 0, y: 0.25, z: 0}

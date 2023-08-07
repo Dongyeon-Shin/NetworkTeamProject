@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7320785488392181335}
   - component: {fileID: 8804427382012338407}
   - component: {fileID: -6233359814820346600}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BombItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,5 +108,5 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.30489373, y: 0.4659964, z: 0.30489373}
-  m_Center: {x: 0.00026429445, y: 0.2329982, z: 0.000000037252903}
+  m_Size: {x: 0.5, y: 0.5, z: 0.5}
+  m_Center: {x: 0, y: 0.25, z: 0}
