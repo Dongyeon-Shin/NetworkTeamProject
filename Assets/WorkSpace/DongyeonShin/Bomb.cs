@@ -48,7 +48,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         yield return StartCoroutine(ExplodeRoutine());
     }
 
-    IEnumerator ExplodeRoutine()
+    public IEnumerator ExplodeRoutine()
     {
         Explode(0, Vector3.zero);
         CheckObjectsInExplosionRange(Vector3.forward);
