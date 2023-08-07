@@ -5,13 +5,24 @@ using UnityEngine;
 
 public class PlayerStat : MonoBehaviour
 {
+    public TMP_Text[] texts = new TMP_Text[3];
     public TMP_Text power_Text;
     public TMP_Text speed_Text;
     public TMP_Text bomb_Text;
 
-    // 테스트용
+    private void Start()
+    {
+        texts = GameScene.gameInterFace.GetComponentsInChildren<TMP_Text>();
+        power_Text = texts[0];
+        speed_Text = texts[1];
+        bomb_Text = texts[2];
+    }
+
+    [SerializeField]
     private int power = 1;
+    [SerializeField]
     private int bomb = 1;
+    [SerializeField]
     private int speed = 1;
 
     public int Power { get { return power; } set {  power += value; } }
