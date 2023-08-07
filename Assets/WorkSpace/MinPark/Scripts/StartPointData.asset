@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec2ed2b5d1bcefb4ca690d0e10336214, type: 3}
+  m_Name: StartPointData
+  m_EditorClassIdentifier: 
+  startPoints:
+  - maxPlayer: 4
+    position:
+    - {x: -3.67, y: 0, z: 4.68}
+    - {x: 8.56, y: 0, z: 4.46}
+    - {x: 8.56, y: 0, z: -5.46}
+    - {x: -3.6, y: 0, z: -5.46}
+    map: {fileID: 7709033139920916050, guid: 285f42b3cbd2756489c3a61991ce4c6c, type: 3}
