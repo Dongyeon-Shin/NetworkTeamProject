@@ -818,7 +818,7 @@ GameObject:
   - component: {fileID: 7158845242722880651}
   - component: {fileID: 4522578644206030065}
   m_Layer: 3
-  m_Name: Player_Reindeer
+  m_Name: Player_Reindeer1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
