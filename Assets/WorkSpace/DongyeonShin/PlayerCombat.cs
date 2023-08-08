@@ -1,13 +1,17 @@
+using Photon.Pun;
+using Photon.Pun.UtilityScripts;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerCombat : MonoBehaviour, IExplosiveReactivable
+public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 {
     private PlayerStat stat;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
+    private bool isAlive;
 
     private void Awake()
     {
@@ -16,20 +20,28 @@ public class PlayerCombat : MonoBehaviour, IExplosiveReactivable
 
     private void OnFire(InputValue value)
     {
-        if (stat.Bomb > plantingBombs.Count)
+        if (isAlive && stat.Bomb > plantingBombs.Count)
         {
-            PlantABomb();
+            photonView.RPC("PlantABomb", RpcTarget.AllViaServer, CheckStandingBlockPosition(), stat.Power, stat.PlayerNumber);
         }
     }
 
-    private void PlantABomb()
+    [PunRPC]
+    private void PlantABomb(Vector3 position, int explosivePower, int playerNumber)
     {
-        plantingBombs.Push(GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), CheckStandingBlockPosition(), transform.rotation).GetComponent<Bomb>());
-        plantingBombs.Peek().ExplosivePower = stat.Power;
-        StartCoroutine(RetrieveBombRoutine(plantingBombs.Peek()));
+        Bomb plantedBomb = GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation).GetComponent<Bomb>();
+        plantedBomb.ExplosivePower = explosivePower;
+        if (playerNumber == stat.PlayerNumber)
+        {
+            plantingBombs.Push(plantedBomb);
+            StartCoroutine(RetrieveBombRoutine(plantedBomb));
+        }
+        else
+        {
+            StartCoroutine (plantedBomb.ExplodeRoutine());
+        }
     }
 
-    // TODO: 실험적인 코드 테스트 필요
     IEnumerator RetrieveBombRoutine(Bomb bomb)
     {
         yield return StartCoroutine (bomb.ExplodeRoutine());
@@ -46,6 +58,7 @@ public class PlayerCombat : MonoBehaviour, IExplosiveReactivable
     public void ExplosiveReact()
     {
         //TODO: 플레이어 피격시 반응
+        stat.IsAlive = false;
     }
 
 }

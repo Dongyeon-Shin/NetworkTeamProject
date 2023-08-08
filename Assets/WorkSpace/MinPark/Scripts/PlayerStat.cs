@@ -1,14 +1,20 @@
+using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class PlayerStat : MonoBehaviour
+public class PlayerStat : MonoBehaviourPunCallbacks
 {
     public TMP_Text[] texts = new TMP_Text[3];
     public TMP_Text power_Text;
     public TMP_Text speed_Text;
     public TMP_Text bomb_Text;
+    private bool isAlive;
+    public bool IsAlive { get { return isAlive; } set { isAlive = value; } }
+    private int playerNumber;
+    public int PlayerNumber { get { return playerNumber; } }
 
     private void Start()
     {
@@ -16,6 +22,7 @@ public class PlayerStat : MonoBehaviour
         power_Text = texts[0];
         speed_Text = texts[1];
         bomb_Text = texts[2];
+        StartCoroutine(AllocatePlayerNumberRoutine());
     }
 
     [SerializeField]
@@ -34,5 +41,17 @@ public class PlayerStat : MonoBehaviour
         power_Text.text = $"{power-1}";
         speed_Text.text = $"{speed - 1}";
         bomb_Text.text = $"{bomb - 1}";
+    }
+
+    public override void OnJoinedRoom()
+    {
+        base.OnJoinedRoom();
+        StartCoroutine(AllocatePlayerNumberRoutine());
+    }  
+
+    private IEnumerator AllocatePlayerNumberRoutine()
+    {
+        yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length == 0);
+        playerNumber =  PhotonNetwork.LocalPlayer.GetPlayerNumber();
     }
 }
