@@ -12,7 +12,7 @@ public class PlayerStat : MonoBehaviour
 
     private void Start()
     {
-        texts = GameScene.gameInterFace.GetComponentsInChildren<TMP_Text>();
+        //texts = GameScene.gameInterFace.GetComponentsInChildren<TMP_Text>();
         power_Text = texts[0];
         speed_Text = texts[1];
         bomb_Text = texts[2];
@@ -31,8 +31,8 @@ public class PlayerStat : MonoBehaviour
 
     public void ItemInterfaceSet()
     {
-        power_Text.text = $"{power-1}";
-        speed_Text.text = $"{speed - 1}";
-        bomb_Text.text = $"{bomb - 1}";
+        //power_Text.text = $"{power-1}";
+        //speed_Text.text = $"{speed - 1}";
+        //bomb_Text.text = $"{bomb - 1}";
     }
 }
