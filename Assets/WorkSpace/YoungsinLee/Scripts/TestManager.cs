@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TeatManager : MonoBehaviourPunCallbacks
+public class TestManager : MonoBehaviourPunCallbacks
 {
     private void Start()
     {
@@ -38,6 +38,20 @@ public class TeatManager : MonoBehaviourPunCallbacks
         Vector3 position = new Vector3(-3, 0.0f, 4);
         Quaternion rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
-        PhotonNetwork.Instantiate("Player/Player", position, rotation);
+        PhotonNetwork.Instantiate("Player/Player_Reindeer", position, rotation);
     }
+    public override void OnLeftRoom()
+    {
+        Debug.Log("너 나가진거야");
+        PhotonNetwork.LoadLevel("LobbyScene");
+    }
+
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        Debug.Log($"Disconnected : {cause}");
+        PhotonNetwork.LoadLevel("LobbyScene");
+    }
+    
+
 }
