@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerMove : MonoBehaviourPun
 {
-    private TestStat stat;
+    private PlayerStat stat;
     private SpeedItem speedItem;
     private Rigidbody rb;
     private PlayerInput playerInput;
@@ -17,7 +17,7 @@ public class PlayerMove : MonoBehaviourPun
 
     private void Awake()
     {
-        stat = GetComponent<TestStat>();
+        stat = GetComponent<PlayerStat>();
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
