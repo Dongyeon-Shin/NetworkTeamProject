@@ -1,9 +1,12 @@
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 public class PlayerMove : MonoBehaviourPun
 {
+    [SerializeField] UnityEvent chat;
+    [SerializeField] UnityEvent set;
     private PlayerStat stat;
     private SpeedItem speedItem;
     private Rigidbody rb;
@@ -13,11 +16,6 @@ public class PlayerMove : MonoBehaviourPun
     private Vector3 moveDir;
 
     private float curSpeed;
-
-    [Range(0.01f, 0.5f), Tooltip("전방 감지 거리")]
-    public float forwardCheckDistance = 0.1f;
-
-
     private void Awake()
     {
         stat = GetComponent<PlayerStat>();
@@ -54,33 +52,40 @@ public class PlayerMove : MonoBehaviourPun
 
     public void OnSetting(InputValue value)
     {
-        // GameManager.UI.ShowInGameUI<InGameUI>("");   // 이후 추가
+        // setting ui 이벤트 관련 ui
+        set?.Invoke();
     }
 
-    public void OnChatting()
+    public void OnChatting(InputValue value)
     {
-        // 채팅 관련 함수
+        // ingame 채팅 ui 관련 이벤트
+        chat?.Invoke();
     }
 
     public void OnMove(InputValue value)
     {
         moveDir.x = value.Get<Vector2>().x;
         moveDir.z = value.Get<Vector2>().y;
-
-        if (moveDir.x > 0 || moveDir.z > 0 || moveDir.x < 0 || moveDir.z < 0)
-            animator.SetBool("Move", true);
-        else if (moveDir.x == 0 && moveDir.z == 0)
-            animator.SetBool("Move", false);
-        else
-            animator.SetBool("Move", false);
-
-        // 대각선 막기
-        if (moveDir.z == 0)
+        if (!stat.IsAlive)
             return;
-        else if (moveDir.z > 0 && moveDir.x > 0 || moveDir.x < 0)
-            moveDir.x = 0;
-        else if (moveDir.z < 0 && moveDir.x > 0 || moveDir.x < 0)
-            moveDir.x = 0;
+
+        if(stat.IsAlive)
+        {
+            if (moveDir.x > 0 || moveDir.z > 0 || moveDir.x < 0 || moveDir.z < 0)
+                animator.SetBool("Move", true);
+            else if (moveDir.x == 0 && moveDir.z == 0)
+                animator.SetBool("Move", false);
+            else
+                animator.SetBool("Move", false);
+
+            // 대각선 막기
+            if (moveDir.z == 0)
+                return;
+            else if (moveDir.z > 0 && moveDir.x > 0 || moveDir.x < 0)
+                moveDir.x = 0;
+            else if (moveDir.z < 0 && moveDir.x > 0 || moveDir.x < 0)
+                moveDir.x = 0;
+        }
     }
 
 

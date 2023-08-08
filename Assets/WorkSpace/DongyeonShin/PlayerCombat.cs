@@ -16,10 +16,13 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     private void Awake()
     {
         stat = GetComponent<PlayerStat>();
+        animator = GetComponent<Animator>();    
     }
 
     private void OnFire(InputValue value)
     {
+        if (!stat.IsAlive)
+            return;
         if (stat.IsAlive && stat.Bomb > plantingBombs.Count)
         {
             Debug.Log("폭탄!");
@@ -59,13 +62,15 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     public void ExplosiveReact()
     {
         //TODO: 플레이어 피격시 반응
-        animator.SetBool("Die", true);
-        stat.IsAlive = false;
+        StartCoroutine(DyingRoutine());
     }
 
     IEnumerator DyingRoutine()
     {
+        stat.IsAlive = false;
+        animator.SetBool("Die", true);
         yield return new WaitForSeconds(2f);
+        PhotonNetwork.Destroy(photonView);
     }
 
 }

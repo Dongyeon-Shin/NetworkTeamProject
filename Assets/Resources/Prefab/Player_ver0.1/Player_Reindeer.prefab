@@ -932,7 +932,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1540d1c5f3d00469cc9a54410bbb35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardCheckDistance: 0.1
+  chat:
+    m_PersistentCalls:
+      m_Calls: []
+  set:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &3376535037405433556
 MonoBehaviour:
   m_ObjectHideFlags: 0
