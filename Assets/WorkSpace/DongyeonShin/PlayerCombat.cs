@@ -1,13 +1,15 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerCombat : MonoBehaviour, IExplosiveReactivable
+public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 {
     private PlayerStat stat;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
+    private bool isAlive;
 
     private void Awake()
     {
@@ -18,10 +20,12 @@ public class PlayerCombat : MonoBehaviour, IExplosiveReactivable
     {
         if (stat.Bomb > plantingBombs.Count)
         {
-            PlantABomb();
+            photonView.RPC("PlantABomb", RpcTarget.AllViaServer);
+            //photonView.RPC("RequestPlantABomb", RpcTarget.MasterClient);
         }
     }
 
+    [PunRPC]
     private void PlantABomb()
     {
         plantingBombs.Push(GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), CheckStandingBlockPosition(), transform.rotation).GetComponent<Bomb>());
@@ -29,7 +33,23 @@ public class PlayerCombat : MonoBehaviour, IExplosiveReactivable
         StartCoroutine(RetrieveBombRoutine(plantingBombs.Peek()));
     }
 
-    // TODO: 실험적인 코드 테스트 필요
+    //[PunRPC]
+    //private void RequestPlantABomb()
+    //{
+    //    plantingBombs.Push(GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), CheckStandingBlockPosition(), transform.rotation).GetComponent<Bomb>());
+    //    plantingBombs.Peek().ExplosivePower = stat.Power;
+    //    StartCoroutine(RetrieveBombRoutine(plantingBombs.Peek()));
+    //    밑의 코드를 바깥에 
+    //    if (isLocalPlayer)
+    //    photonView.RPC("PlantABomb", RpcTarget.AllViaServer, CheckStandingBlockPosition(), stat.Power);
+    //}
+
+    //[PunRPC]
+    //private void ResultPlantABomb(Vector3 position, int explosivePower)
+    //{
+    //    GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, Quaternion.identity);
+    //}
+
     IEnumerator RetrieveBombRoutine(Bomb bomb)
     {
         yield return StartCoroutine (bomb.ExplodeRoutine());
