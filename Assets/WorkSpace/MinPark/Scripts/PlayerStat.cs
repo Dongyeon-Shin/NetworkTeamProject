@@ -11,7 +11,7 @@ public class PlayerStat : MonoBehaviourPunCallbacks
     public TMP_Text power_Text;
     public TMP_Text speed_Text;
     public TMP_Text bomb_Text;
-    private bool isAlive;
+    private bool isAlive = true;
     public bool IsAlive { get { return isAlive; } set { isAlive = value; } }
     private int playerNumber;
     public int PlayerNumber { get { return playerNumber; } }
