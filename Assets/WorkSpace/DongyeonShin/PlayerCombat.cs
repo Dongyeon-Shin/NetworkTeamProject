@@ -1,4 +1,6 @@
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -18,37 +20,27 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 
     private void OnFire(InputValue value)
     {
-        if (stat.Bomb > plantingBombs.Count)
+        if (isAlive && stat.Bomb > plantingBombs.Count)
         {
-            photonView.RPC("PlantABomb", RpcTarget.AllViaServer);
-            //photonView.RPC("RequestPlantABomb", RpcTarget.MasterClient);
+            photonView.RPC("PlantABomb", RpcTarget.AllViaServer, CheckStandingBlockPosition(), stat.Power, stat.PlayerNumber);
         }
     }
 
     [PunRPC]
-    private void PlantABomb()
+    private void PlantABomb(Vector3 position, int explosivePower, int playerNumber)
     {
-        plantingBombs.Push(GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), CheckStandingBlockPosition(), transform.rotation).GetComponent<Bomb>());
-        plantingBombs.Peek().ExplosivePower = stat.Power;
-        StartCoroutine(RetrieveBombRoutine(plantingBombs.Peek()));
+        Bomb plantedBomb = GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation).GetComponent<Bomb>();
+        plantedBomb.ExplosivePower = explosivePower;
+        if (playerNumber == stat.PlayerNumber)
+        {
+            plantingBombs.Push(plantedBomb);
+            StartCoroutine(RetrieveBombRoutine(plantedBomb));
+        }
+        else
+        {
+            StartCoroutine (plantedBomb.ExplodeRoutine());
+        }
     }
-
-    //[PunRPC]
-    //private void RequestPlantABomb()
-    //{
-    //    plantingBombs.Push(GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), CheckStandingBlockPosition(), transform.rotation).GetComponent<Bomb>());
-    //    plantingBombs.Peek().ExplosivePower = stat.Power;
-    //    StartCoroutine(RetrieveBombRoutine(plantingBombs.Peek()));
-    //    밑의 코드를 바깥에 
-    //    if (isLocalPlayer)
-    //    photonView.RPC("PlantABomb", RpcTarget.AllViaServer, CheckStandingBlockPosition(), stat.Power);
-    //}
-
-    //[PunRPC]
-    //private void ResultPlantABomb(Vector3 position, int explosivePower)
-    //{
-    //    GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, Quaternion.identity);
-    //}
 
     IEnumerator RetrieveBombRoutine(Bomb bomb)
     {
@@ -66,6 +58,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     public void ExplosiveReact()
     {
         //TODO: 플레이어 피격시 반응
+        stat.IsAlive = false;
     }
 
 }
