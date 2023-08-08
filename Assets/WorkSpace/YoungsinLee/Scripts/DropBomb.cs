@@ -3,7 +3,7 @@ using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class DropBomb : MonoBehaviourPun, IEventListener
+public class DropBomb : MonoBehaviourPun, IEventListener, IExplosiveReactivable
 {
     public int tastBomb;
 
@@ -109,6 +109,15 @@ public class DropBomb : MonoBehaviourPun, IEventListener
         }
     }
 
-    // 폭탄 관련 아이템 함수들 
+    public void ExplosiveReact()
+    {
+        // 죽는 애니메이션 실행
+        
+    }
 
+    public void OnExitButtom()
+    {
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.JoinLobby();
+    }
 }

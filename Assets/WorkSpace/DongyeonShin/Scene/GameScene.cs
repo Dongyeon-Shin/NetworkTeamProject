@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,9 +24,21 @@ public class GameScene : BaseScene
         GameManager.Resource.Instantiate(map);
         GameObject player = GameManager.Resource.Load<GameObject>("Map/Player");
         GameManager.Resource.Instantiate(player);
+        // 플레이러는 sceneobject로 생성할것
+        //PhotonNetwork.InstantiateSceneObject("Player");
         progress = 0.7f;
         yield return new WaitForSecondsRealtime(2f);
 
+        yield return null;
+    }
+
+    IEnumerator GameStartRoutine()
+    {
+        yield return null;
+    }
+
+    IEnumerator DebugGameStartRoutine()
+    {
         yield return null;
     }
 }

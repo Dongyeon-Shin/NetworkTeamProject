@@ -5,10 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/WorkSpace/MinPark/TestScene.unity
-    guid: 7d858f6fdff7caf4f9f01a3a21d94b9c
   - enabled: 1
-    path: Assets/Scenes/GameScene.unity
-    guid: 3c07e5a764a92b64caa27f8f1f992cff
+    path: Assets/WorkSpace/YoungsinLee/Scenes/DebugScene.unity
+    guid: 29c4eaba61f18cd40926365eef12257d
   m_configObjects: {}
