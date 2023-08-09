@@ -6,7 +6,7 @@ public class Box : MonoBehaviour, IExplosiveReactivable
 {
     public GameObject item;
 
-    public void ExplosiveReact()
+    public void ExplosiveReact(Bomb bomb)
     {
         Hit();
     }

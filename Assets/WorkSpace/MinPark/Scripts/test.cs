@@ -6,6 +6,6 @@ public class test : MonoBehaviour
 {
     void Start()
     {
-        GameManager.Scene.LoadScene(1, 0);
+        Debug.Log("GameManager.Scene.LoadScene(1, 0);");
     }
 }

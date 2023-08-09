@@ -18,7 +18,7 @@ public class PlayerStat : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        texts = GameScene.gameInterFace.GetComponentsInChildren<TMP_Text>();
+        Debug.Log("texts = GameScene.gameInterFace.GetComponentsInChildren<TMP_Text>();");
         power_Text = texts[0];
         speed_Text = texts[1];
         bomb_Text = texts[2];
