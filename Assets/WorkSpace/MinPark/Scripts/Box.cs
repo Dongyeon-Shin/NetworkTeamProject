@@ -1,21 +1,24 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Box : MonoBehaviour, IExplosiveReactivable
+public class Box : MonoBehaviourPun, IExplosiveReactivable
 {
-    public GameObject item;
+    public ItemSetting item;
+    public int index;
 
     public void ExplosiveReact(Bomb bomb)
     {
-        Hit();
+        Hit(bomb);
     }
 
-    private void Hit()
+    private void Hit(Bomb bomb)
     {
+        item = GetComponentInParent<ItemSetting>();
         // item이 비어있지 않으면 아이템 생성
-        if(item != null)
-            Instantiate(item, transform.position, Quaternion.Euler(0, 0, 0));
-        Destroy(gameObject);
+        if (item.check[index] == 1)
+            item.BoxHit(index, transform.position, bomb);
+        PhotonNetwork.Destroy(gameObject);
     }
 }

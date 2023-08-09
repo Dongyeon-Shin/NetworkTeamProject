@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,6 +41,13 @@ public class GameScene : BaseScene
         PhotonNetwork.LocalPlayer.NickName = $"DebugPlayer {Random.Range(1000, 10000)}";
         PhotonNetwork.ConnectUsingSettings();
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
+        StartPointData startPointData = GameManager.Resource.Load<StartPointData>("Map/StartPointData");
+        Instantiate(startPointData.StartPoints[0].map);
+        Debug.Log(PhotonNetwork.PlayerList.Length);
+        yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
+        Debug.Log(PhotonNetwork.PlayerList.Length);
+        Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
+        PhotonNetwork.InstantiateRoomObject("Prefab/Player_ver0.1/Player_Reindeer", startPointData.StartPoints[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0)).GetComponent<PlayerStat>().InitialSetup(this);
     }
 
     public override void OnConnectedToMaster()
