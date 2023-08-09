@@ -14,13 +14,15 @@ public class TestUI_Chat : MonoBehaviourPunCallbacks
 {
     [SerializeField] RectTransform content;
     [SerializeField] TMP_Text chatText;
-    [SerializeField] TMP_InputField input;
-    private PlayerMove player;
+    [SerializeField] PlayerMove player;
+
+    private TMP_InputField inputField;
 
     private void Awake()
     {
-        player = GameManager.Resource.Load<PlayerMove>("Player/Player_Reindeer2");
+        inputField = GetComponent<TMP_InputField>();
     }
+
     private void Start()
     {
         PhotonNetwork.IsMessageQueueRunning = true;
@@ -28,11 +30,11 @@ public class TestUI_Chat : MonoBehaviourPunCallbacks
 
     public void SendChat()
     {
-        if (input.text.Equals(""))
+        if (inputField.text.Equals(""))
             return;
-        string strMessage =" : " + input.text;
+        string strMessage = " : " + inputField.text;
         photonView.RPC("ReceiveMsg", RpcTarget.All, strMessage);
-        input.text = "";
+        inputField.text = "";
     }
 
     [PunRPC]
@@ -46,26 +48,5 @@ public class TestUI_Chat : MonoBehaviourPunCallbacks
         TMP_Text text = Instantiate(chatText);
         text.text = strMessage;
         text.transform.SetParent(content);
-    }
-
-    public void OnChatting(InputValue value)
-    {
-        if(player.IsChatting == false)
-        {
-            player.IsChatting = true;
-            OnActive();
-        }
-        else if (player.IsChatting == true)
-        {
-            SendChat();
-            player.IsChatting = false;
-            input.gameObject.SetActive(false);
-        }
-
-    }
-    public void OnActive()
-    {
-        input.gameObject.SetActive(true);
-        input.Select();
     }
 }

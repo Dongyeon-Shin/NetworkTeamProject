@@ -3,21 +3,24 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using Photon.Chat.Demo;
+using TMPro;
+using UnityEngine.Windows;
+using Photon.Realtime;
+using UnityEngine.UI;
 
 public class PlayerMove : MonoBehaviourPun
 {
-    [SerializeField] TestUI_Chat chatUI;
+    [SerializeField] TMP_InputField inputField;     // 
     private PlayerStat stat;
-    private SpeedItem speedItem;
     private Rigidbody rb;
     private PlayerInput playerInput;
     private Animator animator;
-
     private Vector3 moveDir;
 
     private float curSpeed;
     private bool isChatting = false;
     public bool IsChatting { get { return isChatting; } set { isChatting = value; } }
+    public TMP_InputField InputField { get { return inputField; } set { inputField = value; } } // string 으로 보내도록 수정필요
 
 
     private void Awake()
@@ -90,6 +93,21 @@ public class PlayerMove : MonoBehaviourPun
         }
     }
 
+    private void OnChatting(InputValue value)
+    {
+        if (IsChatting == true)
+        {
+            inputField.text = value.ToString(); 
+            inputField.gameObject.SetActive(false);
+            isChatting = false;
+        }
+        else
+        {
+            inputField.gameObject.SetActive(true);
+            inputField.Select();
+            isChatting = true;
+        }
+    }
 
     private void OnTriggerStay(Collider other)
     {

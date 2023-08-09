@@ -39,7 +39,6 @@ public class TestManager : MonoBehaviourPunCallbacks
         Quaternion rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
         PhotonNetwork.Instantiate("Player/Player_Reindeer2", position, rotation);
-        PhotonNetwork.Instantiate("UI/ChatUI", new Vector3(0, 0, 0), Quaternion.identity);
     }
     public override void OnLeftRoom()
     {
