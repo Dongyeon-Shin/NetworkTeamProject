@@ -19,7 +19,7 @@ public static class TestCustomProperty
 
     public static void SetLoad(this Player player, bool load)
     {
-        PhotonHashtable property = player.CustomProperties;
+        PhotonHashtable property = new PhotonHashtable();
         property["Load"] = load;
         player.SetCustomProperties(property);
     }

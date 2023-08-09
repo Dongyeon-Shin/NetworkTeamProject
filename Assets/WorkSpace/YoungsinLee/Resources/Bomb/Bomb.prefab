@@ -60,12 +60,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60146177f889eb5479f6aed8404998de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fuseLength: 2
+  fuseLength: 1
   sparkParticle:
-  - {fileID: 164551610823494865}
-  - {fileID: 7684857762455196420}
-  - {fileID: 59779266804451359}
   - {fileID: 3926605435957094317}
+  - {fileID: 59779266804451359}
+  - {fileID: 7684857762455196420}
+  - {fileID: 164551610823494865}
   explosivePower: 1
 --- !u!1 &5995187271192685133
 GameObject:

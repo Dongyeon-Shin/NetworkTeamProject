@@ -10,6 +10,7 @@ using UnityEngine.InputSystem;
 public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 {
     private PlayerStat stat;
+    private Animator animator;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
     private GameScene gameScene;
 
@@ -22,6 +23,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     {
         if (stat.IsAlive && stat.Bomb > plantingBombs.Count)
         {
+            Debug.Log("폭탄!");
             photonView.RPC("PlantABomb", RpcTarget.AllViaServer, CheckStandingBlockPosition(), stat.Power, stat.PlayerNumber);
         }
     }
@@ -62,6 +64,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     public void ExplosiveReact(Bomb bomb)
     {
         //TODO: 플레이어 피격시 반응
+        animator.SetBool("Die", true);
         stat.IsAlive = false;
     }
 
@@ -70,4 +73,9 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
         this.gameScene = gameScene;
         stat.IsAlive = true;
     }
+    IEnumerator DyingRoutine()
+    {
+        yield return new WaitForSeconds(2f);
+    }
+
 }
