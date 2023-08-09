@@ -17,13 +17,13 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     private void Awake()
     {
         stat = GetComponent<PlayerStat>();
+        animator = GetComponent<Animator>();
     }
 
     private void OnFire(InputValue value)
     {
         if (stat.IsAlive && stat.Bomb > plantingBombs.Count)
         {
-            Debug.Log("ÆøÅº!");
             photonView.RPC("PlantABomb", RpcTarget.AllViaServer, CheckStandingBlockPosition(), stat.Power, stat.PlayerNumber);
         }
     }
