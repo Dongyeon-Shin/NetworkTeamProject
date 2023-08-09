@@ -15,8 +15,12 @@ public class TestUI_Chat : MonoBehaviourPunCallbacks
     [SerializeField] RectTransform content;
     [SerializeField] TMP_Text chatText;
     [SerializeField] TMP_InputField input;
-    [SerializeField] PlayerMove player;
+    private PlayerMove player;
 
+    private void Awake()
+    {
+        player = GameManager.Resource.Load<PlayerMove>("Player/Player_Reindeer2");
+    }
     private void Start()
     {
         PhotonNetwork.IsMessageQueueRunning = true;
