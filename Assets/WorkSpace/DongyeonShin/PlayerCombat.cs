@@ -11,7 +11,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 {
     private PlayerStat stat;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
-    private bool isAlive;
+    private GameScene gameScene;
 
     private void Awake()
     {
@@ -20,7 +20,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 
     private void OnFire(InputValue value)
     {
-        if (isAlive && stat.Bomb > plantingBombs.Count)
+        if (stat.IsAlive && stat.Bomb > plantingBombs.Count)
         {
             photonView.RPC("PlantABomb", RpcTarget.AllViaServer, CheckStandingBlockPosition(), stat.Power, stat.PlayerNumber);
         }
@@ -30,6 +30,10 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     private void PlantABomb(Vector3 position, int explosivePower, int playerNumber)
     {
         Bomb plantedBomb = GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation).GetComponent<Bomb>();
+        if (PhotonNetwork.IsMasterClient && plantedBomb.GameScene == null)
+        {
+            plantedBomb.GameScene = gameScene;
+        }
         plantedBomb.ExplosivePower = explosivePower;
         if (playerNumber == stat.PlayerNumber)
         {
@@ -55,10 +59,15 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
         return new Vector3(hitInfo.transform.position.x, transform.position.y, hitInfo.transform.position.z);
     }
 
-    public void ExplosiveReact()
+    public void ExplosiveReact(Bomb bomb)
     {
         //TODO: 플레이어 피격시 반응
         stat.IsAlive = false;
     }
 
+    public void InitialSetup(GameScene gameScene)
+    {
+        this.gameScene = gameScene;
+        stat.IsAlive = true;
+    }
 }

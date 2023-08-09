@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IExplosiveReactivable
 {
-    public void ExplosiveReact();
+    public void ExplosiveReact(Bomb bomb);
 }

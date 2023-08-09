@@ -90,7 +90,7 @@ public class PlayerMove : MonoBehaviourPun, IExplosiveReactivable
         if (other.gameObject.layer == LayerMask.NameToLayer("Bomb"))
             other.isTrigger = false;
     }
-    public void ExplosiveReact()
+    public void ExplosiveReact(Bomb bomb)
     {
         // 죽는 애니메이션 실행
         PhotonNetwork.Destroy(photonView);

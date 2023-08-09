@@ -75,7 +75,7 @@ public class TestBomb : MonoBehaviour
             if (reactivableObject != null)
             {
                 LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
-                reactivableObject.ExplosiveReact();
+                Debug.Log("reactivableObject.ExplosiveReact();");
                 if ((reactivableObjectLayerMask & unPenetratedLayerMask) > 0)
                 {
                     break;

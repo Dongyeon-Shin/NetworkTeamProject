@@ -19966,6 +19966,7 @@ MonoBehaviour:
   - {fileID: 1113351785514670152}
   - {fileID: 7466379078484346781}
   explosivePower: 1
+  explosionEffectContinuanceTime: 2.5
 --- !u!1001 &7108916046651584769
 PrefabInstance:
   m_ObjectHideFlags: 0
