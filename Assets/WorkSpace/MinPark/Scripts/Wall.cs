@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Wall : MonoBehaviour, IExplosiveReactivable
 {
-    public void ExplosiveReact()
+    public void ExplosiveReact(Bomb bomb)
     {
         
     }

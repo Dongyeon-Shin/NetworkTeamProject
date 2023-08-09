@@ -12,20 +12,18 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     private PlayerStat stat;
     private Animator animator;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
+    private GameScene gameScene;
 
     private void Awake()
     {
         stat = GetComponent<PlayerStat>();
-        animator = GetComponent<Animator>();    
+        animator = GetComponent<Animator>();
     }
 
     private void OnFire(InputValue value)
     {
-        if (!stat.IsAlive)
-            return;
         if (stat.IsAlive && stat.Bomb > plantingBombs.Count)
         {
-            Debug.Log("폭탄!");
             photonView.RPC("PlantABomb", RpcTarget.AllViaServer, CheckStandingBlockPosition(), stat.Power, stat.PlayerNumber);
         }
     }
@@ -34,6 +32,10 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     private void PlantABomb(Vector3 position, int explosivePower, int playerNumber)
     {
         Bomb plantedBomb = GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation).GetComponent<Bomb>();
+        if (PhotonNetwork.IsMasterClient && plantedBomb.GameScene == null)
+        {
+            plantedBomb.GameScene = gameScene;
+        }
         plantedBomb.ExplosivePower = explosivePower;
         if (playerNumber == stat.PlayerNumber)
         {
@@ -59,7 +61,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
         return new Vector3(hitInfo.transform.position.x, transform.position.y, hitInfo.transform.position.z);
     }
 
-    public void ExplosiveReact()
+    public void ExplosiveReact(Bomb bomb)
     {
         //TODO: 플레이어 피격시 반응
         StartCoroutine(DyingRoutine());
