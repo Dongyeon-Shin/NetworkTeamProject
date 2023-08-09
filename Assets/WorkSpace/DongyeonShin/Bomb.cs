@@ -14,20 +14,23 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     private int explosivePower;
     [SerializeField]
     private float explosionEffectContinuanceTime;
+    private GameScene gameScene;
+    public GameScene GameScene { get { return gameScene; } set { gameScene = value; } }
     public int ExplosivePower { set { explosivePower = value; } }
     private LayerMask unPenetratedObjectsLayerMask;
     private LayerMask boxLayerMask;
     private BoxCollider bombCollider;
     private bool readyToExplode;
     private Coroutine lightTheFuseRoutine;
-    private GameScene gameScene;
-    public GameScene GameScene { get { return gameScene; } set { gameScene = value; } }
+    private MeshRenderer bombRenderer;
+
 
     private void Awake()
     {
         bombCollider = GetComponent<BoxCollider>();
         unPenetratedObjectsLayerMask = 1 | LayerMask.GetMask ("Bomb");
         boxLayerMask = LayerMask.GetMask("Box");
+        bombRenderer = GetComponentInChildren<MeshRenderer>();
     }
 
     private void OnEnable()
@@ -65,7 +68,12 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         CheckObjectsInExplosionRange(Vector3.right);
         CheckObjectsInExplosionRange(Vector3.left);
         yield return null;
-        GameManager.Resource.Destroy(gameObject);
+        sparkParticle[0].gameObject.SetActive(false);
+        sparkParticle[1].gameObject.SetActive(false);
+        sparkParticle[2].gameObject.SetActive(false);
+        sparkParticle[3].gameObject.SetActive(false);
+        bombRenderer.enabled = false;
+        GameManager.Resource.Destroy(gameObject, explosionEffectContinuanceTime);
     }
 
     private void CheckObjectsInExplosionRange(Vector3 direction)
@@ -86,7 +94,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
                 if (gameScene != null)
                 {
                     gameScene.RequestExplosiveReaction(reactivableObject, this);
-                }   
+                }
                 if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
                 {
                     if (direction.z > 0)
