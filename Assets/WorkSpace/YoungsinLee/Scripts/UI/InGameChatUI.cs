@@ -1,16 +1,10 @@
 using Photon.Pun;
-using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
-using Photon.Pun.Demo.PunBasics;
-using UnityEngine.InputSystem;
-using Photon.Chat.Demo;
+using UnityEngine;
 
-public class TestUI_Chat : MonoBehaviourPunCallbacks
+public class InGameChatUI : MonoBehaviourPunCallbacks
 {
     [SerializeField] RectTransform content;
     [SerializeField] TMP_Text chatText;
@@ -21,14 +15,22 @@ public class TestUI_Chat : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.IsMessageQueueRunning = true;
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return) && input.isFocused == false)
+        {
+            SendChat();
+        }
+    }
 
     public void SendChat()
     {
         if (input.text.Equals(""))
             return;
-        string strMessage =" : " + input.text;
+        string strMessage = " : " + input.text;
         photonView.RPC("ReceiveMsg", RpcTarget.All, strMessage);
         input.text = "";
+        OnChatOff();
     }
 
     [PunRPC]
@@ -44,24 +46,15 @@ public class TestUI_Chat : MonoBehaviourPunCallbacks
         text.transform.SetParent(content);
     }
 
-    public void OnChatting(InputValue value)
-    {
-        if(player.IsChatting == false)
-        {
-            player.IsChatting = true;
-            OnActive();
-        }
-        else if (player.IsChatting == true)
-        {
-            SendChat();
-            player.IsChatting = false;
-            input.gameObject.SetActive(false);
-        }
-
-    }
-    public void OnActive()
+    public void OnChat()
     {
         input.gameObject.SetActive(true);
         input.Select();
+    }
+
+    public void OnChatOff()
+    {
+        player.IsChatting = false;
+        input.gameObject.SetActive(false);
     }
 }

@@ -2,11 +2,11 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
+using Photon.Chat.Demo;
 
 public class PlayerMove : MonoBehaviourPun
 {
-    [SerializeField] UnityEvent chat;
-    [SerializeField] UnityEvent set;
+    [SerializeField] TestUI_Chat chatUI;
     private PlayerStat stat;
     private SpeedItem speedItem;
     private Rigidbody rb;
@@ -52,17 +52,6 @@ public class PlayerMove : MonoBehaviourPun
 
         if (moveDir.sqrMagnitude >= 0.01f)
             transform.rotation = Quaternion.LookRotation(moveDir);
-    }
-
-    public void OnSetting(InputValue value)
-    {
-        set?.Invoke();
-    }
-
-    public void OnChatting(InputValue value)
-    {
-        IsChatting = true;
-        chat?.Invoke();
     }
 
     public void OnMove(InputValue value)

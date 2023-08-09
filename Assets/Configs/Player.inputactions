@@ -31,15 +31,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Chatting",
-                    "type": "Button",
-                    "id": "bfcca68f-6f6b-4de8-9421-a96ed1d49717",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -174,10 +165,27 @@
                     "action": "Setting",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
+                }
+            ]
+        },
+        {
+            "name": "ChatUI",
+            "id": "9d0b4c5c-1231-4c83-bf8b-7120c1a764e5",
+            "actions": [
+                {
+                    "name": "Chatting",
+                    "type": "Button",
+                    "id": "a4f3d50e-dff8-427d-ba78-c84a63f194a2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
                 {
                     "name": "",
-                    "id": "c7a5347f-2621-474f-9972-b411f9f77a41",
+                    "id": "af531fef-1360-44b2-91df-7dd350b0573a",
                     "path": "<Keyboard>/enter",
                     "interactions": "",
                     "processors": "",
