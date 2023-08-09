@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/LobbyScene.unity
+    guid: b7c1d23f840553043bc4742ce7d980f0
+  - enabled: 1
     path: Assets/WorkSpace/YoungsinLee/Scenes/DebugScene.unity
     guid: 29c4eaba61f18cd40926365eef12257d
   m_configObjects: {}

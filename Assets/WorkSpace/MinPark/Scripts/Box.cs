@@ -8,7 +8,7 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
     public ItemSetting item;
     public int index;
 
-    public void ExplosiveReact()
+    public void ExplosiveReact(Bomb bomb)
     {
         Hit();
     }
