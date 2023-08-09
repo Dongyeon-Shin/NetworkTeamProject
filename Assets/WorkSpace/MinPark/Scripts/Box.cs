@@ -10,23 +10,15 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
 
     public void ExplosiveReact(Bomb bomb)
     {
-        Hit();
+        Hit(bomb);
     }
 
-    private void Hit()
+    private void Hit(Bomb bomb)
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            item = GetComponentInParent<ItemSetting>();
-            // item이 비어있지 않으면 아이템 생성
-            if (item.check[index] == 1)
-                item.BoxHit(index, transform.position);
-            PhotonNetwork.Destroy(gameObject);
-        }
-    }
-    [PunRPC]
-    private void ItemCreate()
-    {
-        Instantiate(item.itemArray[item.item[index]], transform.position, Quaternion.Euler(0, 0, 0));
+        item = GetComponentInParent<ItemSetting>();
+        // item이 비어있지 않으면 아이템 생성
+        if (item.check[index] == 1)
+            item.BoxHit(index, transform.position, bomb);
+        PhotonNetwork.Destroy(gameObject);
     }
 }

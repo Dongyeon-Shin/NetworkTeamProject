@@ -8,6 +8,7 @@ public class ItemSetting : MonoBehaviourPunCallbacks
     // 박스 갯수 58개
     private Items items;
     public GameObject[] itemArray;
+    public Bomb bomb;
     private int itemCount = 30;
     public int[] check;  // 아이템이 들어있는지 확인용 0 false 1 true
     public int[] item;   // 무슨 아이템이 들었는지 확인용
@@ -49,14 +50,14 @@ public class ItemSetting : MonoBehaviourPunCallbacks
             index++;
         }
     }
-    public void BoxHit(int index, Vector3 position)
+    public void BoxHit(int index, Vector3 position, Bomb bomb)
     {
-        photonView.RPC("BoxItem", RpcTarget.AllViaServer, index, position);
+        photonView.RPC("BoxItem", RpcTarget.AllViaServer, index, position,bomb);
     }
     [PunRPC]
-    private void BoxItem(int index, Vector3 position)
+    private void BoxItem(int index, Vector3 position, Bomb bomb)
     {
-        Instantiate(itemArray[item[index]], position, Quaternion.Euler(0, 0, 0));
+        Instantiate(itemArray[item[index]], position, Quaternion.Euler(0, 0, 0)).GetComponent<PassiveItem>().Bomb=bomb;
     }
     // 디버그 모드 전용
     public override void OnJoinedRoom()

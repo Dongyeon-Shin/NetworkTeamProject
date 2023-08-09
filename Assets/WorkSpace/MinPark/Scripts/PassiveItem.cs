@@ -7,9 +7,13 @@ using UnityEngine;
 public abstract class PassiveItem : MonoBehaviourPun, IExplosiveReactivable
 {
     protected int coefficient;
+    private Bomb bomb;
+    public Bomb Bomb { set { bomb=value; } }
 
     public void ExplosiveReact(Bomb bomb)
     {
+        if (this.bomb == bomb)
+            return;
         Destroy(gameObject);
         //포톤 사용시 아래의 디스트로이 사용
         //Destroy();
