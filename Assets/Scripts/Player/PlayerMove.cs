@@ -16,6 +16,10 @@ public class PlayerMove : MonoBehaviourPun
     private Vector3 moveDir;
 
     private float curSpeed;
+    private bool isChatting = false;
+    public bool IsChatting { get { return isChatting; } set { isChatting = value; } }
+
+
     private void Awake()
     {
         stat = GetComponent<PlayerStat>();
@@ -52,13 +56,12 @@ public class PlayerMove : MonoBehaviourPun
 
     public void OnSetting(InputValue value)
     {
-        // setting ui 이벤트 관련 ui
         set?.Invoke();
     }
 
     public void OnChatting(InputValue value)
     {
-        // ingame 채팅 ui 관련 이벤트
+        IsChatting = true;
         chat?.Invoke();
     }
 
@@ -66,25 +69,35 @@ public class PlayerMove : MonoBehaviourPun
     {
         moveDir.x = value.Get<Vector2>().x;
         moveDir.z = value.Get<Vector2>().y;
-        if (!stat.IsAlive)
-            return;
 
-        if(stat.IsAlive)
+        if (IsChatting == true)
         {
-            if (moveDir.x > 0 || moveDir.z > 0 || moveDir.x < 0 || moveDir.z < 0)
-                animator.SetBool("Move", true);
-            else if (moveDir.x == 0 && moveDir.z == 0)
-                animator.SetBool("Move", false);
-            else
-                animator.SetBool("Move", false);
+            moveDir.x = 0;
+            moveDir.z = 0;
+        }
 
-            // 대각선 막기
-            if (moveDir.z == 0)
+        else if (IsChatting == false)
+        {
+            if (!stat.IsAlive)
                 return;
-            else if (moveDir.z > 0 && moveDir.x > 0 || moveDir.x < 0)
-                moveDir.x = 0;
-            else if (moveDir.z < 0 && moveDir.x > 0 || moveDir.x < 0)
-                moveDir.x = 0;
+
+            if (stat.IsAlive)
+            {
+                if (moveDir.x > 0 || moveDir.z > 0 || moveDir.x < 0 || moveDir.z < 0)
+                    animator.SetBool("Move", true);
+                else if (moveDir.x == 0 && moveDir.z == 0)
+                    animator.SetBool("Move", false);
+                else
+                    animator.SetBool("Move", false);
+
+                // 대각선 막기
+                if (moveDir.z == 0)
+                    return;
+                else if (moveDir.z > 0 && moveDir.x > 0 || moveDir.x < 0)
+                    moveDir.x = 0;
+                else if (moveDir.z < 0 && moveDir.x > 0 || moveDir.x < 0)
+                    moveDir.x = 0;
+            }
         }
     }
 
