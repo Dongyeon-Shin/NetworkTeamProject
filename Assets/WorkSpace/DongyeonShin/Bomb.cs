@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -16,6 +17,8 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     private float explosionEffectContinuanceTime;
     private GameScene gameScene;
     public GameScene GameScene { get { return gameScene; } set { gameScene = value; } }
+    private int iDNumber;
+    public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
     public int ExplosivePower { set { explosivePower = value; } }
     private LayerMask unPenetratedObjectsLayerMask;
     private LayerMask boxLayerMask;
@@ -40,6 +43,11 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         {
             t.localScale = new Vector3(2f, 2f, 2f);
         }
+    }
+
+    private void Start()
+    {
+        gameScene.RegisterBombID(this);
     }
 
     IEnumerator LightTheFuseRoutine()
@@ -91,9 +99,9 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
             if (reactivableObject != null)
             {
                 LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
-                if (gameScene != null)
+                if (PhotonNetwork.IsMasterClient)
                 {
-                    gameScene.RequestExplosiveReaction(reactivableObject, this);
+                    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber);
                 }
                 if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
                 {
@@ -179,9 +187,9 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
                 IExplosiveReactivable reactivableObject = raycastHit.collider.GetComponent<IExplosiveReactivable>();
                 if (reactivableObject != null)
                 {
-                    if (gameScene != null)
+                    if (PhotonNetwork.IsMasterClient)
                     {
-                        gameScene.RequestExplosiveReaction(reactivableObject, this);
+                        gameScene.RequestExplosiveReaction(reactivableObject, iDNumber);
                     }
                 }
                 yield return null;

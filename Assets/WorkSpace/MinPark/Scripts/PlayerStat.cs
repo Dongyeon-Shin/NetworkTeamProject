@@ -53,8 +53,9 @@ public class PlayerStat : MonoBehaviourPunCallbacks
 
     private IEnumerator AllocatePlayerNumberRoutine()
     {
-        yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length == 0);
+        yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
         playerNumber =  PhotonNetwork.LocalPlayer.GetPlayerNumber();
+        gameScene.RegisterPlayerID(gameObject);
     }
     public void InitialSetup(GameScene gameScene)
     {

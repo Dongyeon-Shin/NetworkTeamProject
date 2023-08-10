@@ -9,6 +9,8 @@ public abstract class PassiveItem : MonoBehaviourPun, IExplosiveReactivable
     protected int coefficient;
     private Bomb bomb;
     public Bomb Bomb { set { bomb=value; } }
+    private int iDNumber;
+    public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
 
     public void ExplosiveReact(Bomb bomb)
     {

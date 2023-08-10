@@ -12,6 +12,8 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     private PlayerStat stat;
     private Animator animator;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
+    private int iDNumber;
+    public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
 
     private void Awake()
     {
@@ -32,7 +34,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     private void PlantABomb(Vector3 position, int explosivePower, int playerNumber)
     {
         Bomb plantedBomb = GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation).GetComponent<Bomb>();
-        if (PhotonNetwork.IsMasterClient && plantedBomb.GameScene == null)
+        if (plantedBomb.GameScene == null)
         {
             plantedBomb.GameScene = stat.GameScene;
         }
