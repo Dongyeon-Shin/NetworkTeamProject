@@ -10,17 +10,13 @@ using UnityEngine.UI;
 
 public class PlayerMove : MonoBehaviourPun
 {
-    [SerializeField] TMP_InputField inputField;     // 
     private PlayerStat stat;
     private Rigidbody rb;
     private PlayerInput playerInput;
     private Animator animator;
     private Vector3 moveDir;
-
+    private PlayerChat playerChat;
     private float curSpeed;
-    private bool isChatting = false;
-    public bool IsChatting { get { return isChatting; } set { isChatting = value; } }
-    public TMP_InputField InputField { get { return inputField; } set { inputField = value; } } // string 으로 보내도록 수정필요
 
 
     private void Awake()
@@ -29,6 +25,7 @@ public class PlayerMove : MonoBehaviourPun
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
+        playerChat = GetComponent<PlayerChat>();
         if (!photonView.IsMine)
             Destroy(playerInput);
     }
@@ -43,7 +40,6 @@ public class PlayerMove : MonoBehaviourPun
         Move();
         transform.Rotate(moveDir, Space.World);
     }
-
 
     void Move()
     {
@@ -62,13 +58,13 @@ public class PlayerMove : MonoBehaviourPun
         moveDir.x = value.Get<Vector2>().x;
         moveDir.z = value.Get<Vector2>().y;
 
-        if (IsChatting == true)
+        if (playerChat.IsChatting == true)
         {
             moveDir.x = 0;
             moveDir.z = 0;
         }
 
-        else if (IsChatting == false)
+        else if (playerChat.IsChatting == false)
         {
             if (!stat.IsAlive)
                 return;
@@ -92,23 +88,7 @@ public class PlayerMove : MonoBehaviourPun
             }
         }
     }
-
-    private void OnChatting(InputValue value)
-    {
-        if (IsChatting == true)
-        {
-            inputField.text = value.ToString(); 
-            inputField.gameObject.SetActive(false);
-            isChatting = false;
-        }
-        else
-        {
-            inputField.gameObject.SetActive(true);
-            inputField.Select();
-            isChatting = true;
-        }
-    }
-
+   
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Bomb"))
