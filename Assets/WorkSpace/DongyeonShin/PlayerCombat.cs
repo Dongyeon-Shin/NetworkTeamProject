@@ -12,6 +12,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     private PlayerStat stat;
     private Animator animator;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
+    [SerializeField]
     private int iDNumber;
     public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
 
@@ -33,7 +34,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     [PunRPC]
     private void PlantABomb(Vector3 position, int explosivePower, int playerNumber)
     {
-        Bomb plantedBomb = GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation).GetComponent<Bomb>();
+        Bomb plantedBomb = GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation, true).GetComponent<Bomb>();
         if (plantedBomb.GameScene == null)
         {
             plantedBomb.GameScene = stat.GameScene;

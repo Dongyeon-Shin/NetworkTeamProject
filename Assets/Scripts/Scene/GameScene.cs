@@ -45,12 +45,21 @@ public class GameScene : BaseScene
         PhotonNetwork.ConnectUsingSettings();
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
         StartPointData startPointData = GameManager.Resource.Load<StartPointData>("Map/StartPointData");
+        //맵생섣ㅇ
+        // 아이템 세팅
+        // gameScene item 총개수
+        // RPC 공유할거임
+        // [위치에 아이템 있음] [무슨 아이템] 
+        // for (int i = 0; i < [위치에 아이템].length; i++)
+        {
+            // GameObject gameObject = GameManager.Resource.Instantiate(무슨 아이템[i]);
+            // gameObject.transform.setParent = 맵.transform
+        }
+        // 네트워크 id부여
+        // 만들어논 아이템들 비활성화
         RegisterMapObjectsID (Instantiate(startPointData.StartPoints[0].map));
-        Debug.Log(PhotonNetwork.PlayerList.Length);
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
-        Debug.Log(PhotonNetwork.PlayerList.Length);
-        Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
-        PhotonNetwork.InstantiateRoomObject("Prefab/Player_ver0.1/Player_Reindeer", startPointData.StartPoints[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0)).GetComponent<PlayerStat>().InitialSetup(this);
+        PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", startPointData.StartPoints[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0)).GetComponent<PlayerStat>().InitialSetup(this);
     }
 
     public override void OnConnectedToMaster()
@@ -62,9 +71,10 @@ public class GameScene : BaseScene
     private void RegisterMapObjectsID(GameObject map)
     {
         IExplosiveReactivable[] mapObjects = map.GetComponentsInChildren<IExplosiveReactivable>();
-        foreach (IExplosiveReactivable mapObject in mapObjects)
+        for (int i = 0; i < mapObjects.Length; i++)
         {
-            explosiveReactivableObjects.Add(mapObject);
+            mapObjects[i].IDNumber = i;
+            explosiveReactivableObjects.Add(mapObjects[i]);
         }
     }
 
@@ -86,6 +96,7 @@ public class GameScene : BaseScene
 
     public void RequestExplosiveReaction(IExplosiveReactivable target, int bombIndex)
     {
+        Debug.Log(target.IDNumber);
         photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, bombIndex);
     }
 

@@ -83,7 +83,7 @@ public class PlayerMove : MonoBehaviourPun
             moveDir.x = 0;
     }
 
-
+    //TODO: 폭탄 설치 후 플레이어가 폭탄위에 올라가 있을 수 있는 방법을 다른 방식으로 구현하기
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Bomb"))
