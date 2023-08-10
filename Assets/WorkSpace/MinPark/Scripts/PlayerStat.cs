@@ -61,4 +61,9 @@ public class PlayerStat : MonoBehaviourPunCallbacks
         this.gameScene = gameScene;
         isAlive = true;
     }
+
+    public void OnPreNetDestroy(PhotonView rootView)
+    {
+        // 시체생성
+    }
 }

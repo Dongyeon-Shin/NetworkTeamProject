@@ -5,8 +5,13 @@ using UnityEngine;
 
 public class Box : MonoBehaviourPun, IExplosiveReactivable
 {
-    public ItemSetting item;
-    public int index;
+    private BoxCollider collider;
+    public GameObject item;
+
+    private void Start()
+    {
+        collider = GetComponent<BoxCollider>();
+    }
 
     public void ExplosiveReact(Bomb bomb)
     {
@@ -15,10 +20,11 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
 
     private void Hit(Bomb bomb)
     {
-        item = GetComponentInParent<ItemSetting>();
-        // item이 비어있지 않으면 아이템 생성
-        if (item.check[index] == 1)
-            item.BoxHit(index, transform.position, bomb);
-        PhotonNetwork.Destroy(gameObject);
+        collider.enabled = false;
+        if(item != null)
+        {
+            Instantiate(item,transform.position,Quaternion.Euler(0,0,0)).GetComponent<PassiveItem>().Bomb=bomb;
+        }
+        Destroy(gameObject);
     }
 }

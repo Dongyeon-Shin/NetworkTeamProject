@@ -6,6 +6,6 @@ public class Wall : MonoBehaviour, IExplosiveReactivable
 {
     public void ExplosiveReact(Bomb bomb)
     {
-        Debug.Log(true);
+
     }
 }

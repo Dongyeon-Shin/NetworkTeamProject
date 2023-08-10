@@ -7,6 +7,11 @@ using UnityEngine;
 
 public class GameScene : BaseScene
 {
+    [SerializeField]
+    private StartPointData st;
+    Transform itemSetting;
+    ItemSetting itemSet;
+
     private void Start()
     {
         if (!PhotonNetwork.InRoom)
@@ -42,12 +47,47 @@ public class GameScene : BaseScene
         PhotonNetwork.ConnectUsingSettings();
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
         StartPointData startPointData = GameManager.Resource.Load<StartPointData>("Map/StartPointData");
-        Instantiate(startPointData.StartPoints[0].map);
-        Debug.Log(PhotonNetwork.PlayerList.Length);
+        itemSet = Instantiate(st.StartPoints[0].map).GetComponentInChildren<ItemSetting>();
+        itemSet.ItemSettingConnect(this);
+        itemSetting = itemSet.transform;
+        Debug.Log(startPointData);
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
-        Debug.Log(PhotonNetwork.PlayerList.Length);
         Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
-        PhotonNetwork.InstantiateRoomObject("Prefab/Player_ver0.1/Player_Reindeer", startPointData.StartPoints[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0)).GetComponent<PlayerStat>().InitialSetup(this);
+        //PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", startPointData.StartPoints[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0)).GetComponent<PlayerStat>().InitialSetup(this);
+        PhotonNetwork.InstantiateRoomObject("Prefab/Player_ver0.1/Player_Reindeer", startPointData.StartPoints[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.identity);
+        //yield return new WaitWhile(() => player == null);
+        //player.GetComponent<PlayerStat>().InitialSetup(this);
+        //yield return new WaitUntil(() => PhotonNetwork.InRoom);
+    }
+
+    public void ItemCreate(int[] check, int[] item)
+    {
+        photonView.RPC("ItemInsult", RpcTarget.AllViaServer, check, item);
+        
+    }
+    [PunRPC]
+    private void ItemInsult(int[] check, int[] item)
+    {
+        Debug.Log("2");
+        for (int i = 0; i < itemSetting.childCount; i++)
+        {
+            if (check[i] == 1)
+            {
+                itemSetting.GetChild(i).GetComponent<Box>().item = itemSet.itemArray[item[i]];
+            }
+        }
+    }
+    
+
+    private void Test()
+    {
+        photonView.RPC("TestRPC", RpcTarget.AllViaServer);
+    }
+
+    [PunRPC]
+    private void TestRPC()
+    {
+        Debug.Log("Check");
     }
 
     public override void OnConnectedToMaster()
