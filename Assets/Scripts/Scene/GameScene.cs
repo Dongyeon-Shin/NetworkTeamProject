@@ -12,6 +12,9 @@ public class GameScene : BaseScene
     Transform itemSetting;
     ItemSetting itemSet;
 
+    private List<IExplosiveReactivable> explosiveReactivableObjects = new List<IExplosiveReactivable>();
+    private List<Bomb> bombList = new List<Bomb>();
+
     private void Start()
     {
         if (!PhotonNetwork.InRoom)
@@ -47,12 +50,13 @@ public class GameScene : BaseScene
         PhotonNetwork.ConnectUsingSettings();
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
         StartPointData startPointData = GameManager.Resource.Load<StartPointData>("Map/StartPointData");
-        itemSet = Instantiate(st.StartPoints[0].map).GetComponentInChildren<ItemSetting>();
+        GameObject map = Instantiate(st.StartPoints[0].map);
+        itemSet = map.GetComponentInChildren<ItemSetting>();
+        RegisterMapObjectsID(map);
         itemSet.ItemSettingConnect(this);
         itemSetting = itemSet.transform;
         Debug.Log(startPointData);
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
-        Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
         //PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", startPointData.StartPoints[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0)).GetComponent<PlayerStat>().InitialSetup(this);
         PhotonNetwork.InstantiateRoomObject("Prefab/Player_ver0.1/Player_Reindeer", startPointData.StartPoints[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.identity);
         //yield return new WaitWhile(() => player == null);
@@ -96,15 +100,40 @@ public class GameScene : BaseScene
         PhotonNetwork.JoinOrCreateRoom("DebugRoom", options, TypedLobby.Default);
     }
 
-    public void RequestExplosiveReaction(IExplosiveReactivable target, Bomb bomb)
+    private void RegisterMapObjectsID(GameObject map)
     {
-        photonView.RPC("SendExplosiveResult", RpcTarget.AllViaServer, target, bomb);
+        IExplosiveReactivable[] mapObjects = map.GetComponentsInChildren<IExplosiveReactivable>();
+        foreach (IExplosiveReactivable mapObject in mapObjects)
+        {
+            explosiveReactivableObjects.Add(mapObject);
+        }
+    }
+
+    public void RegisterPlayerID(GameObject player)
+    {
+        //TODO: Test 필요 플레이어가 접속되는 순서대로 playernumbering이 부과되니까
+        // 해당 함수도 playernumber와 같은 순서로 호출된다는 가정
+        // 하지만 각각의 local에서 다른 플레이어 오브젝트는 PhotonNetwork instantiate이기 떄문에
+        // 혹시 모르니 확인할것
+        explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
+        Debug.Log(player.GetComponent<PlayerStat>().PlayerNumber);
+    }
+
+    public void RegisterBombID(Bomb bomb)
+    {
+        bomb.IDNumber = bombList.Count;
+        bombList.Add(bomb);
+    }
+
+    public void RequestExplosiveReaction(IExplosiveReactivable target, int bombIndex)
+    {
+        photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, bombIndex);
     }
 
     [PunRPC]
-    private void SendExplosiveResult(IExplosiveReactivable target, Bomb bomb)
+    private void SendExplosionResult(int explosiveReactivableObjectIndex, int bombIndex)
     {
-        target.ExplosiveReact(bomb);
+        explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombList[bombIndex]);
     }
 
 }

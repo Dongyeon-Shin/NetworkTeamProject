@@ -12,6 +12,10 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
     {
         collider = GetComponent<BoxCollider>();
     }
+    public ItemSetting item;
+    public int index;
+    private int iDNumber;
+    public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
 
     public void ExplosiveReact(Bomb bomb)
     {
