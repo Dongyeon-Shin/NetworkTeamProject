@@ -4,7 +4,16 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class InGameChatUI : MonoBehaviourPunCallbacks
+public class InGameChatUI : MonoBehaviourPun
 {
-   
+    private Camera cameraToLookAt;
+
+    private void Awake()
+    {
+        cameraToLookAt = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+    }
+    private void LateUpdate()
+    {
+        transform.LookAt(transform.position + cameraToLookAt.transform.forward);
+    }
 }
