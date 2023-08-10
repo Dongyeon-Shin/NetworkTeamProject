@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class PassiveItem : MonoBehaviourPun, IExplosiveReactivable
+public abstract class PassiveItem : MonoBehaviour, IExplosiveReactivable
 {
     protected int coefficient;
+    protected GameScene gameScene;
     private Bomb bomb;
     public Bomb Bomb { set { bomb=value; } }
+
     private int iDNumber;
     public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
 

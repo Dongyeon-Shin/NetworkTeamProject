@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,12 +13,15 @@ public class SpeedItem : PassiveItem
     {
         if (other.tag == "Player")
         {
-            if(photonView.IsMine)
+            if(PhotonNetwork.LocalPlayer.IsMasterClient)
             other.GetComponent<PlayerStat>().Speed = coefficient;
             other.GetComponent<PlayerStat>().ItemInterfaceSet();
+            
             Destroy(gameObject);
-            // 포톤 사용시 위에 대신 아래꺼 사용
-            //Destroy();
         }
+    }
+    public void GameSceneSet(GameScene gameScene)
+    {
+        this.gameScene = gameScene;
     }
 }

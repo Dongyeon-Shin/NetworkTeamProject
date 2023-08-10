@@ -15,6 +15,9 @@ public class ItemSetting : MonoBehaviourPun
     public int[] item;   // 무슨 아이템이 들었는지 확인용
     public GameScene gameScene;
 
+    // 디버그모드
+    int players=2;
+
     private void Start()
     {
         ItemCreate();
@@ -27,18 +30,23 @@ public class ItemSetting : MonoBehaviourPun
 
     public void ItemCreate()
     {
+        items = transform.GetComponent<Items>();
+        itemArray = new GameObject[items.item.Length];
+        int i = 0;
+        foreach (GameObject item in items.item)
+        {
+            itemArray[i++] = item;
+        }
         // 방장만 아이템을 생성
         if (PhotonNetwork.IsMasterClient)
         {
             ArraySetting();
-            items = transform.GetComponent<Items>();
-            itemArray = new GameObject[items.item.Length];
-            int i = 0;
-            foreach (GameObject item in items.item)
-            {
-                itemArray[i++] = item;
-            }
             StartCoroutine(ItemSetDelay());
+            gameScene.ItemCreate();
+        }
+        else
+        {
+            gameScene.ItemCreate();
         }
     }
     private void ArraySetting()
@@ -54,7 +62,7 @@ public class ItemSetting : MonoBehaviourPun
 
     IEnumerator ItemSetDelay()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != players);
         ItemSet();
     }
     public void ItemSet()
@@ -64,7 +72,8 @@ public class ItemSetting : MonoBehaviourPun
         {
             if (itemCount < 1)
             {
-                gameScene.ItemCreate(check, item);
+                gameScene.ArrayCopy(check, item);
+                Debug.Log("ArrayCopy");
                 return;
             }
             // 부모 트랜스폼과 같으면 건너뛴다

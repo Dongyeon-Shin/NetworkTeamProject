@@ -17,4 +17,8 @@ public class PowerItem : PassiveItem
             Destroy(gameObject);
         }
     }
+    public void GameSceneSet(GameScene gameScene)
+    {
+        this.gameScene = gameScene;
+    }
 }
