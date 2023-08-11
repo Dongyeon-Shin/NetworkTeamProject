@@ -6,22 +6,38 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
-public class PlayerChat : MonoBehaviourPun
+public class PlayerUI : MonoBehaviourPun
 {
     [SerializeField] TMP_Text chatText;
     [SerializeField] TMP_InputField input;
     [SerializeField] GameObject popUpChat;
+    [SerializeField] GameObject settingUI;
+    [SerializeField] Button backButton;
+    [SerializeField] Button exitButton;
+
+    private PlayerStat stat;
+    private Animator animator;
+
 
     private bool isChatting = false;
+    private bool isSetting = false;
     public bool IsChatting { get { return isChatting; } set { isChatting = value; } }
+    public bool IsSetting { get { return isSetting; } set { isSetting = value; } }
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+        stat = GetComponent<PlayerStat>();
+        backButton.onClick.AddListener(ClickBack);
+        exitButton.onClick.AddListener(ClickExit);
+    }
+
 
     private void Start()
     {
         PhotonNetwork.IsMessageQueueRunning = true;
     }
-
     
     public void SendChat()
     {
@@ -69,4 +85,41 @@ public class PlayerChat : MonoBehaviourPun
         }
     }
 
+    public void OnSetting(InputValue value)
+    {
+        if(IsSetting == true)
+        {
+            settingUI.SetActive(false);
+            isSetting = false;
+        }
+        else
+        {
+            settingUI.SetActive(true);
+            backButton.Select();
+            isSetting = true;
+        }
+    }
+
+    public void ClickBack()
+    {
+        settingUI.SetActive(false);
+    }
+    public void ClickExit()
+    {
+        StartCoroutine(ExitRoutine());
+    }
+
+    IEnumerator ExitRoutine()
+    {
+        photonView.RPC("Dead", RpcTarget.All);
+        yield return new WaitForSeconds(2f);
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.JoinLobby();
+    }
+    [PunRPC]
+    public void Dead()
+    {
+        stat.IsAlive = false;
+        animator.SetBool("Die", true);
+    }
 }

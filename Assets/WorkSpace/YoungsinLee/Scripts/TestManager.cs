@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class TestManager : MonoBehaviourPunCallbacks
 {
+    [SerializeField] Transform startPosition;
     private void Start()
     {
         if (PhotonNetwork.InRoom)
@@ -35,11 +36,10 @@ public class TestManager : MonoBehaviourPunCallbacks
         float angularStart = (360.0f / 8f) * PhotonNetwork.LocalPlayer.GetPlayerNumber();
         float x = 20.0f * Mathf.Sin(angularStart * Mathf.Deg2Rad);
         float z = 20.0f * Mathf.Cos(angularStart * Mathf.Deg2Rad);
-        Vector3 position = new Vector3(-3, 0.0f, 4);
+        Vector3 position = new Vector3(startPosition.transform.position.x, 0.0f, startPosition.transform.position.z);
         Quaternion rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
         PhotonNetwork.Instantiate("Player/Player_Reindeer2", position, rotation);
-
     }
     public override void OnLeftRoom()
     {
