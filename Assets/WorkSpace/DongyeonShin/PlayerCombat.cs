@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
+public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable, IOnPhotonViewPreNetDestroy
 {
     private PlayerStat stat;
     private Animator animator;
@@ -19,7 +19,6 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     {
         animator = GetComponent<Animator>();
         stat = GetComponent<PlayerStat>();
-        animator = GetComponent<Animator>();
     }
 
     private void OnFire(InputValue value)
@@ -68,14 +67,22 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
         //TODO: 플레이어 피격시 반응
         StartCoroutine(DyingRoutine());
     }
-
     
     IEnumerator DyingRoutine()
     {
-        stat.IsAlive = false;
-        animator.SetBool("Die", true);
         yield return new WaitForSeconds(2f);
         PhotonNetwork.Destroy(photonView);
     }
 
+    public void OnPreNetDestroy(PhotonView rootView)
+    {
+        photonView.RPC("Dead", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void Dead()
+    {
+        stat.IsAlive = false;
+        animator.SetBool("Die", true);
+    }
 }
