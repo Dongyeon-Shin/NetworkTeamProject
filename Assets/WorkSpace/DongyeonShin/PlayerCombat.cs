@@ -78,7 +78,6 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 
     IEnumerator DeadRoutine()
     {
-        yield return new WaitForSeconds(2f);
         stat.IsAlive = false;
         animator.SetBool("Die", true);
         yield return new WaitForSeconds(4f);
