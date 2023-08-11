@@ -12,9 +12,10 @@ public class GameScene : BaseScene
     private MapData md;
 
     GameObject map;
-
+    [SerializeField]
+    int playerCount;
+    GameObject[] players;
     // 아직 아이디어 생각 안나서 일단 이대로함
-    Transform itemSetting;
     ItemSetting itemSet;
 
     private List<IExplosiveReactivable> explosiveReactivableObjects = new List<IExplosiveReactivable>();
@@ -64,7 +65,6 @@ public class GameScene : BaseScene
         // 맵생성
         map = Instantiate(md.MapDatas[0].map);
         itemSet = map.GetComponentInChildren<ItemSetting>();
-        itemSetting = itemSet.transform;
         itemSet.ItemSettingConnect(this);
         itemSet.ItemCreate();
         yield return null;
@@ -72,8 +72,10 @@ public class GameScene : BaseScene
 
     IEnumerator PlayerLoadingRoutine()
     {
+        players = new GameObject[playerCount];
         GameObject player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
         player.GetComponent<PlayerStat>().InitialSetup(this);
+        players[PhotonNetwork.LocalPlayer.GetPlayerNumber()] = player;
         yield return null;
     }
 
@@ -81,7 +83,7 @@ public class GameScene : BaseScene
     {
         GameObject inGameInterface = GameManager.Resource.Instantiate(GameManager.Resource.Load<GameObject>("Map/GameInterFace"));
         // 타이머 없애면 쉽게 가능.
-        //player.GetComponent<PlayerStat>().InterFaceSet(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
+        players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerStat>().InterFaceSet(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
 
         yield return null;
     }
@@ -112,7 +114,7 @@ public class GameScene : BaseScene
         {
             if (check[i] == 1)
             {
-                GameObject createitem = itemSetting.GetChild(i).GetComponent<Box>().item = itemSet.itemArray[items[i]];
+                GameObject createitem = itemSet.transform.GetChild(i).GetComponent<Box>().item = itemSet.itemArray[items[i]];
                 createitem.GetComponent<PassiveItem>().GameSceneSet(this);
                 IExplosiveReactivable item = createitem.GetComponent<IExplosiveReactivable>();
                 this.items.Add(item);
