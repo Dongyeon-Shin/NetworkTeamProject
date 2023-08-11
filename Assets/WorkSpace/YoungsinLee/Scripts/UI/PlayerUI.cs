@@ -87,17 +87,17 @@ public class PlayerUI : MonoBehaviourPun
 
     public void OnSetting(InputValue value)
     {
-        if(IsSetting == true)
-        {
-            settingUI.SetActive(false);
-            isSetting = false;
-        }
-        else
-        {
-            settingUI.SetActive(true);
-            backButton.Select();
-            isSetting = true;
-        }
+            if (IsSetting == true)
+            {
+                settingUI.SetActive(false);
+                isSetting = false;
+            }
+            else
+            {
+                settingUI.SetActive(true);
+                backButton.Select();
+                isSetting = true;
+            }
     }
 
     public void ClickBack()
@@ -106,16 +106,22 @@ public class PlayerUI : MonoBehaviourPun
     }
     public void ClickExit()
     {
+        if(stat.IsAlive == true)
         StartCoroutine(ExitRoutine());
+
+        else if(stat.IsAlive == false)
+        {
+            PhotonNetwork.LeaveRoom();
+            PhotonNetwork.JoinLobby();
+        }
     }
 
     IEnumerator ExitRoutine()
     {
         photonView.RPC("Dead", RpcTarget.All);
         yield return new WaitForSeconds(2f);
-        PhotonNetwork.LeaveRoom();
-        PhotonNetwork.JoinLobby();
     }
+
     [PunRPC]
     public void Dead()
     {
