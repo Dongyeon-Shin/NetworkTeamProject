@@ -17,10 +17,12 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     private float explosionEffectContinuanceTime;
     private GameScene gameScene;
     public GameScene GameScene { get { return gameScene; } set { gameScene = value; } }
+    [SerializeField]
     private int iDNumber;
     public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
     public int ExplosivePower { set { explosivePower = value; } }
     private LayerMask unPenetratedObjectsLayerMask;
+    private LayerMask bombLayerMask;
     private LayerMask boxLayerMask;
     private BoxCollider bombCollider;
     private bool readyToExplode;
@@ -31,14 +33,20 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     private void Awake()
     {
         bombCollider = GetComponent<BoxCollider>();
-        unPenetratedObjectsLayerMask = 1 | LayerMask.GetMask ("Bomb");
+        bombLayerMask = LayerMask.GetMask("Bomb");
         boxLayerMask = LayerMask.GetMask("Box");
+        unPenetratedObjectsLayerMask = 1 | bombLayerMask;
         bombRenderer = GetComponentInChildren<MeshRenderer>();
     }
 
     private void OnEnable()
     {
         bombCollider.enabled = true;
+        sparkParticle[0].gameObject.SetActive(true);
+        sparkParticle[1].gameObject.SetActive(true);
+        sparkParticle[2].gameObject.SetActive(true);
+        sparkParticle[3].gameObject.SetActive(true);
+        bombRenderer.enabled = true;
         foreach (Transform t in sparkParticle)
         {
             t.localScale = new Vector3(2f, 2f, 2f);
@@ -101,7 +109,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
                 LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
                 if (PhotonNetwork.IsMasterClient)
                 {
-                    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber);
+                    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
                 }
                 if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
                 {
@@ -189,7 +197,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
                 {
                     if (PhotonNetwork.IsMasterClient)
                     {
-                        gameScene.RequestExplosiveReaction(reactivableObject, iDNumber);
+                        gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, (((1 << raycastHit.collider.gameObject.layer) & bombLayerMask) > 0));
                     }
                 }
                 yield return null;
@@ -201,6 +209,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
 
     public void ExplosiveReact(Bomb bomb)
     {
+        Debug.Log("bombCheck");
         StopCoroutine(lightTheFuseRoutine);
         bombCollider.enabled = false;
         readyToExplode = true;

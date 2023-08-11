@@ -12,8 +12,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable, IOnPhotonVi
     private PlayerStat stat;
     private Animator animator;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
-    private int iDNumber;
-    public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
+    public int IDNumber { get { return stat.IDNumber; } set { stat.IDNumber = value; } }
 
     private void Awake()
     {
@@ -32,7 +31,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable, IOnPhotonVi
     [PunRPC]
     private void PlantABomb(Vector3 position, int explosivePower, int playerNumber)
     {
-        Bomb plantedBomb = GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation).GetComponent<Bomb>();
+        Bomb plantedBomb = GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation, true).GetComponent<Bomb>();
         if (plantedBomb.GameScene == null)
         {
             plantedBomb.GameScene = stat.GameScene;
