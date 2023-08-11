@@ -73,13 +73,14 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     [PunRPC]
     public void DeadSet()
     {
-        stat.IsAlive = false;
-        animator.SetBool("Die", true);
         StartCoroutine(DeadRoutine());
     }
 
     IEnumerator DeadRoutine()
     {
+        yield return new WaitForSeconds(2f);
+        stat.IsAlive = false;
+        animator.SetBool("Die", true);
         yield return new WaitForSeconds(4f);
         deadState.SetActive(false);
     }
