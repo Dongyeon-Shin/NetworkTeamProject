@@ -21,10 +21,12 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     private int iDNumber;
     public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
     public int ExplosivePower { set { explosivePower = value; } }
+
     private LayerMask unPenetratedObjectsLayerMask;
     private LayerMask bombLayerMask;
     private LayerMask boxLayerMask;
-    private BoxCollider bombCollider;
+    private BoxCollider boxCollider;
+    private SphereCollider explodCollider;
     private bool readyToExplode;
     private Coroutine lightTheFuseRoutine;
     private MeshRenderer bombRenderer;
@@ -32,7 +34,8 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
 
     private void Awake()
     {
-        bombCollider = GetComponent<BoxCollider>();
+        explodCollider = GetComponent<SphereCollider>();
+        boxCollider = GetComponent<BoxCollider>();
         bombLayerMask = LayerMask.GetMask("Bomb");
         boxLayerMask = LayerMask.GetMask("Box");
         unPenetratedObjectsLayerMask = 1 | bombLayerMask;
@@ -41,7 +44,8 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
 
     private void OnEnable()
     {
-        bombCollider.enabled = true;
+        boxCollider.isTrigger = true;
+        explodCollider.enabled = true;
         sparkParticle[0].gameObject.SetActive(true);
         sparkParticle[1].gameObject.SetActive(true);
         sparkParticle[2].gameObject.SetActive(true);
@@ -70,7 +74,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
             sparkParticle[3].localScale = new Vector3(i, i, i);
             yield return waitASecond;
         }
-        bombCollider.enabled = false;
+        explodCollider.enabled = false;
         readyToExplode = true;
     }
 
@@ -107,10 +111,10 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
             if (reactivableObject != null)
             {
                 LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
-                }
+               if (PhotonNetwork.IsMasterClient)
+               {
+                   gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
+               }
                 if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
                 {
                     if (direction.z > 0)
@@ -211,7 +215,16 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     {
         Debug.Log("bombCheck");
         StopCoroutine(lightTheFuseRoutine);
-        bombCollider.enabled = false;
+        explodCollider.enabled = false;
         readyToExplode = true;
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            boxCollider.isTrigger = false;
+        }
+    }
+
 }

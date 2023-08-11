@@ -16,6 +16,7 @@ public class PlayerMove : MonoBehaviourPun
     private Animator animator;
     private Vector3 moveDir;
     private PlayerUI playerChat;
+    private BoxCollider boxCollider;
     private float curSpeed;
 
 
@@ -26,6 +27,7 @@ public class PlayerMove : MonoBehaviourPun
         playerInput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
         playerChat = GetComponent<PlayerUI>();
+        boxCollider = GetComponent<BoxCollider>();
         if (!photonView.IsMine)
             Destroy(playerInput);
     }
@@ -89,21 +91,4 @@ public class PlayerMove : MonoBehaviourPun
         }
         
     }
-   
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Bomb"))
-        {
-            other.isTrigger = true;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Bomb"))
-        {
-            other.isTrigger = false;
-        }
-    }
-
 }

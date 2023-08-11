@@ -19909,6 +19909,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4864630041713910579}
   - component: {fileID: 1558929372}
+  - component: {fileID: -7558164463889034569}
   - component: {fileID: 1558929371}
   m_Layer: 7
   m_Name: Bomb
@@ -19945,7 +19946,20 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.3, y: 0.35, z: 0.3}
+  m_Size: {x: 0.3, y: 0.3, z: 0.3}
+  m_Center: {x: 0, y: 0.2, z: 0}
+--- !u!135 &-7558164463889034569
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993671180460632902}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
   m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!114 &1558929371
 MonoBehaviour:
