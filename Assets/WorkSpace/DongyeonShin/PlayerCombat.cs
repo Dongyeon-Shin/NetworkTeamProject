@@ -65,14 +65,16 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     public void ExplosiveReact(Bomb bomb)
     {
         //TODO: 플레이어 피격시 반응
-        animator.SetBool("Die", true);
-        stat.IsAlive = false;
+        StartCoroutine(DyingRoutine());
     }
 
     
     IEnumerator DyingRoutine()
     {
+        stat.IsAlive = false;
+        animator.SetBool("Die", true);
         yield return new WaitForSeconds(2f);
+        PhotonNetwork.Destroy(photonView);
     }
 
 }

@@ -1,21 +1,22 @@
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
+using Photon.Chat.Demo;
+using TMPro;
+using UnityEngine.Windows;
+using Photon.Realtime;
+using UnityEngine.UI;
 
 public class PlayerMove : MonoBehaviourPun
 {
     private PlayerStat stat;
-    private SpeedItem speedItem;
     private Rigidbody rb;
     private PlayerInput playerInput;
     private Animator animator;
-
     private Vector3 moveDir;
-
+    private PlayerChat playerChat;
     private float curSpeed;
-
-    [Range(0.01f, 0.5f), Tooltip("전방 감지 거리")]
-    public float forwardCheckDistance = 0.1f;
 
 
     private void Awake()
@@ -24,6 +25,7 @@ public class PlayerMove : MonoBehaviourPun
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
+        playerChat = GetComponent<PlayerChat>();
         if (!photonView.IsMine)
             Destroy(playerInput);
     }
@@ -39,7 +41,6 @@ public class PlayerMove : MonoBehaviourPun
         transform.Rotate(moveDir, Space.World);
     }
 
-
     void Move()
     {
         curSpeed = stat.Speed;
@@ -52,38 +53,42 @@ public class PlayerMove : MonoBehaviourPun
             transform.rotation = Quaternion.LookRotation(moveDir);
     }
 
-    public void OnSetting(InputValue value)
-    {
-        // GameManager.UI.ShowInGameUI<InGameUI>("");   // 이후 추가
-    }
-
-    public void OnChatting()
-    {
-        // 채팅 관련 함수
-    }
-
     public void OnMove(InputValue value)
     {
         moveDir.x = value.Get<Vector2>().x;
         moveDir.z = value.Get<Vector2>().y;
 
-        if (moveDir.x > 0 || moveDir.z > 0 || moveDir.x < 0 || moveDir.z < 0)
-            animator.SetBool("Move", true);
-        else if (moveDir.x == 0 && moveDir.z == 0)
-            animator.SetBool("Move", false);
-        else
-            animator.SetBool("Move", false);
+        if (playerChat.IsChatting == true)
+        {
+            moveDir.x = 0;
+            moveDir.z = 0;
+        }
 
-        // 대각선 막기
-        if (moveDir.z == 0)
-            return;
-        else if (moveDir.z > 0 && moveDir.x > 0 || moveDir.x < 0)
-            moveDir.x = 0;
-        else if (moveDir.z < 0 && moveDir.x > 0 || moveDir.x < 0)
-            moveDir.x = 0;
+        else if (playerChat.IsChatting == false)
+        {
+            if (!stat.IsAlive)
+                return;
+
+            if (stat.IsAlive)
+            {
+                if (moveDir.x > 0 || moveDir.z > 0 || moveDir.x < 0 || moveDir.z < 0)
+                    animator.SetBool("Move", true);
+                else if (moveDir.x == 0 && moveDir.z == 0)
+                    animator.SetBool("Move", false);
+                else
+                    animator.SetBool("Move", false);
+
+                // 대각선 막기
+                if (moveDir.z == 0)
+                    return;
+                else if (moveDir.z > 0 && moveDir.x > 0 || moveDir.x < 0)
+                    moveDir.x = 0;
+                else if (moveDir.z < 0 && moveDir.x > 0 || moveDir.x < 0)
+                    moveDir.x = 0;
+            }
+        }
     }
-
-    //TODO: 폭탄 설치 후 플레이어가 폭탄위에 올라가 있을 수 있는 방법을 다른 방식으로 구현하기
+   
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Bomb"))
