@@ -18,6 +18,7 @@ public class GameScene : BaseScene
     ItemSetting itemSet;
 
     private List<IExplosiveReactivable> explosiveReactivableObjects = new List<IExplosiveReactivable>();
+    private List<IExplosiveReactivable> items = new List<IExplosiveReactivable>();
     private List<Bomb> bombList = new List<Bomb>();
 
     private void Start()
@@ -84,6 +85,11 @@ public class GameScene : BaseScene
 
         yield return null;
     }
+    private IEnumerator AllocateIDNumberRoutine()
+    {
+        yield return null;
+    }
+
 
 
     // 배열 저장
@@ -109,11 +115,9 @@ public class GameScene : BaseScene
                 GameObject createitem = itemSetting.GetChild(i).GetComponent<Box>().item = itemSet.itemArray[items[i]];
                 createitem.GetComponent<PassiveItem>().GameSceneSet(this);
                 IExplosiveReactivable item = createitem.GetComponent<IExplosiveReactivable>();
-                item.IDNumber = explosiveReactivableObjects.Count;
-                explosiveReactivableObjects.Add(item);
+                this.items.Add(item);
             }
         }
-        RegisterMapObjectsID(map);
     }
 
     public void ItemDestroy(GameObject gameObject)
