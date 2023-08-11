@@ -15,7 +15,7 @@ public class PlayerMove : MonoBehaviourPun
     private PlayerInput playerInput;
     private Animator animator;
     private Vector3 moveDir;
-    private PlayerChat playerChat;
+    private PlayerUI playerChat;
     private float curSpeed;
 
 
@@ -25,7 +25,7 @@ public class PlayerMove : MonoBehaviourPun
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
-        playerChat = GetComponent<PlayerChat>();
+        playerChat = GetComponent<PlayerUI>();
         if (!photonView.IsMine)
             Destroy(playerInput);
     }
@@ -58,19 +58,14 @@ public class PlayerMove : MonoBehaviourPun
         moveDir.x = value.Get<Vector2>().x;
         moveDir.z = value.Get<Vector2>().y;
 
-        if (playerChat.IsChatting == true)
+        if (playerChat.IsChatting == true || playerChat.IsSetting == true)
         {
             moveDir.x = 0;
             moveDir.z = 0;
         }
 
-        else if (playerChat.IsChatting == false)
+        else if (playerChat.IsChatting == false || playerChat.IsSetting == true)
         {
-            if (!stat.IsAlive)
-                return;
-
-            if (stat.IsAlive)
-            {
                 if (moveDir.x > 0 || moveDir.z > 0 || moveDir.x < 0 || moveDir.z < 0)
                     animator.SetBool("Move", true);
                 else if (moveDir.x == 0 && moveDir.z == 0)
@@ -85,7 +80,6 @@ public class PlayerMove : MonoBehaviourPun
                     moveDir.x = 0;
                 else if (moveDir.z < 0 && moveDir.x > 0 || moveDir.x < 0)
                     moveDir.x = 0;
-            }
         }
     }
    

@@ -1,9 +1,10 @@
 using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemSetting : MonoBehaviourPunCallbacks
+public class ItemSetting : MonoBehaviourPun
 {
     // 박스 갯수 58개
     private Items items;
@@ -12,21 +13,40 @@ public class ItemSetting : MonoBehaviourPunCallbacks
     private int itemCount = 30;
     public int[] check;  // 아이템이 들어있는지 확인용 0 false 1 true
     public int[] item;   // 무슨 아이템이 들었는지 확인용
+    public GameScene gameScene;
+
+    // 디버그모드
+    int players=2;
+
+    private void Start()
+    {
+        ItemCreate();
+    }
+
+    public void ItemSettingConnect(GameScene gameScene)
+    {
+        this.gameScene = gameScene;
+    }
+
     public void ItemCreate()
     {
+        items = transform.GetComponent<Items>();
+        itemArray = new GameObject[items.item.Length];
+        int i = 0;
+        foreach (GameObject item in items.item)
+        {
+            itemArray[i++] = item;
+        }
         // 방장만 아이템을 생성
         if (PhotonNetwork.IsMasterClient)
         {
             ArraySetting();
-            ChildIndexSetting();
-            items = transform.GetComponent<Items>();
-            itemArray = new GameObject[items.item.Length];
-            int i = 0;
-            foreach (GameObject item in items.item)
-            {
-                itemArray[i++] = item;
-            }
-            ItemSet();
+            StartCoroutine(ItemSetDelay());
+            gameScene.ItemCreate();
+        }
+        else
+        {
+            gameScene.ItemCreate();
         }
     }
     private void ArraySetting()
@@ -39,45 +59,11 @@ public class ItemSetting : MonoBehaviourPunCallbacks
             item[j] = 0;
         }
     }
-    private void ChildIndexSetting()
-    {
-        int index = 0;
-        foreach (Transform trans in transform)
-        {
-            if (trans == transform)
-                continue;
-            transform.GetChild(index).GetComponent<Box>().index = index;
-            index++;
-        }
-    }
-    public void BoxHit(int index, Vector3 position, Bomb bomb)
-    {
-        photonView.RPC("BoxItem", RpcTarget.AllViaServer, index, position,bomb);
-    }
-    [PunRPC]
-    private void BoxItem(int index, Vector3 position, Bomb bomb)
-    {
-        Instantiate(itemArray[item[index]], position, Quaternion.Euler(0, 0, 0)).GetComponent<PassiveItem>().Bomb=bomb;
-    }
-    // 디버그 모드 전용
-    public override void OnJoinedRoom()
-    {
-        StartCoroutine(DebugGameSetupDelay());
-    }
-    IEnumerator DebugGameSetupDelay()
-    {
-        yield return new WaitForSeconds(1f);
-        ItemCreate();
-    }
 
-    public override void OnConnectedToMaster()
+    IEnumerator ItemSetDelay()
     {
-        base.OnConnectedToMaster();
-    }
-
-    public bool CheckRoomMaster()
-    {
-        return (PhotonNetwork.IsMasterClient);
+        yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != players);
+        ItemSet();
     }
     public void ItemSet()
     {
@@ -85,7 +71,10 @@ public class ItemSetting : MonoBehaviourPunCallbacks
         foreach(Transform trans in transform)
         {
             if (itemCount < 1)
-                break;
+            {
+                gameScene.ArrayCopy(check, item);
+                return;
+            }
             // 부모 트랜스폼과 같으면 건너뛴다
             if (trans == transform)
                 continue;
@@ -98,7 +87,6 @@ public class ItemSetting : MonoBehaviourPunCallbacks
                     check[index] = 1;
                     item[index] = Random.Range(0, itemArray.Length);
                     itemCount -= 1;
-                    Debug.Log($"index:{index} :{check[index]}: {item[index]}");
                 }
             }
             index++;
