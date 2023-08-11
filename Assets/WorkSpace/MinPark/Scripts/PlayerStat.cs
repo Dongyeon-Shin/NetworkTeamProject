@@ -17,6 +17,10 @@ public class PlayerStat : MonoBehaviourPunCallbacks
     public GameScene GameScene {  get { return gameScene; } }
     private int playerNumber;
     public int PlayerNumber { get { return playerNumber; } }
+    [SerializeField]
+    private int iDNumber;
+    public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
+
 
     private void Start()
     {
@@ -68,7 +72,7 @@ public class PlayerStat : MonoBehaviourPunCallbacks
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
         playerNumber =  PhotonNetwork.LocalPlayer.GetPlayerNumber();
         yield return new WaitWhile(() => gameScene == null);
-        gameScene.RegisterPlayerID(gameObject);
+        gameScene.RegisterPlayerID(gameObject, ref iDNumber);
     }
     public void InitialSetup(GameScene gameScene)
     {

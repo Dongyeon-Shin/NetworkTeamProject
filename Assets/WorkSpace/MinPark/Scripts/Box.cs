@@ -13,6 +13,7 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
         collider = GetComponent<BoxCollider>();
     }
 
+    [SerializeField]
     private int iDNumber;   
     public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
 

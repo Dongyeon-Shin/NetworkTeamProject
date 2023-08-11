@@ -12,8 +12,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     private PlayerStat stat;
     private Animator animator;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
-    private int iDNumber;
-    public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
+    public int IDNumber { get { return stat.IDNumber; } set { stat.IDNumber = value; } }
 
     private void Awake()
     {
@@ -33,7 +32,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     [PunRPC]
     private void PlantABomb(Vector3 position, int explosivePower, int playerNumber)
     {
-        Bomb plantedBomb = GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation).GetComponent<Bomb>();
+        Bomb plantedBomb = GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation, true).GetComponent<Bomb>();
         if (plantedBomb.GameScene == null)
         {
             plantedBomb.GameScene = stat.GameScene;
@@ -66,14 +65,16 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     public void ExplosiveReact(Bomb bomb)
     {
         //TODO: 플레이어 피격시 반응
-        animator.SetBool("Die", true);
-        stat.IsAlive = false;
+        StartCoroutine(DyingRoutine());
     }
 
     
     IEnumerator DyingRoutine()
     {
+        stat.IsAlive = false;
+        animator.SetBool("Die", true);
         yield return new WaitForSeconds(2f);
+        PhotonNetwork.Destroy(photonView);
     }
 
 }
