@@ -38,7 +38,6 @@ public class PlayerMove : MonoBehaviourPun
     private void FixedUpdate()
     {
         Move();
-        transform.Rotate(moveDir, Space.World);
     }
 
     void Move()
@@ -51,24 +50,27 @@ public class PlayerMove : MonoBehaviourPun
 
         if (moveDir.sqrMagnitude >= 0.01f)
             transform.rotation = Quaternion.LookRotation(moveDir);
+
+        transform.Rotate(moveDir, Space.World);
     }
 
     public void OnMove(InputValue value)
     {
-        moveDir.x = value.Get<Vector2>().x;
-        moveDir.z = value.Get<Vector2>().y;
-
-        if (!stat.IsAlive)
-            return;
-
-        if (playerChat.IsChatting == true || playerChat.IsSetting == true)
+        if (stat.IsAlive)
         {
-            moveDir.x = 0;
-            moveDir.z = 0;
-        }
+            moveDir.x = value.Get<Vector2>().x;
+            moveDir.z = value.Get<Vector2>().y;
 
-        else if (playerChat.IsChatting == false || playerChat.IsSetting == true)
-        {
+
+
+            if (playerChat.IsChatting == true || playerChat.IsSetting == true)
+            {
+                moveDir.x = 0;
+                moveDir.z = 0;
+            }
+
+            else if (playerChat.IsChatting == false || playerChat.IsSetting == true)
+            {
                 if (moveDir.x > 0 || moveDir.z > 0 || moveDir.x < 0 || moveDir.z < 0)
                     animator.SetBool("Move", true);
                 else if (moveDir.x == 0 && moveDir.z == 0)
@@ -83,7 +85,9 @@ public class PlayerMove : MonoBehaviourPun
                     moveDir.x = 0;
                 else if (moveDir.z < 0 && moveDir.x > 0 || moveDir.x < 0)
                     moveDir.x = 0;
+            }
         }
+        
     }
    
     private void OnTriggerStay(Collider other)

@@ -72,7 +72,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     IEnumerator DyingRoutine()
     {
         photonView.RPC("Dead", RpcTarget.All);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(4f);
         deadState.SetActive(false);
     }
 
