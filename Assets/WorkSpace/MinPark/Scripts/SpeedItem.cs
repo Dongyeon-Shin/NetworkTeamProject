@@ -17,7 +17,7 @@ public class SpeedItem : PassiveItem
             stat.Speed = coefficient;
             stat.StatRenewal();
             stat.ItemInterfaceSet();
-            PhotonNetwork.Destroy(gameObject);
+            gameScene.ItemDestroy(gameObject);
         }
     }
 

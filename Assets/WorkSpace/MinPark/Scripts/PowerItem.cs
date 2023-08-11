@@ -17,7 +17,7 @@ public class PowerItem : PassiveItem
             stat.Power = coefficient;
             stat.StatRenewal();
             stat.ItemInterfaceSet();
-            PhotonNetwork.Destroy(gameObject);
+            gameScene.ItemDestroy(gameObject);
         }
     }
 
