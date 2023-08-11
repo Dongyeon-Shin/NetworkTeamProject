@@ -71,8 +71,8 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     {
         photonView.RPC("Dead", RpcTarget.All);
         yield return new WaitForSeconds(2f);
-        photonView.RPC("DeadBody", RpcTarget.All);
         PhotonNetwork.Destroy(photonView);
+        photonView.RPC("DeadBody", RpcTarget.All);
     }
 
     [PunRPC]
