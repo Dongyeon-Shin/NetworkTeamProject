@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable, IOnPhotonViewPreNetDestroy
+public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 {
     private PlayerStat stat;
     private Animator animator;
@@ -69,13 +69,10 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable, IOnPhotonVi
     
     IEnumerator DyingRoutine()
     {
-        yield return new WaitForSeconds(2f);
-        PhotonNetwork.Destroy(photonView);
-    }
-
-    public void OnPreNetDestroy(PhotonView rootView)
-    {
         photonView.RPC("Dead", RpcTarget.All);
+        yield return new WaitForSeconds(2f);
+        photonView.RPC("DeadBody", RpcTarget.All);
+        PhotonNetwork.Destroy(photonView);
     }
 
     [PunRPC]
@@ -83,5 +80,11 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable, IOnPhotonVi
     {
         stat.IsAlive = false;
         animator.SetBool("Die", true);
+    }
+
+    [PunRPC]
+    public void DeadBody()
+    {
+        GameManager.Resource.Instantiate(Resources.Load("Player/DeadBody_Player"),transform.position, transform.rotation);
     }
 }
