@@ -9,6 +9,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 {
+    [SerializeField] GameObject deadState;
+
     private PlayerStat stat;
     private Animator animator;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
@@ -70,9 +72,8 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     IEnumerator DyingRoutine()
     {
         photonView.RPC("Dead", RpcTarget.All);
-        yield return new WaitForSeconds(2f);
-        PhotonNetwork.Destroy(photonView);
-        photonView.RPC("DeadBody", RpcTarget.All);
+        yield return new WaitForSeconds(4f);
+        deadState.SetActive(false);
     }
 
     [PunRPC]
@@ -80,11 +81,5 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     {
         stat.IsAlive = false;
         animator.SetBool("Die", true);
-    }
-
-    [PunRPC]
-    public void DeadBody()
-    {
-        GameManager.Resource.Instantiate(Resources.Load("Player/DeadBody_Player"),transform.position, transform.rotation);
     }
 }
