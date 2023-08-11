@@ -46,11 +46,8 @@ public class GameScene : BaseScene
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
         StartPointData startPointData = GameManager.Resource.Load<StartPointData>("Map/StartPointData");
         RegisterMapObjectsID (Instantiate(startPointData.StartPoints[0].map));
-        Debug.Log(PhotonNetwork.PlayerList.Length);
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
-        Debug.Log(PhotonNetwork.PlayerList.Length);
-        Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
-        PhotonNetwork.InstantiateRoomObject("Prefab/Player_ver0.1/Player_Reindeer", startPointData.StartPoints[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0)).GetComponent<PlayerStat>().InitialSetup(this);
+        PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", startPointData.StartPoints[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0)).GetComponent<PlayerStat>().InitialSetup(this);
     }
 
     public override void OnConnectedToMaster()
@@ -62,18 +59,20 @@ public class GameScene : BaseScene
     private void RegisterMapObjectsID(GameObject map)
     {
         IExplosiveReactivable[] mapObjects = map.GetComponentsInChildren<IExplosiveReactivable>();
-        foreach (IExplosiveReactivable mapObject in mapObjects)
+        for (int i = 0; i < mapObjects.Length; i++)
         {
-            explosiveReactivableObjects.Add(mapObject);
+            mapObjects[i].IDNumber = i;
+            explosiveReactivableObjects.Add(mapObjects[i]);
         }
     }
 
-    public void RegisterPlayerID(GameObject player)
+    public void RegisterPlayerID(GameObject player, ref int iDNumber)
     {
         //TODO: Test 필요 플레이어가 접속되는 순서대로 playernumbering이 부과되니까
         // 해당 함수도 playernumber와 같은 순서로 호출된다는 가정
         // 하지만 각각의 local에서 다른 플레이어 오브젝트는 PhotonNetwork instantiate이기 떄문에
         // 혹시 모르니 확인할것
+        iDNumber = explosiveReactivableObjects.Count;
         explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
         Debug.Log(player.GetComponent<PlayerStat>().PlayerNumber);
     }
@@ -84,15 +83,23 @@ public class GameScene : BaseScene
         bombList.Add(bomb);
     }
 
-    public void RequestExplosiveReaction(IExplosiveReactivable target, int bombIndex)
+    public void RequestExplosiveReaction(IExplosiveReactivable target, int bombIndex, bool chainExplosion)
     {
-        photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, bombIndex);
+        Debug.Log(target.IDNumber);
+        photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, bombIndex, chainExplosion);
     }
 
     [PunRPC]
-    private void SendExplosionResult(int explosiveReactivableObjectIndex, int bombIndex)
+    private void SendExplosionResult(int explosiveReactivableObjectIndex, int bombIndex, bool chainExplosion)
     {
-        explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombList[bombIndex]);
+        if (chainExplosion)
+        {
+            bombList[explosiveReactivableObjectIndex].ExplosiveReact(bombList[bombIndex]);
+        }
+        else
+        {
+            explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombList[bombIndex]);
+        }
     }
 
 }

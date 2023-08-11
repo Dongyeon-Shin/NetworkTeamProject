@@ -7,6 +7,7 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
 {
     public ItemSetting item;
     public int index;
+    [SerializeField]
     private int iDNumber;
     public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
 
@@ -19,8 +20,6 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
     {
         item = GetComponentInParent<ItemSetting>();
         // item이 비어있지 않으면 아이템 생성
-        if (item.check[index] == 1)
-            item.BoxHit(index, transform.position, bomb);
         PhotonNetwork.Destroy(gameObject);
     }
 }
