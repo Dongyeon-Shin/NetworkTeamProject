@@ -45,18 +45,6 @@ public class GameScene : BaseScene
         PhotonNetwork.ConnectUsingSettings();
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
         StartPointData startPointData = GameManager.Resource.Load<StartPointData>("Map/StartPointData");
-        //맵생섣ㅇ
-        // 아이템 세팅
-        // gameScene item 총개수
-        // RPC 공유할거임
-        // [위치에 아이템 있음] [무슨 아이템] 
-        // for (int i = 0; i < [위치에 아이템].length; i++)
-        {
-            // GameObject gameObject = GameManager.Resource.Instantiate(무슨 아이템[i]);
-            // gameObject.transform.setParent = 맵.transform
-        }
-        // 네트워크 id부여
-        // 만들어논 아이템들 비활성화
         RegisterMapObjectsID (Instantiate(startPointData.StartPoints[0].map));
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
         PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", startPointData.StartPoints[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0)).GetComponent<PlayerStat>().InitialSetup(this);
@@ -78,12 +66,13 @@ public class GameScene : BaseScene
         }
     }
 
-    public void RegisterPlayerID(GameObject player)
+    public void RegisterPlayerID(GameObject player, ref int iDNumber)
     {
         //TODO: Test 필요 플레이어가 접속되는 순서대로 playernumbering이 부과되니까
         // 해당 함수도 playernumber와 같은 순서로 호출된다는 가정
         // 하지만 각각의 local에서 다른 플레이어 오브젝트는 PhotonNetwork instantiate이기 떄문에
         // 혹시 모르니 확인할것
+        iDNumber = explosiveReactivableObjects.Count;
         explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
         Debug.Log(player.GetComponent<PlayerStat>().PlayerNumber);
     }
@@ -94,16 +83,23 @@ public class GameScene : BaseScene
         bombList.Add(bomb);
     }
 
-    public void RequestExplosiveReaction(IExplosiveReactivable target, int bombIndex)
+    public void RequestExplosiveReaction(IExplosiveReactivable target, int bombIndex, bool chainExplosion)
     {
         Debug.Log(target.IDNumber);
-        photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, bombIndex);
+        photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, bombIndex, chainExplosion);
     }
 
     [PunRPC]
-    private void SendExplosionResult(int explosiveReactivableObjectIndex, int bombIndex)
+    private void SendExplosionResult(int explosiveReactivableObjectIndex, int bombIndex, bool chainExplosion)
     {
-        explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombList[bombIndex]);
+        if (chainExplosion)
+        {
+            bombList[explosiveReactivableObjectIndex].ExplosiveReact(bombList[bombIndex]);
+        }
+        else
+        {
+            explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombList[bombIndex]);
+        }
     }
 
 }

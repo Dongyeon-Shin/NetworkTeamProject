@@ -12,9 +12,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     private PlayerStat stat;
     private Animator animator;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
-    [SerializeField]
-    private int iDNumber;
-    public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
+    public int IDNumber { get { return stat.IDNumber; } set { stat.IDNumber = value; } }
 
     private void Awake()
     {
