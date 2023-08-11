@@ -22,11 +22,6 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
         stat = GetComponent<PlayerStat>();
     }
 
-    private void Start()
-    {
-        StartCoroutine(DyingRoutine());
-    }
-
     private void OnFire(InputValue value)
     {
         if (stat.IsAlive && stat.Bomb > plantingBombs.Count)
@@ -76,7 +71,6 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     
     IEnumerator DyingRoutine()
     {
-        yield return new WaitForSeconds(2f);
         photonView.RPC("Dead", RpcTarget.All);
         yield return new WaitForSeconds(2f);
         deadState.SetActive(false);
