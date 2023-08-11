@@ -73,7 +73,6 @@ public class ItemSetting : MonoBehaviourPun
             if (itemCount < 1)
             {
                 gameScene.ArrayCopy(check, item);
-                Debug.Log("ArrayCopy");
                 return;
             }
             // 부모 트랜스폼과 같으면 건너뛴다

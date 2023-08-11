@@ -11,17 +11,14 @@ public class SpeedItem : PassiveItem
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "Player"&& PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if(PhotonNetwork.LocalPlayer.IsMasterClient)
-            other.GetComponent<PlayerStat>().Speed = coefficient;
-            other.GetComponent<PlayerStat>().ItemInterfaceSet();
-            
-            Destroy(gameObject);
+            PlayerStat stat = other.GetComponent<PlayerStat>();
+            stat.Speed = coefficient;
+            stat.StatRenewal();
+            stat.ItemInterfaceSet();
+            PhotonNetwork.Destroy(gameObject);
         }
     }
-    public void GameSceneSet(GameScene gameScene)
-    {
-        this.gameScene = gameScene;
-    }
+
 }

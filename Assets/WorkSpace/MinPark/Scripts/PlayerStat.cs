@@ -45,6 +45,18 @@ public class PlayerStat : MonoBehaviourPunCallbacks
         //bomb_Text.text = $"{bomb - 1}";
     }
 
+    public void StatRenewal()
+    {
+        photonView.RPC("StatRPC", RpcTarget.AllViaServer, power, bomb, speed);
+    }
+    [PunRPC]
+    private void StatRPC(int power, int bomb, int speed)
+    {
+        this.power = power;
+        this.bomb = bomb;
+        this.speed = speed;
+    }
+
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();

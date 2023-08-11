@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,15 +11,14 @@ public class PowerItem : PassiveItem
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "Player" && PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            other.GetComponent<PlayerStat>().Power = coefficient;
-            other.GetComponent<PlayerStat>().ItemInterfaceSet();
-            Destroy(gameObject);
+            PlayerStat stat = other.GetComponent<PlayerStat>();
+            stat.Power = coefficient;
+            stat.StatRenewal();
+            stat.ItemInterfaceSet();
+            PhotonNetwork.Destroy(gameObject);
         }
     }
-    public void GameSceneSet(GameScene gameScene)
-    {
-        this.gameScene = gameScene;
-    }
+
 }

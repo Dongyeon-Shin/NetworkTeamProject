@@ -7,7 +7,6 @@ using UnityEngine;
 public abstract class PassiveItem : MonoBehaviour, IExplosiveReactivable
 {
     protected int coefficient;
-    protected GameScene gameScene;
     private Bomb bomb;
     public Bomb Bomb { set { bomb=value; } }
 
@@ -16,9 +15,12 @@ public abstract class PassiveItem : MonoBehaviour, IExplosiveReactivable
 
     public void ExplosiveReact(Bomb bomb)
     {
-        if (this.bomb == bomb)
-            return;
-        Destroy(gameObject);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (this.bomb == bomb)
+                return;
+            Destroy(gameObject);
+        }
     }
     protected abstract void CoeffiCient();
 
