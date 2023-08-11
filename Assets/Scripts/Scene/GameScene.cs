@@ -3,10 +3,20 @@ using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameScene : BaseScene
 {
+    [SerializeField]
+    private MapData md;
+
+    GameObject map;
+
+    // 아직 아이디어 생각 안나서 일단 이대로함
+    Transform itemSetting;
+    ItemSetting itemSet;
+
     private List<IExplosiveReactivable> explosiveReactivableObjects = new List<IExplosiveReactivable>();
     private List<Bomb> bombList = new List<Bomb>();
 
@@ -44,11 +54,79 @@ public class GameScene : BaseScene
         PhotonNetwork.LocalPlayer.NickName = $"DebugPlayer {Random.Range(1000, 10000)}";
         PhotonNetwork.ConnectUsingSettings();
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
-        StartPointData startPointData = GameManager.Resource.Load<StartPointData>("Map/StartPointData");
-        RegisterMapObjectsID (Instantiate(startPointData.StartPoints[0].map));
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
-        PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", startPointData.StartPoints[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0)).GetComponent<PlayerStat>().InitialSetup(this);
     }
+    IEnumerator MapLoadingRoutine()
+    {
+        // 스크립터블 오브젝트 연결
+        md = GameManager.Resource.Load<MapData>("Map/MapData");
+        // 맵생성
+        map = Instantiate(md.MapDatas[0].map);
+        itemSet = map.GetComponentInChildren<ItemSetting>();
+        itemSetting = itemSet.transform;
+        itemSet.ItemSettingConnect(this);
+        itemSet.ItemCreate();
+        yield return null;
+    }
+
+    IEnumerator PlayerLoadingRoutine()
+    {
+        GameObject player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+        player.GetComponent<PlayerStat>().InitialSetup(this);
+        yield return null;
+    }
+
+    IEnumerator UILoadingRoutine()
+    {
+        GameObject inGameInterface = GameManager.Resource.Instantiate(GameManager.Resource.Load<GameObject>("Map/GameInterFace"));
+        // 타이머 없애면 쉽게 가능.
+        //player.GetComponent<PlayerStat>().InterFaceSet(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
+
+        yield return null;
+    }
+
+
+    // 배열 저장
+    public void ItemSetting(int[] check, int[] items) 
+    {
+        StartCoroutine(ItemCreate());
+
+        IEnumerator ItemCreate()
+        {
+            // 디버그 모드시 2명이 접속해야 실행
+            yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != 2);
+            photonView.RPC("ItemCreateRPC", RpcTarget.AllViaServer, check, items);
+        }
+    }
+
+    [PunRPC]
+    private void ItemCreateRPC(int[] check, int[] items)
+    {
+        for (int i = 0; i < check.Length; i++)
+        {
+            if (check[i] == 1)
+            {
+                GameObject createitem = itemSetting.GetChild(i).GetComponent<Box>().item = itemSet.itemArray[items[i]];
+                createitem.GetComponent<PassiveItem>().GameSceneSet(this);
+                IExplosiveReactivable item = createitem.GetComponent<IExplosiveReactivable>();
+                item.IDNumber = explosiveReactivableObjects.Count;
+                explosiveReactivableObjects.Add(item);
+            }
+        }
+        RegisterMapObjectsID(map);
+    }
+
+    public void ItemDestroy(GameObject gameObject)
+    {
+        photonView.RPC("ItemDestroyRPC", RpcTarget.AllViaServer, gameObject);
+    }
+
+    [PunRPC]
+    private void ItemDestroyRPC(GameObject gameObject)
+    {
+        Destroy(gameObject);
+    }
+
 
     public override void OnConnectedToMaster()
     {
@@ -59,10 +137,11 @@ public class GameScene : BaseScene
     private void RegisterMapObjectsID(GameObject map)
     {
         IExplosiveReactivable[] mapObjects = map.GetComponentsInChildren<IExplosiveReactivable>();
-        for (int i = 0; i < mapObjects.Length; i++)
+        int itemindex= explosiveReactivableObjects.Count;
+        for (int i = itemindex; i < itemindex + mapObjects.Length;i++)
         {
-            mapObjects[i].IDNumber = i;
-            explosiveReactivableObjects.Add(mapObjects[i]);
+            mapObjects[i-itemindex].IDNumber = i;
+            explosiveReactivableObjects.Add(mapObjects[i - itemindex]);
         }
     }
 

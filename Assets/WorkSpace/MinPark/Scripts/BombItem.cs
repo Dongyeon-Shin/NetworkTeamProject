@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,14 +11,14 @@ public class BombItem : PassiveItem
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "Player" && PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if(photonView.IsMine)
-            other.GetComponent<PlayerStat>().Bomb = coefficient;
-            other.GetComponent <PlayerStat>().ItemInterfaceSet();
-            Destroy(gameObject);
-            // 포톤 사용시 위에 대신 아래꺼 사용
-            //Destroy();
+            PlayerStat stat = other.GetComponent<PlayerStat>();
+            stat.Bomb = coefficient;
+            stat.StatRenewal();
+            stat.ItemInterfaceSet();
+            gameScene.ItemDestroy(gameObject);
         }
     }
+
 }
