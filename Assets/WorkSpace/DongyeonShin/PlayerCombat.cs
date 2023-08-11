@@ -3,6 +3,7 @@ using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -66,20 +67,20 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     public void ExplosiveReact(Bomb bomb)
     {
         //TODO: 플레이어 피격시 반응
-        StartCoroutine(DyingRoutine());
+        photonView.RPC("DeadSet", RpcTarget.All);
     }
     
-    IEnumerator DyingRoutine()
+    [PunRPC]
+    public void DeadSet()
     {
-        photonView.RPC("Dead", RpcTarget.All);
-        yield return new WaitForSeconds(4f);
-        deadState.SetActive(false);
+        StartCoroutine(DeadRoutine());
     }
 
-    [PunRPC]
-    public void Dead()
+    IEnumerator DeadRoutine()
     {
         stat.IsAlive = false;
         animator.SetBool("Die", true);
+        yield return new WaitForSeconds(4f);
+        deadState.SetActive(false);
     }
 }
