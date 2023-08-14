@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -25,21 +26,26 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     private LayerMask unPenetratedObjectsLayerMask;
     private LayerMask bombLayerMask;
     private LayerMask boxLayerMask;
+    private LayerMask playerMask;
     private BoxCollider boxCollider;
     private SphereCollider explodCollider;
     private bool readyToExplode;
     private Coroutine lightTheFuseRoutine;
     private MeshRenderer bombRenderer;
+    private AudioSource explodClip;
 
 
     private void Awake()
     {
         explodCollider = GetComponent<SphereCollider>();
         boxCollider = GetComponent<BoxCollider>();
+        explodClip = GetComponent<AudioSource>();
         bombLayerMask = LayerMask.GetMask("Bomb");
         boxLayerMask = LayerMask.GetMask("Box");
+        playerMask = LayerMask.GetMask("Player");
         unPenetratedObjectsLayerMask = 1 | bombLayerMask;
         bombRenderer = GetComponentInChildren<MeshRenderer>();
+
     }
 
     private void OnEnable()
@@ -170,6 +176,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     {
         if (direction == Vector3.zero)
         {
+            explodClip.Play();   // 오디오 소스
             GameManager.Resource.Instantiate(Resources.Load("Particle/ExplosionParticle"), transform.position, transform.rotation);
             Coroutine checkAftermathOfExplosion = StartCoroutine(CheckAftermathOfExplosionRoutine(explosionRange, direction));
             yield return new WaitForSeconds(2.5f);
@@ -219,12 +226,42 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         readyToExplode = true;
     }
 
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.layer == playerMask)
+        {
+            if (PlayerCheck())
+                boxCollider.isTrigger = true;
+            else
+                boxCollider.isTrigger = false;
+        }
+    }
+
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        if (other.gameObject.layer == playerMask)
         {
             boxCollider.isTrigger = false;
         }
     }
 
+    private bool PlayerCheck()
+    {
+        int layerMask = (1 << playerMask);
+
+        Collider[] colliders =
+                    Physics.OverlapBox(boxCollider.center + transform.parent.position, boxCollider.size/2, Quaternion.identity, layerMask);
+        foreach (Collider col in colliders)
+        {
+            if (col.name == "box" && colliders.Length ==0 /* 자기 자신은 제외 */) continue;
+            if (colliders.Length <= 1)
+            {
+                return false;
+            }
+            else
+                return true;
+
+        }
+        return false;
+    }
 }
