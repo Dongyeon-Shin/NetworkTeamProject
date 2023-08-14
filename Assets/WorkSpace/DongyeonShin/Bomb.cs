@@ -217,7 +217,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         }
     }
 
-    public void ExplosiveReact(Bomb bomb)
+    public void ExplosiveReact(int bombIDNumber)
     {
         Debug.Log("bombCheck");
         StopCoroutine(lightTheFuseRoutine);

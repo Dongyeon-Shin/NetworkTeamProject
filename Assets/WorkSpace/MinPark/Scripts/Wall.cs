@@ -7,7 +7,7 @@ public class Wall : MonoBehaviour, IExplosiveReactivable
     [SerializeField]
     private int iDNumber;
     public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
-    public void ExplosiveReact(Bomb bomb)
+    public void ExplosiveReact(int bombIDNumber)
     {
         
     }
