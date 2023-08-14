@@ -3,12 +3,15 @@ using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable, IOnPhotonViewPreNetDestroy
+public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 {
+    [SerializeField] GameObject deadState;
+
     private PlayerStat stat;
     private Animator animator;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
@@ -64,24 +67,20 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable, IOnPhotonVi
     public void ExplosiveReact(Bomb bomb)
     {
         //TODO: 플레이어 피격시 반응
-        StartCoroutine(DyingRoutine());
+        photonView.RPC("DeadSet", RpcTarget.All);
     }
     
-    IEnumerator DyingRoutine()
-    {
-        yield return new WaitForSeconds(2f);
-        PhotonNetwork.Destroy(photonView);
-    }
-
-    public void OnPreNetDestroy(PhotonView rootView)
-    {
-        photonView.RPC("Dead", RpcTarget.All);
-    }
-
     [PunRPC]
-    public void Dead()
+    public void DeadSet()
+    {
+        StartCoroutine(DeadRoutine());
+    }
+
+    IEnumerator DeadRoutine()
     {
         stat.IsAlive = false;
         animator.SetBool("Die", true);
+        yield return new WaitForSeconds(4f);
+        deadState.SetActive(false);
     }
 }

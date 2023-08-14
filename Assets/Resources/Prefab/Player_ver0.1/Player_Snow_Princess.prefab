@@ -1324,7 +1324,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6425393950745082936}
-  - component: {fileID: 6460061735560996852}
   m_Layer: 3
   m_Name: ChatUI
   m_TagString: Untagged
@@ -1349,18 +1348,6 @@ Transform:
   m_Father: {fileID: 7288310759521346118}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6460061735560996852
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3229150788166799910}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c71a3a7dd975a4409ca7610a2901481, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3274096979854004416
 GameObject:
   m_ObjectHideFlags: 0
@@ -3161,6 +3148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a446c06fa5c0040ac201a43732614e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deadState: {fileID: 8399156019841912952}
 --- !u!114 &4272329599306467410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3198,6 +3186,7 @@ MonoBehaviour:
   power_Text: {fileID: 0}
   speed_Text: {fileID: 0}
   bomb_Text: {fileID: 0}
+  iDNumber: 0
   power: 1
   bomb: 1
   speed: 1
