@@ -115,16 +115,16 @@ public class GameScene : BaseScene
 
 
     // 배열 저장
-    public void ItemSetting(int[] check, int[] items) 
+    public IEnumerator ItemSetting(int[] check, int[] items) 
     {
-        StartCoroutine(ItemCreate());
+        yield return StartCoroutine(ItemCreate(check));
+    }
 
-        IEnumerator ItemCreate()
-        {
-            // 디버그 모드시 2명이 접속해야 실행
-            yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != 2);
-            photonView.RPC("ItemCreateRPC", RpcTarget.AllViaServer, check, items);
-        }
+    IEnumerator ItemCreate(int[] check)
+    {
+        // 디버그 모드시 2명이 접속해야 실행
+        yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != 2);
+        photonView.RPC("ItemCreateRPC", RpcTarget.AllViaServer, check, items);
     }
 
     [PunRPC]
@@ -160,28 +160,6 @@ public class GameScene : BaseScene
         PhotonNetwork.JoinOrCreateRoom("DebugRoom", options, TypedLobby.Default);
     }
 
-    private void RegisterMapObjectsID(GameObject map)
-    {
-        IExplosiveReactivable[] mapObjects = map.GetComponentsInChildren<IExplosiveReactivable>();
-        int itemindex= explosiveReactivableObjects.Count;
-        for (int i = itemindex; i < itemindex + mapObjects.Length;i++)
-        {
-            mapObjects[i-itemindex].IDNumber = i;
-            explosiveReactivableObjects.Add(mapObjects[i - itemindex]);
-        }
-    }
-
-    public void RegisterPlayerID(GameObject player, ref int iDNumber)
-    {
-        //TODO: Test 필요 플레이어가 접속되는 순서대로 playernumbering이 부과되니까
-        // 해당 함수도 playernumber와 같은 순서로 호출된다는 가정
-        // 하지만 각각의 local에서 다른 플레이어 오브젝트는 PhotonNetwork instantiate이기 떄문에
-        // 혹시 모르니 확인할것
-        iDNumber = explosiveReactivableObjects.Count;
-        explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
-        Debug.Log(player.GetComponent<PlayerStat>().PlayerNumber);
-    }
-
     public void RegisterBombID(Bomb bomb)
     {
         bomb.IDNumber = bombList.Count;
@@ -190,13 +168,13 @@ public class GameScene : BaseScene
 
     public void RequestExplosiveReaction(IExplosiveReactivable target, int bombIndex, bool chainExplosion)
     {
-        Debug.Log(target.IDNumber);
         photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, bombIndex, chainExplosion);
     }
 
     [PunRPC]
     private void SendExplosionResult(int explosiveReactivableObjectIndex, int bombIndex, bool chainExplosion)
     {
+        Debug.Log(explosiveReactivableObjectIndex);
         if (chainExplosion)
         {
             bombList[explosiveReactivableObjectIndex].ExplosiveReact(bombList[bombIndex]);

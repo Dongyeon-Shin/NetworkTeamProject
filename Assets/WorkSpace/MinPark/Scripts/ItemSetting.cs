@@ -51,7 +51,7 @@ public class ItemSetting : MonoBehaviourPun
         }
     }
 
-    public void ItemSet()
+    public IEnumerator ItemSet()
     {
         int index = 0;
         foreach(Transform trans in transform)
@@ -59,7 +59,7 @@ public class ItemSetting : MonoBehaviourPun
             if (itemCount < 1)
             {
                 gameScene.ItemSetting(check, item);
-                return;
+                yield break;
             }
             // 부모 트랜스폼과 같으면 건너뛴다
             if (trans == this.transform)
@@ -79,6 +79,7 @@ public class ItemSetting : MonoBehaviourPun
                 }
             }
             index++;
+            yield return null;
         }
         if (itemCount > 0)
             ItemSet();

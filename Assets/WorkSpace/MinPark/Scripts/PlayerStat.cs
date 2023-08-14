@@ -75,8 +75,8 @@ public class PlayerStat : MonoBehaviourPunCallbacks
     {
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
         playerNumber =  PhotonNetwork.LocalPlayer.GetPlayerNumber();
-        yield return new WaitWhile(() => gameScene == null);
-        gameScene.RegisterPlayerID(gameObject, ref iDNumber);
+        //yield return new WaitWhile(() => gameScene == null);
+        //gameScene.RegisterPlayerID(gameObject, ref iDNumber);
     }
     public void InitialSetup(GameScene gameScene)
     {
