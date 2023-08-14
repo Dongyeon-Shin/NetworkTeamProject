@@ -31,6 +31,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Chatting",
+                    "type": "Button",
+                    "id": "f6a12bb4-86ad-4b15-acc9-79b94ddfd9ed",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -163,6 +172,45 @@
                     "processors": "",
                     "groups": "",
                     "action": "Setting",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "63a931cd-fdfc-401f-947c-410e44d8d308",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Chatting",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "ChatUI",
+            "id": "079640d0-642d-4d14-9965-d982804c9700",
+            "actions": [
+                {
+                    "name": "Chatting",
+                    "type": "Button",
+                    "id": "609e08fe-84f9-49be-932e-cb5e0aa5fdc6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "175c5b1b-7f74-42df-8a88-84d7076c25bf",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Chatting",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

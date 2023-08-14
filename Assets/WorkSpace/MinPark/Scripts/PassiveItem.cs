@@ -4,29 +4,33 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class PassiveItem : MonoBehaviourPun, IExplosiveReactivable
+public abstract class PassiveItem : MonoBehaviour, IExplosiveReactivable
 {
     protected int coefficient;
+    private Bomb bomb;
+    public Bomb Bomb { set { bomb=value; } }
+    public GameScene gameScene;
 
-    public void ExplosiveReact()
+    private int iDNumber;
+    public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
+
+    public void ExplosiveReact(Bomb bomb)
     {
-        Destroy(gameObject);
-        //포톤 사용시 아래의 디스트로이 사용
-        //Destroy();
-    }
-    protected void Destroy()
-    {
-        photonView.RPC("RequestItemDestroy", RpcTarget.All);
-    }
-    [PunRPC]
-    private void RequestItemDestroy()
-    {
-        GameManager.Resource.Destroy(gameObject);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (this.bomb == bomb)
+                return;
+            Destroy(gameObject);
+        }
     }
     protected abstract void CoeffiCient();
 
     private void Start()
     {
         CoeffiCient();
+    }
+    public void GameSceneSet(GameScene gameScene)
+    {
+        this.gameScene = gameScene;
     }
 }

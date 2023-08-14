@@ -1,21 +1,34 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Box : MonoBehaviour, IExplosiveReactivable
+public class Box : MonoBehaviourPun, IExplosiveReactivable
 {
+    private BoxCollider collider;
     public GameObject item;
 
-    public void ExplosiveReact()
+    private void Start()
     {
-        Hit();
+        collider = GetComponent<BoxCollider>();
     }
 
-    private void Hit()
+    [SerializeField]
+    private int iDNumber;   
+    public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
+
+    public void ExplosiveReact(Bomb bomb)
     {
-        // item이 비어있지 않으면 아이템 생성
+        Hit(bomb);
+    }
+
+    private void Hit(Bomb bomb)
+    {
+        Debug.Log("hit");
         if(item != null)
-            Instantiate(item, transform.position, Quaternion.Euler(0, 0, 0));
+        {
+            Instantiate(item,transform.position,Quaternion.Euler(0,0,0)).GetComponent<PassiveItem>().Bomb=bomb;
+        }
         Destroy(gameObject);
     }
 }

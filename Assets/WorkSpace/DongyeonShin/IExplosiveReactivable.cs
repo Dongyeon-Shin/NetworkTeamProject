@@ -4,5 +4,10 @@ using UnityEngine;
 
 public interface IExplosiveReactivable
 {
-    public void ExplosiveReact();
+    int IDNumber
+    {
+        get;
+        set;
+    }
+    public void ExplosiveReact(Bomb bomb);
 }
