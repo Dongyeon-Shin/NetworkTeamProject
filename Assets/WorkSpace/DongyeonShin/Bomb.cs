@@ -55,6 +55,12 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
 
     private void Start()
     {
+        StartCoroutine(RegisterBombIDRoutine());
+    }
+
+    IEnumerator RegisterBombIDRoutine()
+    {
+        yield return new WaitWhile(() => gameScene == null);
         gameScene.RegisterBombID(this);
     }
 

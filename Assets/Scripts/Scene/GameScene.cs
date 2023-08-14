@@ -35,7 +35,7 @@ public class GameScene : BaseScene
         if (PhotonNetwork.InRoom)
         {
             // TODO: 모두 로딩이 끝나고 카운트다운 후 시작할 것
-            yield return StartCoroutine(CheckAllPlayerIsReadyRoutine());
+            yield return StartCoroutine(WaitingForOtherPlayersRoutine());
             StartCoroutine(GameStartRoutine());
         }
         yield return null;
@@ -46,17 +46,19 @@ public class GameScene : BaseScene
         yield return null;
     }
 
-    private IEnumerator CheckAllPlayerIsReadyRoutine()
-    {
-        yield return null;
-    }
-
     private IEnumerator DebugGameStartRoutine()
     {
         PhotonNetwork.LocalPlayer.NickName = $"DebugPlayer {Random.Range(1000, 10000)}";
         PhotonNetwork.ConnectUsingSettings();
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
+        //Time.timeScale = 0f;
+        yield return StartCoroutine(MapLoadingRoutine());
+        yield return StartCoroutine(PlayerLoadingRoutine());
+        yield return StartCoroutine(UILoadingRoutine());
+        yield return StartCoroutine(AllocateIDNumberRoutine());
+        yield return StartCoroutine(WaitingForOtherPlayersRoutine());
+        Time.timeScale = 1f;
     }
     IEnumerator MapLoadingRoutine()
     {
@@ -67,15 +69,16 @@ public class GameScene : BaseScene
         itemSet = map.GetComponentInChildren<ItemSetting>();
         itemSet.ItemSettingConnect(this);
         itemSet.ItemCreate();
-        yield return null;
+        yield return new WaitForSeconds(2f);
     }
 
     IEnumerator PlayerLoadingRoutine()
     {
         players = new GameObject[playerCount];
         GameObject player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
-        player.GetComponent<PlayerStat>().InitialSetup(this);
-        players[PhotonNetwork.LocalPlayer.GetPlayerNumber()] = player;
+        PlayerStat playerStat = player.GetComponent<PlayerStat>();
+        playerStat.InitialSetup(this);
+        //players[playerStat.PlayerNumber] = player;
         yield return null;
     }
 
@@ -83,11 +86,28 @@ public class GameScene : BaseScene
     {
         GameObject inGameInterface = GameManager.Resource.Instantiate(GameManager.Resource.Load<GameObject>("Map/GameInterFace"));
         // 타이머 없애면 쉽게 가능.
-        players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerStat>().InterFaceSet(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
+        //players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerStat>().InterFaceSet(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
 
         yield return null;
     }
+
     private IEnumerator AllocateIDNumberRoutine()
+    {
+        foreach (GameObject player in players)
+        {
+            explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
+        }
+        IExplosiveReactivable[] mapObjects = map.GetComponentsInChildren<IExplosiveReactivable>();
+        explosiveReactivableObjects.AddRange(mapObjects);
+        explosiveReactivableObjects.AddRange(items);
+        for (int i = 0; i < explosiveReactivableObjects.Count; i++)
+        {
+            explosiveReactivableObjects[i].IDNumber = i;
+        }
+        yield return null;
+    }
+
+    private IEnumerator WaitingForOtherPlayersRoutine()
     {
         yield return null;
     }
