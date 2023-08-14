@@ -117,10 +117,10 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
             if (reactivableObject != null)
             {
                 LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
-               if (PhotonNetwork.IsMasterClient)
-               {
-                   gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
-               }
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
+                }
                 if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
                 {
                     if (direction.z > 0)
