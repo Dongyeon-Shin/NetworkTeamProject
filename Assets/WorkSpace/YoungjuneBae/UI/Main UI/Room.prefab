@@ -440,7 +440,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6168975162052541022}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2119944721}
+        m_TargetAssemblyTypeName: RoomPanel, Assembly-CSharp
+        m_MethodName: Ready
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1497230960158188187
 GameObject:
   m_ObjectHideFlags: 0
@@ -533,7 +545,7 @@ GameObject:
   - component: {fileID: 8387447050672866890}
   - component: {fileID: 4412376558256783059}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: Text3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -613,7 +625,7 @@ GameObject:
   - component: {fileID: 3100118705052533427}
   - component: {fileID: 6946270149670385721}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: Text2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -802,7 +814,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8410448035538592542}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2119944721}
+        m_TargetAssemblyTypeName: RoomPanel, Assembly-CSharp
+        m_MethodName: StartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2182687961034684675
 GameObject:
   m_ObjectHideFlags: 0
@@ -894,7 +918,7 @@ GameObject:
   - component: {fileID: 7133767937097385465}
   - component: {fileID: 2454356023497438283}
   m_Layer: 5
-  m_Name: RawImage
+  m_Name: RawImage4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -948,7 +972,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 678feb74629edba498d1227333450ab7, type: 2}
+  m_Texture: {fileID: 8400000, guid: c6656f84d7095a7428cc684199317e03, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -972,7 +996,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7368112315402308925
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1166,8 +1190,12 @@ MonoBehaviour:
   - {fileID: 5634858283173492435}
   - {fileID: 3225795719232581185}
   - {fileID: 6225206068136879575}
-  playerName: []
-  readyButton: {fileID: 0}
+  startButton: {fileID: 1764658070750216428}
+  renderTextures:
+  - {fileID: 8400000, guid: c6656f84d7095a7428cc684199317e03, type: 2}
+  - {fileID: 8400000, guid: 62f324de2728c55419e87f55b594ab43, type: 2}
+  - {fileID: 8400000, guid: 2629709cb8bc9c248aa7bf105ca0aeee, type: 2}
+  - {fileID: 8400000, guid: 678feb74629edba498d1227333450ab7, type: 2}
 --- !u!1 &3802359013719330774
 GameObject:
   m_ObjectHideFlags: 0
@@ -1494,7 +1522,7 @@ GameObject:
   - component: {fileID: 1037376886027164807}
   - component: {fileID: 7366014150871403101}
   m_Layer: 5
-  m_Name: RawImage
+  m_Name: RawImage1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1572,7 +1600,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4518965670959628540
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1721,7 +1749,7 @@ GameObject:
   - component: {fileID: 4099009357827115507}
   - component: {fileID: 9158731638346648513}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: Text1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2091,7 +2119,7 @@ GameObject:
   - component: {fileID: 3207601503370311772}
   - component: {fileID: 4942454129138233361}
   m_Layer: 5
-  m_Name: RawImage
+  m_Name: RawImage3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2145,7 +2173,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 2629709cb8bc9c248aa7bf105ca0aeee, type: 2}
+  m_Texture: {fileID: 8400000, guid: c6656f84d7095a7428cc684199317e03, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -2243,7 +2271,7 @@ GameObject:
   - component: {fileID: 8492597891430408627}
   - component: {fileID: 995326943925326948}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: Text4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2516,7 +2544,7 @@ GameObject:
   - component: {fileID: 6548250134899751448}
   - component: {fileID: 5056809290451575598}
   m_Layer: 5
-  m_Name: RawImage
+  m_Name: RawImage2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2570,7 +2598,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 62f324de2728c55419e87f55b594ab43, type: 2}
+  m_Texture: {fileID: 8400000, guid: c6656f84d7095a7428cc684199317e03, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0

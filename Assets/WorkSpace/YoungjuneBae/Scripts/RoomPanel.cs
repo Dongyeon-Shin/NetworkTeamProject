@@ -16,6 +16,7 @@ public class RoomPanel : MonoBehaviourPunCallbacks
     [SerializeField] GameObject[] playerSpace;    
     [SerializeField] Button startButton;
     [SerializeField] List<RenderTexture> renderTextures;
+    [SerializeField] GameObject selectMap;
     public enum PlayerType { Color1, Color2, Color3, Color4 }
 
     public void PlayerLeftRoom(Player otherPlayer)
@@ -34,9 +35,7 @@ public class RoomPanel : MonoBehaviourPunCallbacks
 
     private void UpdatePlayerEntry()
     {
-        HashTable cp = PhotonNetwork.CurrentRoom.CustomProperties;
-        Debug.Log(cp["SoloMode"]);
-        Debug.Log(cp["TeamMode"]);
+        
         for (int i = 0; i < playerSpace.Length; i++)
         {
             playerSpace[i].SetActive(true);
@@ -91,7 +90,7 @@ public class RoomPanel : MonoBehaviourPunCallbacks
 
     public void StartGame()//게임 시작 버튼
     {
-        PhotonNetwork.LoadLevel("GameScene");
+        selectMap.SetActive(true);
     }
 
     public void Ready()//준비 버튼
