@@ -19,16 +19,18 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
 
     public void ExplosiveReact(Bomb bomb)
     {
-        Hit(bomb);
+        StartCoroutine(Hit(bomb));
     }
 
-    private void Hit(Bomb bomb)
+    IEnumerator Hit(Bomb bomb)
     {
-        Debug.Log("hit");
-        if(item != null)
+        collider.enabled = false;
+        yield return new WaitForSeconds(0.1f);
+        if (item != null)
         {
-            Instantiate(item,transform.position,Quaternion.Euler(0,0,0)).GetComponent<PassiveItem>().Bomb=bomb;
+            Instantiate(item, transform.position, Quaternion.Euler(0, 0, 0)).GetComponent<PassiveItem>().Bomb = bomb;
         }
         Destroy(gameObject);
     }
+
 }

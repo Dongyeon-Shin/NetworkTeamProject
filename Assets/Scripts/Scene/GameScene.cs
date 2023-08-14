@@ -4,17 +4,19 @@ using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameScene : BaseScene
 {
     [SerializeField]
     private MapData md;
-
-    GameObject map;
     [SerializeField]
     int playerCount;
+
+    GameObject map;
     GameObject[] players;
+    Transform itemArray;
     // 아직 아이디어 생각 안나서 일단 이대로함
     ItemSetting itemSet;
 
@@ -66,6 +68,7 @@ public class GameScene : BaseScene
         md = GameManager.Resource.Load<MapData>("Map/MapData");
         // 맵생성
         map = Instantiate(md.MapDatas[0].map);
+        itemArray = transform.GetChild(0);
         itemSet = map.GetComponentInChildren<ItemSetting>();
         itemSet.ItemSettingConnect(this);
         itemSet.ItemCreate();
@@ -142,15 +145,22 @@ public class GameScene : BaseScene
         }
     }
 
-    public void ItemDestroy(GameObject gameObject)
+    public void ItemDestroy(int id)
     {
-        photonView.RPC("ItemDestroyRPC", RpcTarget.AllViaServer, gameObject);
+        photonView.RPC("ItemDestroyRPC", RpcTarget.AllViaServer, id);
     }
 
     [PunRPC]
-    private void ItemDestroyRPC(GameObject gameObject)
+    private void ItemDestroyRPC(int id)
     {
-        Destroy(gameObject);
+        for (int i = 0; i < itemArray.childCount; i++)
+        {
+            if (itemArray.GetChild(i).GetComponent<IExplosiveReactivable>().IDNumber == id)
+            {
+                Destroy(itemArray.GetChild(i));
+                break;
+            }
+        }
     }
 
 
