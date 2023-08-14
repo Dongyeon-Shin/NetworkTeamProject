@@ -12,12 +12,11 @@ public class GameScene : BaseScene
     [SerializeField]
     private MapData md;
     [SerializeField]
-    int playerCount;
-
+    private int totalNumberOfPlayers;
+    private PlayerStat[] players;
+    private bool[] playersReadyState;
     GameObject map;
-    GameObject[] players;
     Transform itemArray;
-    // 아직 아이디어 생각 안나서 일단 이대로함
     ItemSetting itemSet;
 
     private List<IExplosiveReactivable> explosiveReactivableObjects = new List<IExplosiveReactivable>();
@@ -54,12 +53,12 @@ public class GameScene : BaseScene
         PhotonNetwork.ConnectUsingSettings();
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
-        //Time.timeScale = 0f;
+        Time.timeScale = 0f;
         yield return StartCoroutine(MapLoadingRoutine());
         yield return StartCoroutine(PlayerLoadingRoutine());
         yield return StartCoroutine(UILoadingRoutine());
-        yield return StartCoroutine(AllocateIDNumberRoutine());
         yield return StartCoroutine(WaitingForOtherPlayersRoutine());
+        yield return StartCoroutine(AllocateIDNumberRoutine());
         Time.timeScale = 1f;
     }
     IEnumerator MapLoadingRoutine()
@@ -72,16 +71,14 @@ public class GameScene : BaseScene
         itemSet = map.GetComponentInChildren<ItemSetting>();
         itemSet.ItemSettingConnect(this);
         itemSet.ItemCreate();
-        yield return new WaitForSeconds(2f);
     }
 
     IEnumerator PlayerLoadingRoutine()
     {
-        players = new GameObject[playerCount];
+        players = new PlayerStat[totalNumberOfPlayers];
+        playersReadyState = new bool[totalNumberOfPlayers];
         GameObject player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
-        PlayerStat playerStat = player.GetComponent<PlayerStat>();
-        playerStat.InitialSetup(this);
-        //players[playerStat.PlayerNumber] = player;
+        player.GetComponent<PlayerStat>().InitialSetup(this);
         yield return null;
     }
 
@@ -96,9 +93,10 @@ public class GameScene : BaseScene
 
     private IEnumerator AllocateIDNumberRoutine()
     {
-        foreach (GameObject player in players)
+        foreach (PlayerStat player in players)
         {
             explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
+            yield return null;
         }
         IExplosiveReactivable[] mapObjects = map.GetComponentsInChildren<IExplosiveReactivable>();
         explosiveReactivableObjects.AddRange(mapObjects);
@@ -106,13 +104,26 @@ public class GameScene : BaseScene
         for (int i = 0; i < explosiveReactivableObjects.Count; i++)
         {
             explosiveReactivableObjects[i].IDNumber = i;
+            yield return null;
         }
-        yield return null;
     }
 
     private IEnumerator WaitingForOtherPlayersRoutine()
     {
-        yield return null;
+        bool waitingForOtherPlayers = true;
+        while (waitingForOtherPlayers)
+        {
+            waitingForOtherPlayers = false;
+            foreach (bool ready in playersReadyState)
+            {
+                if (!ready)
+                {
+                    waitingForOtherPlayers = true;
+                }
+                yield return null;
+            }
+            yield return null;
+        }
     }
 
     public void ItemSettingStart(int[] check, int[] items)
@@ -123,7 +134,7 @@ public class GameScene : BaseScene
     IEnumerator ItemCreate(int[] check, int[] items)
     {
         // 디버그 모드시 2명이 접속해야 실행
-        yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != 2);
+        yield return new WaitUntil(() => PhotonNetwork.PlayerList.Length == totalNumberOfPlayers);
         photonView.RPC("ItemCreateRPC", RpcTarget.AllViaServer, check, items);
     }
 
@@ -181,16 +192,13 @@ public class GameScene : BaseScene
     [PunRPC]
     private void SendExplosionResult(int explosiveReactivableObjectIndex, int bombIndex, bool chainExplosion)
     {
-        Debug.Log(explosiveReactivableObjectIndex);
         if (chainExplosion)
         {
-            bombList[explosiveReactivableObjectIndex].ExplosiveReact(bombList[bombIndex]);
+            bombList[explosiveReactivableObjectIndex].ExplosiveReact(bombIndex);
         }
         else
         {
-            Debug.Log("hit");
-            explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombList[bombIndex]);
+            explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombIndex);
         }
     }
-
 }
