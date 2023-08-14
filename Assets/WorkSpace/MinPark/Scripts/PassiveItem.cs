@@ -14,7 +14,7 @@ public abstract class PassiveItem : MonoBehaviour, IExplosiveReactivable
     private int iDNumber;
     public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
 
-    public void ExplosiveReact(Bomb bomb)
+    public void ExplosiveReact(int bombIDNumber)
     {
         if (PhotonNetwork.IsMasterClient)
         {

@@ -370,7 +370,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   md: {fileID: 0}
-  playerCount: 0
+  totalNumberOfPlayers: 2
 --- !u!114 &2013505481
 MonoBehaviour:
   m_ObjectHideFlags: 0
