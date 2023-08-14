@@ -37,7 +37,7 @@ public class ItemSetting : MonoBehaviourPun
         if (PhotonNetwork.IsMasterClient)
         {
             ArraySetting();
-            ItemSet();
+            StartCoroutine(ItemSet());
         }
     }
     private void ArraySetting()
@@ -53,12 +53,14 @@ public class ItemSetting : MonoBehaviourPun
 
     public IEnumerator ItemSet()
     {
+        Debug.Log("0");
         int index = 0;
         foreach(Transform trans in transform)
         {
             if (itemCount < 1)
             {
-                gameScene.ItemSetting(check, item);
+                Debug.Log("2");
+                gameScene.ItemSettingStart(check, item);
                 yield break;
             }
             // 부모 트랜스폼과 같으면 건너뛴다
@@ -82,6 +84,6 @@ public class ItemSetting : MonoBehaviourPun
             yield return null;
         }
         if (itemCount > 0)
-            ItemSet();
+            StartCoroutine(ItemSet());
     }
 }

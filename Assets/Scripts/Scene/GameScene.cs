@@ -115,15 +115,12 @@ public class GameScene : BaseScene
         yield return null;
     }
 
-
-
-    // 배열 저장
-    public IEnumerator ItemSetting(int[] check, int[] items) 
+    public void ItemSettingStart(int[] check, int[] items)
     {
-        yield return StartCoroutine(ItemCreate(check));
+        StartCoroutine(ItemCreate(check, items));
     }
 
-    IEnumerator ItemCreate(int[] check)
+    IEnumerator ItemCreate(int[] check, int[] items)
     {
         // 디버그 모드시 2명이 접속해야 실행
         yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != 2);
@@ -191,6 +188,7 @@ public class GameScene : BaseScene
         }
         else
         {
+            Debug.Log("hit");
             explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombList[bombIndex]);
         }
     }
