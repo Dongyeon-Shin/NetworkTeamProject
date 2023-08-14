@@ -3,21 +3,23 @@ using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameScene : BaseScene
 {
     [SerializeField]
-    private StartPointData st;
+    private MapData md;
 
-    Transform itemSetting;
-    ItemSetting itemSet;
     GameObject map;
-    public bool itemSetTrue=false;
-    int[] check;
-    int[] items;
+    [SerializeField]
+    int playerCount;
+    GameObject[] players;
+    // 아직 아이디어 생각 안나서 일단 이대로함
+    ItemSetting itemSet;
 
     private List<IExplosiveReactivable> explosiveReactivableObjects = new List<IExplosiveReactivable>();
+    private List<IExplosiveReactivable> items = new List<IExplosiveReactivable>();
     private List<Bomb> bombList = new List<Bomb>();
 
     private void Start()
@@ -54,48 +56,81 @@ public class GameScene : BaseScene
         PhotonNetwork.LocalPlayer.NickName = $"DebugPlayer {Random.Range(1000, 10000)}";
         PhotonNetwork.ConnectUsingSettings();
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
-        StartPointData startPointData = GameManager.Resource.Load<StartPointData>("Map/StartPointData");
-        map = Instantiate(st.StartPoints[0].map);
+        yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
+    }
+    IEnumerator MapLoadingRoutine()
+    {
+        // 스크립터블 오브젝트 연결
+        md = GameManager.Resource.Load<MapData>("Map/MapData");
+        // 맵생성
+        map = Instantiate(md.MapDatas[0].map);
         itemSet = map.GetComponentInChildren<ItemSetting>();
         itemSet.ItemSettingConnect(this);
-        itemSetting = itemSet.transform;
-        yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
-        Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
-        PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", startPointData.StartPoints[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0)).GetComponent<PlayerStat>().InitialSetup(this);
+        itemSet.ItemCreate();
+        yield return null;
     }
 
-    // 배열 저장
-    public void ArrayCopy(int[] check, int[] item) 
+    IEnumerator PlayerLoadingRoutine()
     {
-        photonView.RPC("ArrayCopyRPC", RpcTarget.AllViaServer, check, item);
+        players = new GameObject[playerCount];
+        GameObject player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+        player.GetComponent<PlayerStat>().InitialSetup(this);
+        players[PhotonNetwork.LocalPlayer.GetPlayerNumber()] = player;
+        yield return null;
+    }
+
+    IEnumerator UILoadingRoutine()
+    {
+        GameObject inGameInterface = GameManager.Resource.Instantiate(GameManager.Resource.Load<GameObject>("Map/GameInterFace"));
+        // 타이머 없애면 쉽게 가능.
+        players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerStat>().InterFaceSet(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
+
+        yield return null;
+    }
+    private IEnumerator AllocateIDNumberRoutine()
+    {
+        yield return null;
+    }
+
+
+
+    // 배열 저장
+    public void ItemSetting(int[] check, int[] items) 
+    {
+        StartCoroutine(ItemCreate());
+
+        IEnumerator ItemCreate()
+        {
+            // 디버그 모드시 2명이 접속해야 실행
+            yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != 2);
+            photonView.RPC("ItemCreateRPC", RpcTarget.AllViaServer, check, items);
+        }
     }
 
     [PunRPC]
-    private void ArrayCopyRPC(int[] check, int[] item)
+    private void ItemCreateRPC(int[] check, int[] items)
     {
-        this.check = check;
-        this.items = item;
-    }
-
-    public void ItemCreate()
-    {
-        StartCoroutine(ItemCreateDelay());
-    }
-    IEnumerator ItemCreateDelay()
-    {
-        yield return new WaitWhile(() => this.check == null);
-        for (int i = 0; i < itemSetting.childCount; i++)
+        for (int i = 0; i < check.Length; i++)
         {
-            if (this.check[i] == 1)
+            if (check[i] == 1)
             {
-                GameObject createitem = itemSetting.GetChild(i).GetComponent<Box>().item = itemSet.itemArray[items[i]];
-                createitem.GetComponent<PassiveItem>();
+                GameObject createitem = itemSet.transform.GetChild(i).GetComponent<Box>().item = itemSet.itemArray[items[i]];
+                createitem.GetComponent<PassiveItem>().GameSceneSet(this);
                 IExplosiveReactivable item = createitem.GetComponent<IExplosiveReactivable>();
-                item.IDNumber = explosiveReactivableObjects.Count;
-                explosiveReactivableObjects.Add(item);
+                this.items.Add(item);
             }
         }
-        RegisterMapObjectsID(map);
+    }
+
+    public void ItemDestroy(GameObject gameObject)
+    {
+        photonView.RPC("ItemDestroyRPC", RpcTarget.AllViaServer, gameObject);
+    }
+
+    [PunRPC]
+    private void ItemDestroyRPC(GameObject gameObject)
+    {
+        Destroy(gameObject);
     }
 
 
@@ -112,9 +147,7 @@ public class GameScene : BaseScene
         for (int i = itemindex; i < itemindex + mapObjects.Length;i++)
         {
             mapObjects[i-itemindex].IDNumber = i;
-            Debug.Log("C");
             explosiveReactivableObjects.Add(mapObjects[i - itemindex]);
-            Debug.Log("C2");
         }
     }
 

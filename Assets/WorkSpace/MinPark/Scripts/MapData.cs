@@ -5,15 +5,15 @@ using UnityEngine.UIElements;
 using System;
 using Unity.VisualScripting;
 
-[CreateAssetMenu(fileName = "StartPointData",menuName = "Data/StartPoint")]
-public class StartPointData : ScriptableObject
+[CreateAssetMenu(fileName = "MapData",menuName = "Data/mapData")]
+public class MapData : ScriptableObject
 {
-    [SerializeField] StartPointInfo[] startPoints;
+    [SerializeField] MapDataInfo[] mapData;
 
-    public StartPointInfo[] StartPoints { get { return startPoints; } }
+    public MapDataInfo[] MapDatas { get { return mapData; } }
 
     [Serializable]
-    public class StartPointInfo
+    public class MapDataInfo
     {
         public int maxPlayer;
         public Vector3[] position;

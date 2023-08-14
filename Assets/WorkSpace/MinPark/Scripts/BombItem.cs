@@ -17,7 +17,7 @@ public class BombItem : PassiveItem
             stat.Bomb = coefficient;
             stat.StatRenewal();
             stat.ItemInterfaceSet();
-            PhotonNetwork.Destroy(gameObject);
+            gameScene.ItemDestroy(gameObject);
         }
     }
 

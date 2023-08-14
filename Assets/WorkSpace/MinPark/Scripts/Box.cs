@@ -24,7 +24,7 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
 
     private void Hit(Bomb bomb)
     {
-        collider.enabled = false;
+        Debug.Log("hit");
         if(item != null)
         {
             Instantiate(item,transform.position,Quaternion.Euler(0,0,0)).GetComponent<PassiveItem>().Bomb=bomb;

@@ -3103,7 +3103,7 @@ GameObject:
   - component: {fileID: 1926708269876868097}
   m_Layer: 3
   m_Name: Player_Reindeer
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3268,6 +3268,7 @@ MonoBehaviour:
   power_Text: {fileID: 0}
   speed_Text: {fileID: 0}
   bomb_Text: {fileID: 0}
+  iDNumber: 0
   power: 1
   bomb: 1
   speed: 1

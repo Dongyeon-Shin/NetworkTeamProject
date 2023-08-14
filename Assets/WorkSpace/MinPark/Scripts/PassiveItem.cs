@@ -9,6 +9,7 @@ public abstract class PassiveItem : MonoBehaviour, IExplosiveReactivable
     protected int coefficient;
     private Bomb bomb;
     public Bomb Bomb { set { bomb=value; } }
+    public GameScene gameScene;
 
     private int iDNumber;
     public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
@@ -27,5 +28,9 @@ public abstract class PassiveItem : MonoBehaviour, IExplosiveReactivable
     private void Start()
     {
         CoeffiCient();
+    }
+    public void GameSceneSet(GameScene gameScene)
+    {
+        this.gameScene = gameScene;
     }
 }

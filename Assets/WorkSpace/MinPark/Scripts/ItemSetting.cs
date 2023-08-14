@@ -18,10 +18,6 @@ public class ItemSetting : MonoBehaviourPun
     // 디버그모드
     int players=2;
 
-    private void Start()
-    {
-        ItemCreate();
-    }
 
     public void ItemSettingConnect(GameScene gameScene)
     {
@@ -41,12 +37,7 @@ public class ItemSetting : MonoBehaviourPun
         if (PhotonNetwork.IsMasterClient)
         {
             ArraySetting();
-            StartCoroutine(ItemSetDelay());
-            gameScene.ItemCreate();
-        }
-        else
-        {
-            gameScene.ItemCreate();
+            ItemSet();
         }
     }
     private void ArraySetting()
@@ -60,11 +51,6 @@ public class ItemSetting : MonoBehaviourPun
         }
     }
 
-    IEnumerator ItemSetDelay()
-    {
-        yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != players);
-        ItemSet();
-    }
     public void ItemSet()
     {
         int index = 0;
@@ -72,12 +58,15 @@ public class ItemSetting : MonoBehaviourPun
         {
             if (itemCount < 1)
             {
-                gameScene.ArrayCopy(check, item);
+                gameScene.ItemSetting(check, item);
                 return;
             }
             // 부모 트랜스폼과 같으면 건너뛴다
-            if (trans == transform)
+            if (trans == this.transform)
+            {
+                Debug.Log("tran");
                 continue;
+            }
             if (check[index]==0)
             {
                 // 3분의 1확률로 아이템 배치
