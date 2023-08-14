@@ -23,7 +23,7 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
     {
         Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
         if(check)
-            StartCoroutine(Hit(bombIDNumber));
+        Hit(bombIDNumber);
     }
 
     private void Hit(int bombIDNumber)
@@ -31,10 +31,9 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
         check=false;
         if (item != null)
         {
-            Instantiate(item, transform.position, Quaternion.Euler(0, 0, 0)).GetComponent<PassiveItem>().bombIDNumber = bombIDNumber;
+            Instantiate(item, transform.position, Quaternion.Euler(0, 0, 0)).GetComponent<PassiveItem>().BombIDNumber = bombIDNumber;
         }
         Destroy(gameObject);
-        yield return null;
     }
 
 }

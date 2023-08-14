@@ -26,7 +26,7 @@ public abstract class PassiveItem : MonoBehaviour, IExplosiveReactivable
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            if (this.bomb == bombIDNumber)
+            if (this.bombIDNumber == bombIDNumber)
                 return;
             boxCollider.gameObject.SetActive(false);
             Destroy(gameObject);

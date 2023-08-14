@@ -53,12 +53,19 @@ public class GameScene : BaseScene
         PhotonNetwork.ConnectUsingSettings();
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
         yield return StartCoroutine(MapLoadingRoutine());
+        Debug.Log("map");
+        Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
+        //yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != totalNumberOfPlayers);
         yield return StartCoroutine(PlayerLoadingRoutine());
+        Debug.Log("pla");
         yield return StartCoroutine(UILoadingRoutine());
-        yield return StartCoroutine(WaitingForOtherPlayersRoutine());
+        Debug.Log("UIL");
+        //yield return StartCoroutine(WaitingForOtherPlayersRoutine());
+        Debug.Log("wai");
         yield return StartCoroutine(AllocateIDNumberRoutine());
+        Debug.Log("All");
         Time.timeScale = 1f;
     }
     IEnumerator MapLoadingRoutine()
@@ -71,6 +78,7 @@ public class GameScene : BaseScene
         itemSet = map.GetComponentInChildren<ItemSetting>();
         itemSet.ItemSettingConnect(this);
         itemSet.ItemCreate();
+        yield return null;
     }
 
     IEnumerator PlayerLoadingRoutine()
@@ -95,7 +103,7 @@ public class GameScene : BaseScene
     {
         foreach (PlayerStat player in players)
         {
-            explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
+            //explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
             yield return null;
         }
         IExplosiveReactivable[] mapObjects = map.GetComponentsInChildren<IExplosiveReactivable>();
@@ -113,11 +121,14 @@ public class GameScene : BaseScene
         bool waitingForOtherPlayers = true;
         while (waitingForOtherPlayers)
         {
+            Debug.Log("1");
             waitingForOtherPlayers = false;
             foreach (bool ready in playersReadyState)
             {
+                Debug.Log("2");
                 if (!ready)
                 {
+                    Debug.Log("3");
                     waitingForOtherPlayers = true;
                 }
                 yield return null;
@@ -125,22 +136,30 @@ public class GameScene : BaseScene
             yield return null;
         }
     }
+    public void Ready(PlayerStat player, int playerNumber)
+    {
+        players[playerNumber] = player;
+        playersReadyState[playerNumber] = true;
+    }
 
     public void ItemSettingStart(int[] check, int[] items)
     {
         StartCoroutine(ItemCreate(check, items));
     }
 
-    IEnumerator ItemCreate(int[] check, int[] items)
+    public IEnumerator ItemCreate(int[] check, int[] items)
     {
+        Debug.Log("123");
         // 디버그 모드시 2명이 접속해야 실행
         yield return new WaitUntil(() => PhotonNetwork.PlayerList.Length == totalNumberOfPlayers);
+        Debug.Log("why");
         photonView.RPC("ItemCreateRPC", RpcTarget.AllViaServer, check, items);
     }
 
     [PunRPC]
     private void ItemCreateRPC(int[] check, int[] items)
     {
+        Debug.Log("how");
         for (int i = 0; i < check.Length; i++)
         {
             if (check[i] == 1)

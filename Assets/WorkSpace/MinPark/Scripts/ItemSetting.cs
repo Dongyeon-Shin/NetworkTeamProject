@@ -24,7 +24,7 @@ public class ItemSetting : MonoBehaviourPun
         this.gameScene = gameScene;
     }
 
-    public IEnumerator ItemCreate()
+    public void ItemCreate()
     {
         items = transform.GetComponent<Items>();
         itemArray = new GameObject[items.item.Length];
@@ -32,13 +32,12 @@ public class ItemSetting : MonoBehaviourPun
         foreach (GameObject item in items.item)
         {
             itemArray[i++] = item;
-            yield return null;
         }
         // 방장만 아이템을 생성
         if (PhotonNetwork.IsMasterClient)
         {
             ArraySetting();
-            yield return StartCoroutine(ItemSet());
+            ItemSet();
         }
     }
     private void ArraySetting()
@@ -52,16 +51,15 @@ public class ItemSetting : MonoBehaviourPun
         }
     }
 
-    public IEnumerator ItemSet()
+    public void ItemSet()
     {
-        Debug.Log("0");
         int index = 0;
         foreach(Transform trans in transform)
         {
             if (itemCount < 1)
             {
-                yield return StartCoroutine(gameScene.ItemSetting(check, item));
-                yield break;
+                gameScene.ItemSettingStart(check, item);
+                break;
             }
             // 부모 트랜스폼과 같으면 건너뛴다
             if (trans == this.transform)
@@ -81,9 +79,8 @@ public class ItemSetting : MonoBehaviourPun
                 }
             }
             index++;
-            yield return null;
         }
         if (itemCount > 0)
-            yield return StartCoroutine(ItemSet());
+            ItemSet();
     }
 }
