@@ -14,6 +14,8 @@ public class GameScene : BaseScene
     GameObject map;
     [SerializeField]
     private int totalNumberOfPlayers;
+    [SerializeField]
+    private int characterIndex;
     private PlayerStat[] players;
     private bool[] playersReadyState;
     ItemSetting itemSet;
@@ -52,7 +54,7 @@ public class GameScene : BaseScene
         PhotonNetwork.ConnectUsingSettings();
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
         yield return StartCoroutine(MapLoadingRoutine());
         yield return StartCoroutine(PlayerLoadingRoutine());
         yield return StartCoroutine(UILoadingRoutine());

@@ -19981,7 +19981,7 @@ MonoBehaviour:
   - {fileID: 7466379078484346781}
   explosivePower: 1
   explosionEffectContinuanceTime: 0.5
-  iDNumber: 0
+  iDNumber: -1
 --- !u!1 &7955213652920945744
 GameObject:
   m_ObjectHideFlags: 0
