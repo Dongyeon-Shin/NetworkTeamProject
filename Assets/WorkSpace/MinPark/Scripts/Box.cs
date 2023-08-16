@@ -17,17 +17,16 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
     private int iDNumber;   
     public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
 
-    public void ExplosiveReact(Bomb bomb)
+    public void ExplosiveReact(int bombIDNumber)
     {
-        Hit(bomb);
+        Hit(bombIDNumber);
     }
 
-    private void Hit(Bomb bomb)
+    private void Hit(int bombIDNumber)
     {
-        Debug.Log("hit");
         if(item != null)
         {
-            Instantiate(item,transform.position,Quaternion.Euler(0,0,0)).GetComponent<PassiveItem>().Bomb=bomb;
+            //Instantiate(item,transform.position,Quaternion.Euler(0,0,0)).GetComponent<PassiveItem>().Bomb=bomb;
         }
         Destroy(gameObject);
     }

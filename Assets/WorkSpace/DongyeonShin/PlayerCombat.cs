@@ -64,7 +64,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
         return new Vector3(hitInfo.transform.position.x, transform.position.y, hitInfo.transform.position.z);
     }
 
-    public void ExplosiveReact(Bomb bomb)
+    public void ExplosiveReact(int bombIDNumber)
     {
         //TODO: 플레이어 피격시 반응
         photonView.RPC("DeadSet", RpcTarget.All);
@@ -80,6 +80,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     {
         stat.IsAlive = false;
         animator.SetBool("Die", true);
+        GameManager.Event.PostNotification(EventType.Died, this);
         yield return new WaitForSeconds(4f);
         deadState.SetActive(false);
     }

@@ -3256,7 +3256,7 @@ MonoBehaviour:
   power_Text: {fileID: 0}
   speed_Text: {fileID: 0}
   bomb_Text: {fileID: 0}
-  iDNumber: 0
+  iDNumber: -1
   power: 1
   bomb: 1
   speed: 1
