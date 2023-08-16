@@ -224,16 +224,6 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
         readyToExplode = true;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            if (PlayerCheck())
-                boxCollider.isTrigger = true;
-            else
-                boxCollider.isTrigger = false;
-        }
-    }
 
     private void OnTriggerExit(Collider other)
     {
@@ -241,25 +231,5 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
         {
               boxCollider.isTrigger = false;
         }
-    }
-
-    private bool PlayerCheck()
-    {
-        int layerMask = (1 << LayerMask.NameToLayer("Player"));
-
-        Collider[] colliders =
-                    Physics.OverlapBox(boxCollider.center + transform.parent.position, boxCollider.size/2, Quaternion.identity, layerMask);
-        foreach (Collider col in colliders)
-        {
-            if (col.name == "box" && colliders.Length ==0 /* 자기 자신은 제외 */) continue;
-            if (colliders.Length <= 1)
-            {
-                return false;
-            }
-            else
-                return true;
-
-        }
-        return false;
     }
 }
