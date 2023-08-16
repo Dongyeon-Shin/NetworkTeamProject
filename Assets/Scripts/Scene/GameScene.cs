@@ -23,16 +23,17 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     private PlayerStat[] players;
     private bool[] playersReadyState;
     ItemSetting itemSet;
-    HashTable mapProperty = PhotonNetwork.CurrentRoom.CustomProperties;
-    int mapNumbering;
+
+    
     public float LoadingProgress { get { return loadingUI.Progress; } }
 
     private List<IExplosiveReactivable> explosiveReactivableObjects = new List<IExplosiveReactivable>();
     private List<IExplosiveReactivable> items = new List<IExplosiveReactivable>();
     private List<Bomb> bombList = new List<Bomb>();
-
+    int mapNumbering;
     private void Start()
     {
+        HashTable mapProperty = PhotonNetwork.CurrentRoom.CustomProperties;
         mapNumbering = (int)mapProperty["MapNumbering"];
         totalNumberOfPlayers = PhotonNetwork.PlayerList.Length;
         if (!PhotonNetwork.InRoom)

@@ -20,3 +20,17 @@ MonoBehaviour:
     - {x: -3.5, y: 0, z: -5.5}
     - {x: 8.5, y: 0, z: -5.5}
     map: {fileID: 7709033139920916050, guid: 285f42b3cbd2756489c3a61991ce4c6c, type: 3}
+  - maxPlayer: 4
+    position:
+    - {x: -3.5, y: 0, z: 4.5}
+    - {x: 8.5, y: 0, z: 4.5}
+    - {x: -3.5, y: 0, z: -5.5}
+    - {x: 8.5, y: 0, z: -5.5}
+    map: {fileID: 243911659558846006, guid: 000084f0991d17c43a61588a4c794c4a, type: 3}
+  - maxPlayer: 4
+    position:
+    - {x: -3.5, y: 0, z: 4.5}
+    - {x: 8.5, y: 0, z: 4.5}
+    - {x: -3.5, y: 0, z: -5.5}
+    - {x: 8.5, y: 0, z: -5.5}
+    map: {fileID: 2061810081490885815, guid: ebdca7ccbeff7a241870cb9ee0708a0b, type: 3}
