@@ -63,8 +63,6 @@ public class PlayerMove : MonoBehaviourPun
             moveDir.x = value.Get<Vector2>().x;
             moveDir.z = value.Get<Vector2>().y;
 
-
-
             if (playerChat.IsChatting == true || playerChat.IsSetting == true)
             {
                 moveDir.x = 0;

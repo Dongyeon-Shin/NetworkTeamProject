@@ -9,7 +9,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GameScene : BaseScene
+public class GameScene : BaseScene, IPunObservable, IEventListener
 {
     [SerializeField]
     private MapData md;
@@ -42,6 +42,15 @@ public class GameScene : BaseScene
             Timer();
         }
     }
+
+    //====================== 게임끝 ==========================
+    [SerializeField] GameObject GameOverUI; // 공용리소스에 있음
+    private void GameOver()
+    {
+        if (CheckingAlive()) 
+            GameOverUI.SetActive(true);
+    }
+    //====================== 게임끝 ==========================
 
     protected override IEnumerator LoadingRoutine()
     {
@@ -204,8 +213,9 @@ public class GameScene : BaseScene
             yield return waitASecond;
         }
         countDownNumber.gameObject.SetActive(false);
-        TimeOut = true;
         players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
+        GameManager.Event.AddListener(EventType.Died,this);
+        TimeOut = true;
     }
 
     // =================================== 타이머 및 생존 체크====================================
@@ -233,7 +243,7 @@ public class GameScene : BaseScene
                 inPutTime -= Time.deltaTime;
                 text_time.text = ((int)inPutTime).ToString();
             }
-            else
+            else if(inPutTime <= 0 || CheckingAlive())
             {
                 text_time.text = ((int)inPutTime).ToString();
                 TimeOut = true;
@@ -257,9 +267,9 @@ public class GameScene : BaseScene
 
     public bool CheckingAlive()
     {
+        List<bool> result = new List<bool>();
         for (int i = 0; i < PhotonNetwork.CountOfPlayersInRooms; i++)
         {
-            List<bool> result = new List<bool>();
             if (players[i].IsAlive == false)
             {
                 result.Add(false);
@@ -273,6 +283,14 @@ public class GameScene : BaseScene
         }
         return false;
     }
+    public void OnEvent(EventType eventType, Component Sender, object Param = null)
+    {
+        if(eventType == EventType.Died)
+        {
+            CheckingAlive();
+        }
+    }
+
     // =================================== 타이머 및 생존 체크====================================
 
 
@@ -379,4 +397,5 @@ public class GameScene : BaseScene
             explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombIndex);
         }
     }
+
 }
