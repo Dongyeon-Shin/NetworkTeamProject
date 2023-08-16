@@ -64,7 +64,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
         return new Vector3(hitInfo.transform.position.x, transform.position.y, hitInfo.transform.position.z);
     }
 
-    public void ExplosiveReact(Bomb bomb)
+    public void ExplosiveReact(int bombIDNumber)
     {
         //TODO: 플레이어 피격시 반응
         photonView.RPC("DeadSet", RpcTarget.All);

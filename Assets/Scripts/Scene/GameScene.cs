@@ -1,21 +1,26 @@
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameScene : BaseScene
 {
     [SerializeField]
     private MapData md;
-
     GameObject map;
-
-    // 아직 아이디어 생각 안나서 일단 이대로함
-    Transform itemSetting;
+    [SerializeField]
+    private int totalNumberOfPlayers;
+    [SerializeField]
+    private int countDownTime;
+    private PlayerStat[] players;
+    private bool[] playersReadyState;
     ItemSetting itemSet;
+    public float LoadingProgress { get { return loadingUI.Progress; } }
 
     private List<IExplosiveReactivable> explosiveReactivableObjects = new List<IExplosiveReactivable>();
     private List<IExplosiveReactivable> items = new List<IExplosiveReactivable>();
@@ -31,10 +36,10 @@ public class GameScene : BaseScene
 
     protected override IEnumerator LoadingRoutine()
     {
+        progress = 0f;
+        loadingUI.Progress = 0.1f;
         if (PhotonNetwork.InRoom)
         {
-            // TODO: 모두 로딩이 끝나고 카운트다운 후 시작할 것
-            yield return StartCoroutine(CheckAllPlayerIsReadyRoutine());
             StartCoroutine(GameStartRoutine());
         }
         yield return null;
@@ -42,67 +47,202 @@ public class GameScene : BaseScene
 
     private IEnumerator GameStartRoutine()
     {
-        yield return null;
-    }
-
-    private IEnumerator CheckAllPlayerIsReadyRoutine()
-    {
-        yield return null;
+        yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
+        yield return StartCoroutine(MapLoadingRoutine());
+        yield return StartCoroutine(PlayerLoadingRoutine());
+        yield return StartCoroutine(UILoadingRoutine());
+        yield return StartCoroutine(AllocateIDNumberRoutine());
+        yield return StartCoroutine(WaitingForOtherPlayersRoutine());
+        yield return StartCoroutine(CountDownRoutine());
     }
 
     private IEnumerator DebugGameStartRoutine()
     {
-        PhotonNetwork.LocalPlayer.NickName = $"DebugPlayer {Random.Range(1000, 10000)}";
+        loadingUI.SetLoadingMessage("Debug 모드 접속확인. 서버에 연결하는 중");
+        StartCoroutine(UpdateProgressRoutine(0.2f));
+        PhotonNetwork.LocalPlayer.NickName = $"DebugPlayer {UnityEngine.Random.Range(1000, 10000)}";
         PhotonNetwork.ConnectUsingSettings();
         yield return new WaitUntil(() => PhotonNetwork.InRoom);
+        progress = 0.5f;
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
+        progress = 1f;
+        yield return StartCoroutine(MapLoadingRoutine());
+        yield return StartCoroutine(PlayerLoadingRoutine());
+        yield return StartCoroutine(UILoadingRoutine());
+        yield return StartCoroutine(AllocateIDNumberRoutine());
+        yield return StartCoroutine(WaitingForOtherPlayersRoutine());
+        yield return StartCoroutine(CountDownRoutine());
     }
     IEnumerator MapLoadingRoutine()
     {
+        loadingUI.SetLoadingMessage("맵을 불러오는 중");
+        StartCoroutine(UpdateProgressRoutine(0.4f));
         // 스크립터블 오브젝트 연결
         md = GameManager.Resource.Load<MapData>("Map/MapData");
+        progress = 0.1f;
         // 맵생성
         map = Instantiate(md.MapDatas[0].map);
-        itemSet = map.GetComponentInChildren<ItemSetting>();
-        itemSetting = itemSet.transform;
-        itemSet.ItemSettingConnect(this);
-        itemSet.ItemCreate();
+        progress = 0.4f;
+        //loadingUI.SetLoadingMessage("아이템을 생성하는 중");
+        //itemSet = map.GetComponentInChildren<ItemSetting>();
+        //itemSet.ItemSettingConnect(this);
+        //yield return StartCoroutine(itemSet.ItemCreate());
         yield return null;
+        progress = 1f;
     }
 
     IEnumerator PlayerLoadingRoutine()
     {
-        GameObject player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+        loadingUI.SetLoadingMessage("플레이어를 생성하는 중");
+        StartCoroutine(UpdateProgressRoutine(0.5f));
+        players = new PlayerStat[totalNumberOfPlayers];
+        playersReadyState = new bool[totalNumberOfPlayers];
+        progress = 0.3f;
+        GameObject player;
+        switch(PhotonNetwork.LocalPlayer.GetPlayerNumber() % 4)
+        {
+            case 0:
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                break;
+            case 1:
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Santa", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                break;
+            case 2:
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Snow_Princess", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                break;
+            default:
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Snowmon", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                break;
+        }
         player.GetComponent<PlayerStat>().InitialSetup(this);
+        player.GetComponent<PlayerInput>().enabled = false;
         yield return null;
+        progress = 1f;
     }
 
     IEnumerator UILoadingRoutine()
     {
+        loadingUI.SetLoadingMessage("UI를 불러오는 중");
+        StartCoroutine(UpdateProgressRoutine(0.6f));
         GameObject inGameInterface = GameManager.Resource.Instantiate(GameManager.Resource.Load<GameObject>("Map/GameInterFace"));
         // 타이머 없애면 쉽게 가능.
-        //player.GetComponent<PlayerStat>().InterFaceSet(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
+        //players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerStat>().InterFaceSet(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
 
         yield return null;
+        progress = 1f;
     }
+
     private IEnumerator AllocateIDNumberRoutine()
     {
-        yield return null;
+        Debug.Log(LoadingProgress);
+        loadingUI.SetLoadingMessage("ID Number를 부여하는 중");
+        StartCoroutine(UpdateProgressRoutine(0.7f));
+        yield return new WaitWhile(() => Array.Exists(players, player => player == null));
+        foreach (PlayerStat player in players)
+        {
+            explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
+            yield return null;
+        }
+        progress = 0.5f;
+        IExplosiveReactivable[] mapObjects = map.GetComponentsInChildren<IExplosiveReactivable>();
+        explosiveReactivableObjects.AddRange(mapObjects);
+        explosiveReactivableObjects.AddRange(items);
+        progress = 0.7f;
+        for (int i = 0; i < explosiveReactivableObjects.Count; i++)
+        {
+            explosiveReactivableObjects[i].IDNumber = i;
+            yield return null;
+        }
+        progress = 1f;
     }
 
+    private IEnumerator WaitingForOtherPlayersRoutine()
+    {
+        loadingUI.SetLoadingMessage("다른 플레이어를 기다리는 중");
+        StartCoroutine(UpdateProgressRoutine(0.9f));
+        photonView.RPC("Ready", RpcTarget.AllViaServer, PhotonNetwork.LocalPlayer.GetPlayerNumber());
+        progress = 0.2f;
+        bool waitingForOtherPlayers = true;
+        while (waitingForOtherPlayers)
+        {
+            waitingForOtherPlayers = false;
+            foreach (bool ready in playersReadyState)
+            {
+                if (!ready)
+                {
+                    waitingForOtherPlayers = true;
+                }
+                yield return null;
+            }
+            yield return null;
+        }
+        progress = 1f;
+    }
 
+    //TODO: waitingforotherplayerRoutine으로 타이밍이 맞는지 테스트해보고 안될시 밑의 주석처리된 코드를 사용
+    private IEnumerator CountDownRoutine()
+    {
+        loadingUI.Progress = 1f;
+        loadingUI.SetLoadingMessage("게임시작 준비 완료");
+        yield return new WaitForSecondsRealtime(0.5f);
+        WaitForSecondsRealtime waitASecond = new WaitForSecondsRealtime(1);
+        loadingUI.FadeIn();
+        yield return new WaitForSecondsRealtime(0.5f);
+        countDownNumber.gameObject.SetActive(true);
+        for (int i = countDownTime; i > 0; i--)
+        {
+            countDownNumber.mesh = numbers[i];
+            yield return waitASecond;
+        }
+        countDownNumber.gameObject.SetActive(false);
+        players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
+    }
+
+    //private double loadTime;
+    //private IEnumerator CountDownRoutine()
+    //{
+    //    if (PhotonNetwork.IsMasterClient)
+    //    {
+    //        photonView.RPC("SetTimer", RpcTarget.AllViaServer, PhotonNetwork.Time);
+    //    }
+    //    while (countDownTime > PhotonNetwork.Time - loadTime)
+    //    {
+    //        int remainTime = (int)(countDownTime - (PhotonNetwork.Time - loadTime));
+    //        Debug.Log($"All Player Loaded, Start count down : {remainTime + 1}");
+    //        yield return new WaitForEndOfFrame();
+    //    }
+    //    players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
+    //    Debug.Log("Game Start!");
+    //}
+
+    //[PunRPC]
+    //private void SetTimer(double time)
+    //{
+    //    loadTime = time;
+    //}
+
+    [PunRPC]
+    private void Ready(int playerNumber)
+    {
+        playersReadyState[playerNumber] = true;
+    }
+
+    public void RegisterPlayerInfo(PlayerStat player)
+    {
+        players[player.PlayerNumber] = player;
+    }
 
     // 배열 저장
-    public void ItemSetting(int[] check, int[] items) 
+    public IEnumerator ItemSetting(int[] check, int[] items) 
     {
-        StartCoroutine(ItemCreate());
+        yield return StartCoroutine(ItemCreate(check, items));
+    }
 
-        IEnumerator ItemCreate()
-        {
-            // 디버그 모드시 2명이 접속해야 실행
-            yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != 2);
-            photonView.RPC("ItemCreateRPC", RpcTarget.AllViaServer, check, items);
-        }
+    IEnumerator ItemCreate(int[] check, int[] items)
+    {
+        // 디버그 모드시 2명이 접속해야 실행
+        yield return new WaitUntil(() => PhotonNetwork.PlayerList.Length == totalNumberOfPlayers);
+        photonView.RPC("ItemCreateRPC", RpcTarget.AllViaServer, check, items);
     }
 
     [PunRPC]
@@ -112,7 +252,7 @@ public class GameScene : BaseScene
         {
             if (check[i] == 1)
             {
-                GameObject createitem = itemSetting.GetChild(i).GetComponent<Box>().item = itemSet.itemArray[items[i]];
+                GameObject createitem = itemSet.transform.GetChild(i).GetComponent<Box>().item = itemSet.itemArray[items[i]];
                 createitem.GetComponent<PassiveItem>().GameSceneSet(this);
                 IExplosiveReactivable item = createitem.GetComponent<IExplosiveReactivable>();
                 this.items.Add(item);
@@ -138,28 +278,6 @@ public class GameScene : BaseScene
         PhotonNetwork.JoinOrCreateRoom("DebugRoom", options, TypedLobby.Default);
     }
 
-    private void RegisterMapObjectsID(GameObject map)
-    {
-        IExplosiveReactivable[] mapObjects = map.GetComponentsInChildren<IExplosiveReactivable>();
-        int itemindex= explosiveReactivableObjects.Count;
-        for (int i = itemindex; i < itemindex + mapObjects.Length;i++)
-        {
-            mapObjects[i-itemindex].IDNumber = i;
-            explosiveReactivableObjects.Add(mapObjects[i - itemindex]);
-        }
-    }
-
-    public void RegisterPlayerID(GameObject player, ref int iDNumber)
-    {
-        //TODO: Test 필요 플레이어가 접속되는 순서대로 playernumbering이 부과되니까
-        // 해당 함수도 playernumber와 같은 순서로 호출된다는 가정
-        // 하지만 각각의 local에서 다른 플레이어 오브젝트는 PhotonNetwork instantiate이기 떄문에
-        // 혹시 모르니 확인할것
-        iDNumber = explosiveReactivableObjects.Count;
-        explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
-        Debug.Log(player.GetComponent<PlayerStat>().PlayerNumber);
-    }
-
     public void RegisterBombID(Bomb bomb)
     {
         bomb.IDNumber = bombList.Count;
@@ -168,7 +286,6 @@ public class GameScene : BaseScene
 
     public void RequestExplosiveReaction(IExplosiveReactivable target, int bombIndex, bool chainExplosion)
     {
-        Debug.Log(target.IDNumber);
         photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, bombIndex, chainExplosion);
     }
 
@@ -177,12 +294,11 @@ public class GameScene : BaseScene
     {
         if (chainExplosion)
         {
-            bombList[explosiveReactivableObjectIndex].ExplosiveReact(bombList[bombIndex]);
+            bombList[explosiveReactivableObjectIndex].ExplosiveReact(bombIndex);
         }
         else
         {
-            explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombList[bombIndex]);
+            explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombIndex);
         }
     }
-
 }

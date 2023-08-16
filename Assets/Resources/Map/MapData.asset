@@ -15,8 +15,8 @@ MonoBehaviour:
   mapData:
   - maxPlayer: 4
     position:
-    - {x: 0, y: 0, z: 0}
-    - {x: 0, y: 0, z: 0}
-    - {x: 0, y: 0, z: 0}
-    - {x: 0, y: 0, z: 0}
+    - {x: -3.5, y: 0, z: 4.5}
+    - {x: 8.5, y: 0, z: 4.5}
+    - {x: -3.5, y: 0, z: -5.5}
+    - {x: 8.5, y: 0, z: -5.5}
     map: {fileID: 7709033139920916050, guid: 285f42b3cbd2756489c3a61991ce4c6c, type: 3}

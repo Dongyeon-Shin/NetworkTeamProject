@@ -59,6 +59,12 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
 
     private void Start()
     {
+        StartCoroutine(RegisterBombIDRoutine());
+    }
+
+    IEnumerator RegisterBombIDRoutine()
+    {
+        yield return new WaitWhile(() => gameScene == null);
         gameScene.RegisterBombID(this);
     }
 
@@ -111,10 +117,10 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
             if (reactivableObject != null)
             {
                 LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
-               if (PhotonNetwork.IsMasterClient)
-               {
-                   gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
-               }
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
+                }
                 if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
                 {
                     if (direction.z > 0)
@@ -211,7 +217,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         }
     }
 
-    public void ExplosiveReact(Bomb bomb)
+    public void ExplosiveReact(int bombIDNumber)
     {
         Debug.Log("bombCheck");
         StopCoroutine(lightTheFuseRoutine);

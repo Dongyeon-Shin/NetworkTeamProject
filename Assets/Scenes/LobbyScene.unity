@@ -190,6 +190,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8359c337e8463e2479f164fa72320adb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numbers:
+  - {fileID: 862338155711011292, guid: 45397fae19b1e4a47bdb4399a1b2a759, type: 3}
+  - {fileID: -1562275218897716241, guid: e879f8c7fed5d6940b4f37ea1f46abe8, type: 3}
+  - {fileID: -7969978266939365281, guid: a688ad8adef8d7c4ea9145a0235da35d, type: 3}
+  - {fileID: -5582133695706433325, guid: 3f4269994f2fd9e4c861445d6786761b, type: 3}
+  - {fileID: -2628482395200241503, guid: fed6046741baee64a936f5c2af76cef1, type: 3}
+  - {fileID: 7502377544057204969, guid: 2ade398c3adbceb48b4f51b573fcc03d, type: 3}
+  - {fileID: -888404026515264504, guid: d138303fae923f049b25fd7f91de5bc6, type: 3}
+  - {fileID: -7821917557700976381, guid: 1a58e1598ba597a49a52784b6508253e, type: 3}
+  - {fileID: 5270879433523947816, guid: 1cedb2584c8c10041acce0e86767695d, type: 3}
+  - {fileID: -5787051826044892044, guid: 0dc92db48155e214aa3db1904bed2d2f, type: 3}
 --- !u!1 &1619284774
 GameObject:
   m_ObjectHideFlags: 0
