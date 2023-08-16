@@ -57,16 +57,11 @@ public class PlayerMove : MonoBehaviourPun
             moveDir.x = value.Get<Vector2>().x;
             moveDir.z = value.Get<Vector2>().y;
 
-
-
             if (playerChat.IsChatting == true || playerChat.IsSetting == true)
             {
                 moveDir.x = 0;
                 moveDir.z = 0;
             }
-
-            else if (playerChat.IsChatting == false || playerChat.IsSetting == true)
-            {
                 if (moveDir.x > 0 || moveDir.z > 0 || moveDir.x < 0 || moveDir.z < 0)
                     animator.SetBool("Move", true);
                 else if (moveDir.x == 0 && moveDir.z == 0)
@@ -81,7 +76,6 @@ public class PlayerMove : MonoBehaviourPun
                     moveDir.x = 0;
                 else if (moveDir.z < 0 && moveDir.x > 0 || moveDir.x < 0)
                     moveDir.x = 0;
-            }
         }
     }
 }

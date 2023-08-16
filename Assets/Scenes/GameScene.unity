@@ -369,8 +369,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 690e9ab0efa8b7443b0326233aead649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  st: {fileID: 11400000, guid: ccee0beb47f54ea4e9b06688b3fb1bb0, type: 2}
-  itemSetTrue: 0
+  numbers: []
+  md: {fileID: 0}
+  totalNumberOfPlayers: 0
+  countDownTime: 0
+  GameOverUI: {fileID: 0}
+  text_time: {fileID: 0}
+  inPutTime: 0
 --- !u!114 &2013505481
 MonoBehaviour:
   m_ObjectHideFlags: 0

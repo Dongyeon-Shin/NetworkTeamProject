@@ -18,7 +18,6 @@ public class ItemSetting : MonoBehaviourPun
     // 디버그모드
     int players=2;
 
-
     public void ItemSettingConnect(GameScene gameScene)
     {
         this.gameScene = gameScene;
