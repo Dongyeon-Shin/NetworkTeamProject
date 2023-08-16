@@ -16,8 +16,6 @@ public class GameScene : BaseScene
     [SerializeField]
     private int totalNumberOfPlayers;
     [SerializeField]
-    private int characterIndex;
-    [SerializeField]
     private int countDownTime;
     private PlayerStat[] players;
     private bool[] playersReadyState;
@@ -100,7 +98,22 @@ public class GameScene : BaseScene
         players = new PlayerStat[totalNumberOfPlayers];
         playersReadyState = new bool[totalNumberOfPlayers];
         progress = 0.3f;
-        GameObject player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+        GameObject player;
+        switch(PhotonNetwork.LocalPlayer.GetPlayerNumber() % 4)
+        {
+            case 0:
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                break;
+            case 1:
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Santa", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                break;
+            case 2:
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Snow_Princess", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                break;
+            default:
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Snowmon", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                break;
+        }
         player.GetComponent<PlayerStat>().InitialSetup(this);
         player.GetComponent<PlayerInput>().enabled = false;
         yield return null;
