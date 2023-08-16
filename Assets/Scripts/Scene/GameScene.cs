@@ -107,7 +107,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         loadingUI.SetLoadingMessage("맵을 불러오는 중");
         StartCoroutine(UpdateProgressRoutine(0.4f));
         // 스크립터블 오브젝트 연결
-        itemArray = transform.GetChild(0);
+        itemArray = transform.GetChild(1);
         md = GameManager.Resource.Load<MapData>("Map/MapData");
         progress = 0.1f;
         // 맵생성
@@ -309,7 +309,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         List<bool> result = new List<bool>();
         for (int i = 0; i < PhotonNetwork.CountOfPlayersInRooms; i++)
         {
-            if (players[i].IsAlive == false)
+            if (players[i].IsAlive == true)
             {
                 result.Add(false);
                 if (result.Count == PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count == PhotonNetwork.CountOfPlayersInRooms)

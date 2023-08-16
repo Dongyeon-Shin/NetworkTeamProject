@@ -16,7 +16,7 @@ public abstract class PassiveItem : MonoBehaviour, IExplosiveReactivable
 
     private void Start()
     {
-        transform.parent = gameScene.transform.GetChild(0);
+        transform.parent = gameScene.transform.GetChild(1);
         boxCollider = GetComponent<BoxCollider>();
         CoeffiCient();
     }
