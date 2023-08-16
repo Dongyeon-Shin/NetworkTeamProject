@@ -59,7 +59,7 @@ public class RoomPanel : MonoBehaviourPunCallbacks
         {
             playerSpace[playerCount].SetActive(false);
             PlayerType key = (PlayerType)player.GetPlayerNumber();
-            player.SetColor((int)key);
+            Debug.Log($"{playerCount}, {key}");
             playerSpace[playerCount].transform.parent.GetComponentInChildren<RawImage>().texture = renderTextures[(int)key];
             playerSpace[playerCount].transform.parent.GetComponentInChildren<Text>().text = player.NickName;
             if(player.GetReady())
@@ -111,6 +111,7 @@ public class RoomPanel : MonoBehaviourPunCallbacks
     {
         foreach(Player player in PhotonNetwork.PlayerList)
         {
+            player.SetColor(player.GetPlayerNumber());
             player.SetPlay();
         }
     }

@@ -676,6 +676,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5237304230200888143}
+  - component: {fileID: 8653141522285856200}
+  - component: {fileID: 961348987507370787}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -761,6 +763,39 @@ Transform:
   m_Father: {fileID: 243911660311267606}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8653141522285856200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5237304230200888142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 742b7cf5d4fda61458abdff26b82dcc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item:
+  - {fileID: 6476265085001536611, guid: 289a268c625447b4a8074fc691978842, type: 3}
+  - {fileID: 2217017639676558262, guid: a2daf999440b0c4459b6415b7cffb18b, type: 3}
+  - {fileID: 6552754757325373711, guid: 7ba7d1ecd5f97d94ea35f329b3d2f7b3, type: 3}
+--- !u!114 &961348987507370787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5237304230200888142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbeb62d804dc8e449b2b9b0c41f616d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemArray: []
+  bomb: {fileID: 0}
+  check: 
+  item: 
+  gameScene: {fileID: 0}
 --- !u!1 &5237304230349980307
 GameObject:
   m_ObjectHideFlags: 0
@@ -1232,6 +1267,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615414948056 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -2037,6 +2073,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615382226114 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -2386,6 +2423,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615404870354 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -2717,6 +2755,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615363073822 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -2990,6 +3029,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615308825037 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -3321,6 +3361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615328343489 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -3718,6 +3759,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615553820120 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -5871,6 +5913,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615169161928 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -7640,6 +7683,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615061361144 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -8077,6 +8121,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615279287369 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -8266,6 +8311,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615284451130 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -8375,6 +8421,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615296267976 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -8484,6 +8531,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615304997702 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -9337,6 +9385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615177218047 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -9754,6 +9803,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615206213741 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -9863,6 +9913,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615957238643 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -10256,6 +10307,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615927001123 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -10993,6 +11045,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615904028133 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -11244,6 +11297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615863204225 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -11963,6 +12017,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932616070167217 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -12790,6 +12845,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615677847234 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -13643,6 +13699,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615635032634 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -13752,6 +13809,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615635659302 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -14259,6 +14317,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615591798529 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -14594,6 +14653,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615608865962 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -14845,6 +14905,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615820815866 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -15046,6 +15107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615828876716 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -15155,6 +15217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615837584597 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -15356,6 +15419,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615841941225 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -15465,6 +15529,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615844705889 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -15906,6 +15971,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615757980893 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -17319,6 +17385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614334383335 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -17672,6 +17739,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614280904744 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -17843,6 +17911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614300831599 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -19274,6 +19343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614501836467 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -19463,6 +19533,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614440643245 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -19776,6 +19847,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614452342592 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -19885,6 +19957,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614455416481 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -20962,6 +21035,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614432737782 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -22719,6 +22793,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932613982845031 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -22828,6 +22903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932613994599336 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -22937,6 +23013,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614208575120 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -23492,6 +23569,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614194758208 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -23827,6 +23905,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614141930793 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -24428,6 +24507,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614153292535 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -24745,6 +24825,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614110999755 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -24934,6 +25015,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614121957216 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -26179,6 +26261,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614813490418 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -26368,6 +26451,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614821086242 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -26637,6 +26721,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614836561357 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -27190,6 +27275,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614794891749 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -27623,6 +27709,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932615009523711 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -28206,6 +28293,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614979931275 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -28537,6 +28625,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614990682621 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -29262,6 +29351,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614922037312 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -29521,6 +29611,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614934992644 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -30600,6 +30691,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614573982032 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -31071,6 +31163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614566945106 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -31420,6 +31513,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614528415236 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -31671,6 +31765,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614766870193 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -32388,6 +32483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614681134124 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -32577,6 +32673,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614698431352 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
@@ -32912,6 +33009,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  iDNumber: 0
 --- !u!4 &5241932614652706774 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4980247952072088, guid: 85caf01f60c1309429d4a59f72973ce7, type: 3}
