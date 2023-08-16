@@ -7,11 +7,8 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/LobbyScene.unity
-    guid: b7c1d23f840553043bc4742ce7d980f0
+    guid: b3bdae58e41c422439a6b92aaa6bac7e
   - enabled: 1
     path: Assets/Scenes/GameScene.unity
     guid: 3c07e5a764a92b64caa27f8f1f992cff
-  - enabled: 0
-    path: Assets/WorkSpace/YoungjuneBae/LobbyScene.unity
-    guid: 5e932e4dc85ce2c47856c18974cc59b5
   m_configObjects: {}

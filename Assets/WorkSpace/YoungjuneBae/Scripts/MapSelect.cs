@@ -1,4 +1,3 @@
-using Microsoft.Unity.VisualStudio.Editor;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,7 +17,6 @@ public class MapSelect : MonoBehaviour
     {
         map[mapCount].SetActive(true);
         mapText.text = map[mapCount].name;
-
     }
     public void LeftButton()
     {
@@ -61,5 +59,7 @@ public class MapSelect : MonoBehaviour
     {
         HashTable MapNumber = PhotonNetwork.CurrentRoom.CustomProperties;
         MapNumber["MapNumbering"] = mapCount;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(MapNumber);
+        mapCount = 0;
     }
 }

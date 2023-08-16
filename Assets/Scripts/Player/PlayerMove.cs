@@ -5,19 +5,18 @@ using UnityEngine.InputSystem;
 public class PlayerMove : MonoBehaviourPun 
 {
     private PlayerStat stat;
-    private Rigidbody rb;
     private PlayerInput playerInput;
     private Animator animator;
     private Vector3 moveDir;
     private PlayerUI playerChat;
     private BoxCollider boxCollider;
+    private Rigidbody rb;
     private float curSpeed;
-
 
     private void Awake()
     {
-        stat = GetComponent<PlayerStat>();
         rb = GetComponent<Rigidbody>();
+        stat = GetComponent<PlayerStat>();
         playerInput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
         playerChat = GetComponent<PlayerUI>();
@@ -25,7 +24,6 @@ public class PlayerMove : MonoBehaviourPun
         if (!photonView.IsMine)
             Destroy(playerInput);
     }
-
     private void OnEnable()
     {
         curSpeed = stat.Speed;
@@ -63,8 +61,6 @@ public class PlayerMove : MonoBehaviourPun
                 moveDir.z = 0;
             }
 
-            else if (playerChat.IsChatting == false || playerChat.IsSetting == true)
-            {
                 if (moveDir.x > 0 || moveDir.z > 0 || moveDir.x < 0 || moveDir.z < 0)
                     animator.SetBool("Move", true);
                 else if (moveDir.x == 0 && moveDir.z == 0)
@@ -79,7 +75,6 @@ public class PlayerMove : MonoBehaviourPun
                     moveDir.x = 0;
                 else if (moveDir.z < 0 && moveDir.x > 0 || moveDir.x < 0)
                     moveDir.x = 0;
-            }
         }
     }
 }

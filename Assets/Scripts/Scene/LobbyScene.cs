@@ -11,12 +11,10 @@ public class LobbyScene : BaseScene
         {
             loadingUI.gameObject.SetActive(false);
         }
-        StartCoroutine(TestCoroutine());
     }
 
-    private IEnumerator TestCoroutine()
+    public void GameStart()
     {
-        yield return new WaitForSeconds(5);
         StartCoroutine(LoadSceneRoutine(1));
     }
 

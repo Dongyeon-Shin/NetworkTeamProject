@@ -7,30 +7,41 @@ using UnityEngine;
 public abstract class PassiveItem : MonoBehaviour, IExplosiveReactivable
 {
     protected int coefficient;
-    private Bomb bomb;
-    public Bomb Bomb { set { bomb=value; } }
+    public GameObject itemArray;
     public GameScene gameScene;
-
-    private int iDNumber;
+    private BoxCollider boxCollider;
+    public int iDNumber;
     public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
-
-    public void ExplosiveReact(int bombIDNumber)
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            if (this.bomb == bomb)
-                return;
-            Destroy(gameObject);
-        }
-    }
-    protected abstract void CoeffiCient();
+    private int bombNumber;
 
     private void Start()
     {
+        transform.parent = gameScene.transform.GetChild(0);
+        boxCollider = GetComponent<BoxCollider>();
         CoeffiCient();
     }
+
+    private void Hit(int bombCount)
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            gameScene.ItemDestroy(IDNumber);
+        }
+    }
+
+    public void ExplosiveReact(int bombCount)
+    {
+        Hit(bombCount);
+    }
+    protected abstract void CoeffiCient();
+
     public void GameSceneSet(GameScene gameScene)
     {
         this.gameScene = gameScene;
+    }
+
+    public void SetBombNumber(int bombNumber)
+    {
+        this.bombNumber = bombNumber;
     }
 }

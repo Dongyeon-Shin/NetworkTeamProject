@@ -1,9 +1,11 @@
+using BaeProperty;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 public class TestManager : MonoBehaviourPunCallbacks
 {
@@ -12,7 +14,7 @@ public class TestManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.InRoom)
         {
-            PhotonNetwork.LocalPlayer.SetLoad(true);
+            //PhotonNetwork.LocalPlayer.SetLoad(true);
         }
         else
         {
