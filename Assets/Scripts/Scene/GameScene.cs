@@ -12,7 +12,6 @@ public class GameScene : BaseScene
 {
     [SerializeField]
     private MapData md;
-
     GameObject map;
     [SerializeField]
     private int totalNumberOfPlayers;
@@ -125,13 +124,7 @@ public class GameScene : BaseScene
         Debug.Log(LoadingProgress);
         loadingUI.SetLoadingMessage("ID Number를 부여하는 중");
         StartCoroutine(UpdateProgressRoutine(0.7f));
-        // 테스트할때 빌드런, 에디터 실행을하고 얼트탭을 너무 빠르게 누르면 오류남 다시 확인해보니 그냥 그떄그때 다름
-        // 그냥 지 멋대로 인듯
-        while (Array.Exists(players, player => player == null))
-        {
-            yield return null;
-        }
-        //yield return new WaitWhile(() => Array.Exists(players, player => player == null));
+        yield return new WaitWhile(() => Array.Exists(players, player => player == null));
         foreach (PlayerStat player in players)
         {
             explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
@@ -182,12 +175,13 @@ public class GameScene : BaseScene
         WaitForSecondsRealtime waitASecond = new WaitForSecondsRealtime(1);
         loadingUI.FadeIn();
         yield return new WaitForSecondsRealtime(0.5f);
+        countDownNumber.gameObject.SetActive(true);
         for (int i = countDownTime; i > 0; i--)
         {
-            Debug.Log(i);
+            countDownNumber.mesh = numbers[i];
             yield return waitASecond;
         }
-        Debug.Log("GameStart!");
+        countDownNumber.gameObject.SetActive(false);
         players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
     }
 
