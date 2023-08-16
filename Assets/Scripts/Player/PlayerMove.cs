@@ -10,9 +10,12 @@ public class PlayerMove : MonoBehaviourPun
     private Vector3 moveDir;
     private PlayerUI playerChat;
     private BoxCollider boxCollider;
+    private Rigidbody rb;
+    private float curSpeed;
 
     private void Awake()
     {
+        rb = GetComponent<Rigidbody>();
         stat = GetComponent<PlayerStat>();
         playerInput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
@@ -20,6 +23,29 @@ public class PlayerMove : MonoBehaviourPun
         boxCollider = GetComponent<BoxCollider>();
         if (!photonView.IsMine)
             Destroy(playerInput);
+    }
+    private void OnEnable()
+    {
+        curSpeed = stat.Speed;
+    }
+
+    private void FixedUpdate()
+    {
+        Move();
+    }
+
+    void Move()
+    {
+        curSpeed = stat.Speed;
+
+        Vector3 vecFor = new Vector3(moveDir.x, 0, moveDir.z).normalized;
+        Vector3 vecRb = rb.position;
+        rb.MovePosition(vecRb + vecFor * 5 * Time.fixedDeltaTime);
+
+        if (moveDir.sqrMagnitude >= 0.01f)
+            transform.rotation = Quaternion.LookRotation(moveDir);
+
+        transform.Rotate(moveDir, Space.World);
     }
 
     public void OnMove(InputValue value)
@@ -34,6 +60,7 @@ public class PlayerMove : MonoBehaviourPun
                 moveDir.x = 0;
                 moveDir.z = 0;
             }
+
                 if (moveDir.x > 0 || moveDir.z > 0 || moveDir.x < 0 || moveDir.z < 0)
                     animator.SetBool("Move", true);
                 else if (moveDir.x == 0 && moveDir.z == 0)

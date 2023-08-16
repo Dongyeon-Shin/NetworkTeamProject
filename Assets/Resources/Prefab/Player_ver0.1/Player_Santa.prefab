@@ -3192,6 +3192,7 @@ GameObject:
   - component: {fileID: 4998194188164489488}
   - component: {fileID: 2237829819984367196}
   - component: {fileID: 8901317629295330411}
+  - component: {fileID: 59829832773177527}
   m_Layer: 3
   m_Name: Player_Santa
   m_TagString: Untagged
@@ -3247,7 +3248,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7288310759521063980}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.5, y: 1, z: 0.5}
@@ -3387,6 +3388,22 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!54 &59829832773177527
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7288310759521063980}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 2
+  m_Constraints: 116
+  m_CollisionDetection: 1
 --- !u!1 &7406379124449339876
 GameObject:
   m_ObjectHideFlags: 0
