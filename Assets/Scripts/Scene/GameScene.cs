@@ -38,12 +38,16 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         HashTable mapProperty = PhotonNetwork.CurrentRoom.CustomProperties;
         mapNumbering = (int)mapProperty["MapNumbering"];
         totalNumberOfPlayers = PhotonNetwork.PlayerList.Length;
+        photonView.RPC("SyncGameStart", RpcTarget.AllViaServer);
+    }
+
+    [PunRPC]
+    private void SyncGameStart()
+    {
         if (!PhotonNetwork.InRoom)
         {
-            StartCoroutine(DebugGameStartRoutine());
+            StartCoroutine(LoadingRoutine());
         }
-
-        
     }
 
     private void Update()
