@@ -99,6 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemArray: {fileID: 0}
   gameScene: {fileID: 0}
+  iDNumber: 171
 --- !u!65 &-6233359814820346600
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -119,7 +119,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
                 LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
                 if (PhotonNetwork.IsMasterClient)
                 {
-                    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
+                    gameScene.RequestExplosiveReaction(reactivableObject, ((reactivableObjectLayerMask & bombLayerMask) > 0));
                 }
                 if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
                 {
@@ -197,24 +197,25 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
 
     private IEnumerator CheckAftermathOfExplosionRoutine(float explosionRange, Vector3 direction)
     {
-        while (true)
-        {
-            RaycastHit[] objectsInRange = Physics.RaycastAll(transform.position + new Vector3(0f, 0.5f, 0f), direction, explosionRange);
-            foreach (RaycastHit raycastHit in objectsInRange)
-            {
-                IExplosiveReactivable reactivableObject = raycastHit.collider.GetComponent<IExplosiveReactivable>();
-                if (reactivableObject != null)
-                {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, (((1 << raycastHit.collider.gameObject.layer) & bombLayerMask) > 0));
-                    }
-                }
-                yield return null;
-            }
-            yield return null;
+        //while (true)
+        //{
+        //    RaycastHit[] objectsInRange = Physics.RaycastAll(transform.position + new Vector3(0f, 0.5f, 0f), direction, explosionRange);
+        //    foreach (RaycastHit raycastHit in objectsInRange)
+        //    {
+        //        IExplosiveReactivable reactivableObject = raycastHit.collider.GetComponent<IExplosiveReactivable>();
+        //        if (reactivableObject != null)
+        //        {
+        //            if (PhotonNetwork.IsMasterClient)
+        //            {
+        //                gameScene.RequestExplosiveReaction(reactivableObject, (((1 << raycastHit.collider.gameObject.layer) & bombLayerMask) > 0));
+        //            }
+        //        }
+        //        yield return null;
+        //    }
+        //    yield return null;
 
-        }
+        //}
+        yield return null;
     }
 
     public void ExplosiveReact(int bombIDNumber)

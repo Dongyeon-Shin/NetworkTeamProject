@@ -19,20 +19,19 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
     private int iDNumber;   
     public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
 
-    public void ExplosiveReact(int bombIDNumber)
+    public void ExplosiveReact(int bombCount)
     {
-        Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
-        if(check)
-            Hit(bombIDNumber);
+        if (check)
+            Hit(bombCount);
     }
 
-    private void Hit(int bombIDNumber)
+    private void Hit(int bombCount)
     {
         check=false;
         if (item != null)
         {
-            Instantiate(item, transform.position, Quaternion.Euler(0, 0, 0)).GetComponent<PassiveItem>().BombIDNumber = bombIDNumber;
-            Debug.Log(bombIDNumber);
+            GameObject ite = Instantiate(item, transform.position, Quaternion.Euler(0, 0, 0));
+            ite.GetComponent<PassiveItem>().SetBombNumber(bombCount);
         }
         Destroy(gameObject);
     }
