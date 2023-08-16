@@ -43,7 +43,7 @@ public class PlayerUI : MonoBehaviourPun
     {
         if (input.text.Equals(""))
             return;
-        string strMessage = " : " + input.text;
+        string strMessage = input.text;
         photonView.RPC("ReceiveMsg", RpcTarget.All, strMessage);
         input.text = "";
         photonView.RPC("PopUpChat", RpcTarget.All);
