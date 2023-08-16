@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Bomb : MonoBehaviour, IExplosiveReactivable
+public class Bomb : MonoBehaviourPun, IExplosiveReactivable
 {
     [SerializeField]
     [Range(0, 10)]
@@ -26,7 +26,6 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     private LayerMask unPenetratedObjectsLayerMask;
     private LayerMask bombLayerMask;
     private LayerMask boxLayerMask;
-    private LayerMask playerMask;
     private BoxCollider boxCollider;
     private SphereCollider explodCollider;
     private bool readyToExplode;
@@ -42,7 +41,6 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         explodClip = GetComponent<AudioSource>();
         bombLayerMask = LayerMask.GetMask("Bomb");
         boxLayerMask = LayerMask.GetMask("Box");
-        playerMask = LayerMask.GetMask("Player");
         unPenetratedObjectsLayerMask = 1 | bombLayerMask;
         bombRenderer = GetComponentInChildren<MeshRenderer>();
 
@@ -65,7 +63,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
 
     private void Start()
     {
-        gameScene.RegisterBombID(this);
+        //gameScene.RegisterBombID(this);
     }
 
     IEnumerator LightTheFuseRoutine()
@@ -117,10 +115,10 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
             if (reactivableObject != null)
             {
                 LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
-               if (PhotonNetwork.IsMasterClient)
-               {
-                   gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
-               }
+              //if (PhotonNetwork.IsMasterClient)
+              //{
+              //    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
+              //}
                 if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
                 {
                     if (direction.z > 0)
@@ -206,10 +204,10 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
                 IExplosiveReactivable reactivableObject = raycastHit.collider.GetComponent<IExplosiveReactivable>();
                 if (reactivableObject != null)
                 {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, (((1 << raycastHit.collider.gameObject.layer) & bombLayerMask) > 0));
-                    }
+                   //if (PhotonNetwork.IsMasterClient)
+                   //{
+                   //    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, (((1 << raycastHit.collider.gameObject.layer) & bombLayerMask) > 0));
+                   //}
                 }
                 yield return null;
             }
@@ -226,9 +224,9 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         readyToExplode = true;
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == playerMask)
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             if (PlayerCheck())
                 boxCollider.isTrigger = true;
@@ -239,15 +237,15 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer == playerMask)
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            boxCollider.isTrigger = false;
+              boxCollider.isTrigger = false;
         }
     }
 
     private bool PlayerCheck()
     {
-        int layerMask = (1 << playerMask);
+        int layerMask = (1 << LayerMask.NameToLayer("Player"));
 
         Collider[] colliders =
                     Physics.OverlapBox(boxCollider.center + transform.parent.position, boxCollider.size/2, Quaternion.identity, layerMask);
