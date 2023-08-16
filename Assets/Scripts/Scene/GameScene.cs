@@ -27,7 +27,7 @@ public class GameScene : BaseScene
     public float LoadingProgress { get { return loadingUI.Progress; } }
 
     private List<IExplosiveReactivable> explosiveReactivableObjects = new List<IExplosiveReactivable>();
-    private List<IExplosiveReactivable> items = new List<IExplosiveReactivable>();
+    private List<PassiveItem> items = new List<PassiveItem>();
     private List<Bomb> bombList = new List<Bomb>();
 
     private void Start()
@@ -86,15 +86,16 @@ public class GameScene : BaseScene
         loadingUI.SetLoadingMessage("맵을 불러오는 중");
         StartCoroutine(UpdateProgressRoutine(0.4f));
         // 스크립터블 오브젝트 연결
+        itemArray = transform.GetChild(0);
         md = GameManager.Resource.Load<MapData>("Map/MapData");
         progress = 0.1f;
         // 맵생성
         map = Instantiate(md.MapDatas[0].map);
         progress = 0.4f;
-        //loadingUI.SetLoadingMessage("아이템을 생성하는 중");
-        //itemSet = map.GetComponentInChildren<ItemSetting>();
-        //itemSet.ItemSettingConnect(this);
-        //yield return StartCoroutine(itemSet.ItemCreate());
+        loadingUI.SetLoadingMessage("아이템을 생성하는 중");
+        itemSet = map.GetComponentInChildren<ItemSetting>();
+        itemSet.ItemSettingConnect(this);
+        yield return StartCoroutine(itemSet.ItemCreate());
         yield return null;
         progress = 1f;
     }
@@ -118,11 +119,16 @@ public class GameScene : BaseScene
         loadingUI.SetLoadingMessage("UI를 불러오는 중");
         StartCoroutine(UpdateProgressRoutine(0.6f));
         GameObject inGameInterface = GameManager.Resource.Instantiate(GameManager.Resource.Load<GameObject>("Map/GameInterFace"));
-        // 타이머 없애면 쉽게 가능.
-        //players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerStat>().InterFaceSet(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
-
+        StartCoroutine(UIWait(inGameInterface));
         yield return null;
         progress = 1f;
+    }
+    IEnumerator UIWait(GameObject inGameInterface)
+    {
+        Debug.Log(LoadingProgress);
+        yield return new WaitWhile(() => players[PhotonNetwork.LocalPlayer.GetPlayerNumber()] == null);
+        Debug.Log(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
+        players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].InterFaceSet(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
     }
 
     private IEnumerator AllocateIDNumberRoutine()
@@ -132,20 +138,19 @@ public class GameScene : BaseScene
         StartCoroutine(UpdateProgressRoutine(0.7f));
         // 테스트할때 빌드런, 에디터 실행을하고 얼트탭을 너무 빠르게 누르면 오류남 다시 확인해보니 그냥 그떄그때 다름
         // 그냥 지 멋대로 인듯
-        while (Array.Exists(players, player => player == null))
-        {
-            yield return null;
-        }
-        //yield return new WaitWhile(() => Array.Exists(players, player => player == null));
+        yield return new WaitWhile(() => Array.Exists(players, player => player == null));
         foreach (PlayerStat player in players)
         {
-            //explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
+            explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
             yield return null;
         }
         progress = 0.5f;
         IExplosiveReactivable[] mapObjects = map.GetComponentsInChildren<IExplosiveReactivable>();
         explosiveReactivableObjects.AddRange(mapObjects);
+        yield return new WaitWhile(() => items.Count == 0);
+        Debug.Log(explosiveReactivableObjects.Count);
         explosiveReactivableObjects.AddRange(items);
+        Debug.Log(explosiveReactivableObjects.Count);
         progress = 0.7f;
         for (int i = 0; i < explosiveReactivableObjects.Count; i++)
         {
@@ -164,14 +169,11 @@ public class GameScene : BaseScene
         bool waitingForOtherPlayers = true;
         while (waitingForOtherPlayers)
         {
-            Debug.Log("1");
             waitingForOtherPlayers = false;
             foreach (bool ready in playersReadyState)
             {
-                Debug.Log("2");
                 if (!ready)
                 {
-                    Debug.Log("3");
                     waitingForOtherPlayers = true;
                 }
                 yield return null;
@@ -236,36 +238,29 @@ public class GameScene : BaseScene
     // 배열 저장
     public IEnumerator ItemSetting(int[] check, int[] items) 
     {
-        StartCoroutine(ItemCreate(check, items));
-    }
-
-    public IEnumerator ItemCreate(int[] check, int[] items)
-    {
-        Debug.Log("123");
-        // 디버그 모드시 2명이 접속해야 실행
         yield return new WaitUntil(() => PhotonNetwork.PlayerList.Length == totalNumberOfPlayers);
-        Debug.Log("why");
+        yield return new WaitForSeconds(1f);
         photonView.RPC("ItemCreateRPC", RpcTarget.AllViaServer, check, items);
     }
 
     [PunRPC]
     private void ItemCreateRPC(int[] check, int[] items)
     {
-        Debug.Log("how");
         for (int i = 0; i < check.Length; i++)
         {
             if (check[i] == 1)
             {
                 GameObject createitem = itemSet.transform.GetChild(i).GetComponent<Box>().item = itemSet.itemArray[items[i]];
                 createitem.GetComponent<PassiveItem>().GameSceneSet(this);
-                IExplosiveReactivable item = createitem.GetComponent<IExplosiveReactivable>();
-                this.items.Add(item);
+                this.items.Add(createitem.GetComponent<PassiveItem>());
+                Debug.Log(this.items.Count);
             }
         }
     }
 
     public void ItemDestroy(int id)
     {
+        Debug.Log("item"+id);
         photonView.RPC("ItemDestroyRPC", RpcTarget.AllViaServer, id);
     }
 
@@ -274,9 +269,10 @@ public class GameScene : BaseScene
     {
         for (int i = 0; i < itemArray.childCount; i++)
         {
+            Debug.Log(id);
             if (itemArray.GetChild(i).GetComponent<IExplosiveReactivable>().IDNumber == id)
             {
-                Destroy(itemArray.GetChild(i));
+                Debug.Log("destroy");
                 break;
             }
         }
