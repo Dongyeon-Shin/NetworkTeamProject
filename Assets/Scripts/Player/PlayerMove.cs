@@ -5,49 +5,21 @@ using UnityEngine.InputSystem;
 public class PlayerMove : MonoBehaviourPun 
 {
     private PlayerStat stat;
-    private Rigidbody rb;
     private PlayerInput playerInput;
     private Animator animator;
     private Vector3 moveDir;
     private PlayerUI playerChat;
     private BoxCollider boxCollider;
-    private float curSpeed;
-
 
     private void Awake()
     {
         stat = GetComponent<PlayerStat>();
-        rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
         playerChat = GetComponent<PlayerUI>();
         boxCollider = GetComponent<BoxCollider>();
         if (!photonView.IsMine)
             Destroy(playerInput);
-    }
-
-    private void OnEnable()
-    {
-        curSpeed = stat.Speed;
-    }
-
-    private void FixedUpdate()
-    {
-        Move();
-    }
-
-    void Move()
-    {
-        curSpeed = stat.Speed;
-
-        Vector3 vecFor = new Vector3(moveDir.x, 0, moveDir.z).normalized;
-        Vector3 vecRb = rb.position;
-        rb.MovePosition(vecRb + vecFor * 5 * Time.fixedDeltaTime);
-
-        if (moveDir.sqrMagnitude >= 0.01f)
-            transform.rotation = Quaternion.LookRotation(moveDir);
-
-        transform.Rotate(moveDir, Space.World);
     }
 
     public void OnMove(InputValue value)

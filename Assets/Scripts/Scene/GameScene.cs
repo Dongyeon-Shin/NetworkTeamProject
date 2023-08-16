@@ -1,3 +1,4 @@
+using BaeProperty;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
@@ -8,6 +9,7 @@ using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using HashTable = ExitGames.Client.Photon.Hashtable;
 
 public class GameScene : BaseScene, IPunObservable, IEventListener
 {
@@ -21,6 +23,8 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     private PlayerStat[] players;
     private bool[] playersReadyState;
     ItemSetting itemSet;
+    HashTable mapProperty = PhotonNetwork.CurrentRoom.CustomProperties;
+    int mapNumbering;
     public float LoadingProgress { get { return loadingUI.Progress; } }
 
     private List<IExplosiveReactivable> explosiveReactivableObjects = new List<IExplosiveReactivable>();
@@ -29,10 +33,14 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
 
     private void Start()
     {
+        mapNumbering = (int)mapProperty["MapNumbering"];
+        totalNumberOfPlayers = PhotonNetwork.PlayerList.Length;
         if (!PhotonNetwork.InRoom)
         {
             StartCoroutine(DebugGameStartRoutine());
         }
+
+        
     }
 
     private void Update()
@@ -99,7 +107,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         md = GameManager.Resource.Load<MapData>("Map/MapData");
         progress = 0.1f;
         // 맵생성
-        map = Instantiate(md.MapDatas[0].map);
+        map = Instantiate(md.MapDatas[mapNumbering].map);
         progress = 0.4f;
         //loadingUI.SetLoadingMessage("아이템을 생성하는 중");
         //itemSet = map.GetComponentInChildren<ItemSetting>();
@@ -117,21 +125,49 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         playersReadyState = new bool[totalNumberOfPlayers];
         progress = 0.3f;
         GameObject player;
-        switch(PhotonNetwork.LocalPlayer.GetPlayerNumber() % 4)
+        int myCount=0;
+        foreach(Player roomPlayer in PhotonNetwork.PlayerList)
+        {
+            if(roomPlayer == PhotonNetwork.LocalPlayer)
+            {
+                break;
+            }
+            else
+            {
+                myCount++;
+            }
+        }
+
+        switch (PhotonNetwork.LocalPlayer.GetColor())
         {
             case 0:
-                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", md.MapDatas[mapNumbering].position[myCount], Quaternion.Euler(0, 0, 0));
                 break;
             case 1:
-                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Santa", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Santa", md.MapDatas[mapNumbering].position[myCount], Quaternion.Euler(0, 0, 0));
                 break;
             case 2:
-                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Snow_Princess", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Snow_Princess", md.MapDatas[mapNumbering].position[myCount], Quaternion.Euler(0, 0, 0));
                 break;
             default:
-                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Snowmon", md.MapDatas[0].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Snowmon", md.MapDatas[mapNumbering].position[myCount], Quaternion.Euler(0, 0, 0));
                 break;
-        }
+        }/*
+        switch (PhotonNetwork.LocalPlayer.GetPlayerNumber() % 4)
+        {
+            case 0:
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Reindeer", md.MapDatas[mapNumbering].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                break;
+            case 1:
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Santa", md.MapDatas[mapNumbering].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                break;
+            case 2:
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Snow_Princess", md.MapDatas[mapNumbering].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                break;
+            default:
+                player = PhotonNetwork.Instantiate("Prefab/Player_ver0.1/Player_Snowmon", md.MapDatas[mapNumbering].position[PhotonNetwork.LocalPlayer.GetPlayerNumber()], Quaternion.Euler(0, 0, 0));
+                break;
+        }*/
         player.GetComponent<PlayerStat>().InitialSetup(this);
         player.GetComponent<PlayerInput>().enabled = false;
         yield return null;
