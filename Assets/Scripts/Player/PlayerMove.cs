@@ -83,6 +83,5 @@ public class PlayerMove : MonoBehaviourPun
                     moveDir.x = 0;
             }
         }
-        
     }
 }

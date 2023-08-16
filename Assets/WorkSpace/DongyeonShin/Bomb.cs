@@ -26,7 +26,6 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
     private LayerMask unPenetratedObjectsLayerMask;
     private LayerMask bombLayerMask;
     private LayerMask boxLayerMask;
-    private BoxCollider boxCollider;
     private SphereCollider explodCollider;
     private bool readyToExplode;
     private Coroutine lightTheFuseRoutine;
@@ -37,7 +36,6 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
     private void Awake()
     {
         explodCollider = GetComponent<SphereCollider>();
-        boxCollider = GetComponent<BoxCollider>();
         explodClip = GetComponent<AudioSource>();
         bombLayerMask = LayerMask.GetMask("Bomb");
         boxLayerMask = LayerMask.GetMask("Box");
@@ -48,10 +46,6 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
 
     private void OnEnable()
     {
-        if(!photonView.IsMine)
-        {
-            boxCollider.isTrigger = false;
-        }
         explodCollider.enabled = true;
         sparkParticle[0].gameObject.SetActive(true);
         sparkParticle[1].gameObject.SetActive(true);
@@ -207,10 +201,10 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
                 IExplosiveReactivable reactivableObject = raycastHit.collider.GetComponent<IExplosiveReactivable>();
                 if (reactivableObject != null)
                 {
-                   //if (PhotonNetwork.IsMasterClient)
-                   //{
-                   //    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, (((1 << raycastHit.collider.gameObject.layer) & bombLayerMask) > 0));
-                   //}
+                  //if (PhotonNetwork.IsMasterClient)
+                  //{
+                  //    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, (((1 << raycastHit.collider.gameObject.layer) & bombLayerMask) > 0));
+                  //}
                 }
                 yield return null;
             }
@@ -225,21 +219,5 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
         StopCoroutine(lightTheFuseRoutine);
         explodCollider.enabled = false;
         readyToExplode = true;
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            boxCollider.isTrigger = true;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-              boxCollider.isTrigger = false;
-        }
     }
 }
