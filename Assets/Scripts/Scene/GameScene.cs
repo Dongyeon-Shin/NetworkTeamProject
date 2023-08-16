@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using HashTable = ExitGames.Client.Photon.Hashtable;
@@ -15,20 +16,21 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
 {
     [SerializeField]
     private MapData md;
-    GameObject map;
     [SerializeField]
     private int totalNumberOfPlayers;
     [SerializeField]
     private int countDownTime;
     private PlayerStat[] players;
     private bool[] playersReadyState;
+    GameObject map;
+    Transform itemArray;
     ItemSetting itemSet;
     HashTable mapProperty = PhotonNetwork.CurrentRoom.CustomProperties;
     int mapNumbering;
     public float LoadingProgress { get { return loadingUI.Progress; } }
 
     private List<IExplosiveReactivable> explosiveReactivableObjects = new List<IExplosiveReactivable>();
-    private List<IExplosiveReactivable> items = new List<IExplosiveReactivable>();
+    private List<PassiveItem> items = new List<PassiveItem>();
     private List<Bomb> bombList = new List<Bomb>();
 
     private void Start()
@@ -93,7 +95,11 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
         progress = 1f;
         yield return StartCoroutine(MapLoadingRoutine());
+        Debug.Log("map");
+        Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
+        //yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != totalNumberOfPlayers);
         yield return StartCoroutine(PlayerLoadingRoutine());
+        Debug.Log("pla");
         yield return StartCoroutine(UILoadingRoutine());
         yield return StartCoroutine(AllocateIDNumberRoutine());
         yield return StartCoroutine(WaitingForOtherPlayersRoutine());
@@ -104,15 +110,16 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         loadingUI.SetLoadingMessage("맵을 불러오는 중");
         StartCoroutine(UpdateProgressRoutine(0.4f));
         // 스크립터블 오브젝트 연결
+        itemArray = transform.GetChild(0);
         md = GameManager.Resource.Load<MapData>("Map/MapData");
         progress = 0.1f;
         // 맵생성
         map = Instantiate(md.MapDatas[mapNumbering].map);
         progress = 0.4f;
-        //loadingUI.SetLoadingMessage("아이템을 생성하는 중");
-        //itemSet = map.GetComponentInChildren<ItemSetting>();
-        //itemSet.ItemSettingConnect(this);
-        //yield return StartCoroutine(itemSet.ItemCreate());
+        loadingUI.SetLoadingMessage("아이템을 생성하는 중");
+        itemSet = map.GetComponentInChildren<ItemSetting>();
+        itemSet.ItemSettingConnect(this);
+        yield return StartCoroutine(itemSet.ItemCreate());
         yield return null;
         progress = 1f;
     }
@@ -179,11 +186,16 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         loadingUI.SetLoadingMessage("UI를 불러오는 중");
         StartCoroutine(UpdateProgressRoutine(0.6f));
         GameObject inGameInterface = GameManager.Resource.Instantiate(GameManager.Resource.Load<GameObject>("Map/GameInterFace"));
-        // 타이머 없애면 쉽게 가능.
-        //players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerStat>().InterFaceSet(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
-
+        StartCoroutine(UIWait(inGameInterface));
         yield return null;
         progress = 1f;
+    }
+    IEnumerator UIWait(GameObject inGameInterface)
+    {
+        Debug.Log(LoadingProgress);
+        yield return new WaitWhile(() => players[PhotonNetwork.LocalPlayer.GetPlayerNumber()] == null);
+        Debug.Log(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
+        players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].InterFaceSet(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
     }
 
     private IEnumerator AllocateIDNumberRoutine()
@@ -200,7 +212,10 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         progress = 0.5f;
         IExplosiveReactivable[] mapObjects = map.GetComponentsInChildren<IExplosiveReactivable>();
         explosiveReactivableObjects.AddRange(mapObjects);
+        yield return new WaitWhile(() => items.Count == 0);
+        Debug.Log(explosiveReactivableObjects.Count);
         explosiveReactivableObjects.AddRange(items);
+        Debug.Log(explosiveReactivableObjects.Count);
         progress = 0.7f;
         for (int i = 0; i < explosiveReactivableObjects.Count; i++)
         {
@@ -367,13 +382,8 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     // 배열 저장
     public IEnumerator ItemSetting(int[] check, int[] items) 
     {
-        yield return StartCoroutine(ItemCreate(check, items));
-    }
-
-    IEnumerator ItemCreate(int[] check, int[] items)
-    {
-        // 디버그 모드시 2명이 접속해야 실행
         yield return new WaitUntil(() => PhotonNetwork.PlayerList.Length == totalNumberOfPlayers);
+        yield return new WaitForSeconds(1f);
         photonView.RPC("ItemCreateRPC", RpcTarget.AllViaServer, check, items);
     }
 
@@ -386,21 +396,31 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
             {
                 GameObject createitem = itemSet.transform.GetChild(i).GetComponent<Box>().item = itemSet.itemArray[items[i]];
                 createitem.GetComponent<PassiveItem>().GameSceneSet(this);
-                IExplosiveReactivable item = createitem.GetComponent<IExplosiveReactivable>();
-                this.items.Add(item);
+                this.items.Add(createitem.GetComponent<PassiveItem>());
+                Debug.Log(this.items.Count);
             }
         }
     }
 
-    public void ItemDestroy(GameObject gameObject)
+    public void ItemDestroy(int id)
     {
-        photonView.RPC("ItemDestroyRPC", RpcTarget.AllViaServer, gameObject);
+        Debug.Log("item"+id);
+        photonView.RPC("ItemDestroyRPC", RpcTarget.AllViaServer, id);
     }
 
     [PunRPC]
-    private void ItemDestroyRPC(GameObject gameObject)
+    private void ItemDestroyRPC(int id)
     {
-        Destroy(gameObject);
+        for (int i = 0; i < itemArray.childCount; i++)
+        {
+            Debug.Log(id);
+            if (itemArray.GetChild(i).GetComponent<IExplosiveReactivable>().IDNumber == id)
+            {
+                Debug.Log("destroy");
+                Destroy(itemArray.GetChild(i).gameObject);
+                break;
+            }
+        }
     }
 
 

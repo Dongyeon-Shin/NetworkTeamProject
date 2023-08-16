@@ -23,7 +23,7 @@ public class PlayerStat : MonoBehaviourPunCallbacks
 
 
     private void Start()
-    {     
+    {
         StartCoroutine(AllocatePlayerNumberRoutine());
     }
     public void InterFaceSet(TMP_Text[] tmp)
@@ -47,9 +47,17 @@ public class PlayerStat : MonoBehaviourPunCallbacks
 
     public void ItemInterfaceSet()
     {
-        power_Text.text = $"{power-1}";
-        speed_Text.text = $"{speed - 1}";
-        bomb_Text.text = $"{bomb - 1}";
+        photonView.RPC("ItemInterFaceSetRPC", RpcTarget.AllViaServer);
+    }
+    [PunRPC]
+    private void ItemInterFaceSetRPC()
+    {
+        if (photonView.IsMine)
+        {
+            power_Text.text = $"{power - 1}";
+            speed_Text.text = $"{speed - 1}";
+            bomb_Text.text = $"{bomb - 1}";
+        }
     }
 
     public void StatRenewal()

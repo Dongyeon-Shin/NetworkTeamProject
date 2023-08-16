@@ -1,16 +1,18 @@
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Box : MonoBehaviourPun, IExplosiveReactivable
 {
-    private BoxCollider collider;
+    private BoxCollider boxcollider;
     public GameObject item;
+    private bool check=true;
 
-    private void Start()
+    private void Awake()
     {
-        collider = GetComponent<BoxCollider>();
+        boxcollider = GetComponent<BoxCollider>();
     }
 
     [SerializeField]
@@ -19,15 +21,20 @@ public class Box : MonoBehaviourPun, IExplosiveReactivable
 
     public void ExplosiveReact(int bombIDNumber)
     {
-        Hit(bombIDNumber);
+        Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
+        if(check)
+            Hit(bombIDNumber);
     }
 
     private void Hit(int bombIDNumber)
     {
-        if(item != null)
+        check=false;
+        if (item != null)
         {
-            //Instantiate(item,transform.position,Quaternion.Euler(0,0,0)).GetComponent<PassiveItem>().Bomb=bomb;
+            Instantiate(item, transform.position, Quaternion.Euler(0, 0, 0)).GetComponent<PassiveItem>().BombIDNumber = bombIDNumber;
+            Debug.Log(bombIDNumber);
         }
         Destroy(gameObject);
     }
+
 }

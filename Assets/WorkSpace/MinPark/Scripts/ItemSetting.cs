@@ -38,7 +38,8 @@ public class ItemSetting : MonoBehaviourPun
         if (PhotonNetwork.IsMasterClient)
         {
             ArraySetting();
-            yield return StartCoroutine(ItemSet());
+            ItemSet();
+            yield return null;
         }
     }
     private void ArraySetting()
@@ -52,20 +53,19 @@ public class ItemSetting : MonoBehaviourPun
         }
     }
 
-    public IEnumerator ItemSet()
+    public void ItemSet()
     {
         int index = 0;
         foreach(Transform trans in transform)
         {
             if (itemCount < 1)
             {
-                yield return StartCoroutine(gameScene.ItemSetting(check, item));
-                yield break;
+                StartCoroutine(gameScene.ItemSetting(check, item));
+                break;
             }
             // 부모 트랜스폼과 같으면 건너뛴다
             if (trans == this.transform)
             {
-                Debug.Log("tran");
                 continue;
             }
             if (check[index]==0)
@@ -80,9 +80,8 @@ public class ItemSetting : MonoBehaviourPun
                 }
             }
             index++;
-            yield return null;
         }
         if (itemCount > 0)
-            yield return StartCoroutine(ItemSet());
+            ItemSet();
     }
 }
