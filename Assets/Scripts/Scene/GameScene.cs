@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Timers;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -58,14 +59,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         }
     }
 
-    //====================== 게임끝 ==========================
-    [SerializeField] GameObject GameOverUI; // 공용리소스에 있음
-    private void GameOver()
-    {
-        if (CheckingAlive()) 
-            GameOverUI.SetActive(true);
-    }
-    //====================== 게임끝 ==========================
+   
 
     protected override IEnumerator LoadingRoutine()
     {
@@ -265,22 +259,19 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
             yield return waitASecond;
         }
         countDownNumber.gameObject.SetActive(false);
-        players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
-        GameManager.Event.AddListener(EventType.Died,this);
-        // 사운드
+        
+        GameManager.Event.AddListener(EventType.Died, this);
         GameManager.Sound.Init();
-        GameManager.Sound.Play(backGround, Sound.Bgm, 1);
-
-        TimeOut = true;
+        GameManager.Sound.Play("Sounds/BGM/BackBGM_1", Sound.Bgm);
+        IsTimer = true;
+        players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
     }
 
     // =================================== 타이머 및 생존 체크====================================
     [SerializeField] TMP_Text text_time;  // 시간을 표시할 text
-    [SerializeField] float inPutTime;     // 시간설정
+    private float inPutTime = 300;     // 시간설정
     private bool IsTimer = false;
     private bool TimeOut = false;
-
-    private AudioClip backGround;
 
     private void Timer()
     {
@@ -336,8 +327,17 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         if(eventType == EventType.Died)
         {
             CheckingAlive();
+            if (CheckingAlive())
+                GameOverUI.SetActive(true);
         }
     }
+    //====================== 게임끝 ==========================
+    [SerializeField] GameObject GameOverUI; // 공용리소스에 있음
+    public void OnExitGame()
+    {
+        PhotonNetwork.JoinLobby();
+    }
+    //====================== 게임끝 ==========================
 
     // =================================== 타이머 및 생존 체크====================================
 

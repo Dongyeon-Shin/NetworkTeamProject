@@ -108,8 +108,7 @@ public class PlayerUI : MonoBehaviourPun
     {
         if(!stat.IsAlive)
         {
-            PhotonNetwork.LeaveRoom();
-            PhotonNetwork.JoinLobby();
+            PhotonNetwork.LoadLevel("LobbyScene");
         }
         else
             StartCoroutine(ExitRoutine());
