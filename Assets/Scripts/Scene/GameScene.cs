@@ -25,7 +25,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     GameObject map;
     Transform itemArray;
     ItemSetting itemSet;
-
+    int bombCount;
     
     public float LoadingProgress { get { return loadingUI.Progress; } }
 
