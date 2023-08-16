@@ -1,10 +1,11 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Bomb : MonoBehaviour, IExplosiveReactivable
+public class Bomb : MonoBehaviourPun, IExplosiveReactivable
 {
     [SerializeField]
     [Range(0, 10)]
@@ -25,26 +26,26 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     private LayerMask unPenetratedObjectsLayerMask;
     private LayerMask bombLayerMask;
     private LayerMask boxLayerMask;
-    private BoxCollider boxCollider;
     private SphereCollider explodCollider;
     private bool readyToExplode;
     private Coroutine lightTheFuseRoutine;
     private MeshRenderer bombRenderer;
+    private AudioSource explodClip;
 
 
     private void Awake()
     {
         explodCollider = GetComponent<SphereCollider>();
-        boxCollider = GetComponent<BoxCollider>();
+        explodClip = GetComponent<AudioSource>();
         bombLayerMask = LayerMask.GetMask("Bomb");
         boxLayerMask = LayerMask.GetMask("Box");
         unPenetratedObjectsLayerMask = 1 | bombLayerMask;
         bombRenderer = GetComponentInChildren<MeshRenderer>();
+
     }
 
     private void OnEnable()
     {
-        boxCollider.isTrigger = true;
         explodCollider.enabled = true;
         sparkParticle[0].gameObject.SetActive(true);
         sparkParticle[1].gameObject.SetActive(true);
@@ -59,7 +60,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
 
     private void Start()
     {
-        gameScene.RegisterBombID(this);
+        //gameScene.RegisterBombID(this);
     }
 
     IEnumerator LightTheFuseRoutine()
@@ -111,10 +112,10 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
             if (reactivableObject != null)
             {
                 LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
-               if (PhotonNetwork.IsMasterClient)
-               {
-                   gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
-               }
+              //if (PhotonNetwork.IsMasterClient)
+              //{
+              //    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
+              //}
                 if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
                 {
                     if (direction.z > 0)
@@ -170,6 +171,7 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
     {
         if (direction == Vector3.zero)
         {
+            explodClip.Play();   // 오디오 소스
             GameManager.Resource.Instantiate(Resources.Load("Particle/ExplosionParticle"), transform.position, transform.rotation);
             Coroutine checkAftermathOfExplosion = StartCoroutine(CheckAftermathOfExplosionRoutine(explosionRange, direction));
             yield return new WaitForSeconds(2.5f);
@@ -199,10 +201,10 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
                 IExplosiveReactivable reactivableObject = raycastHit.collider.GetComponent<IExplosiveReactivable>();
                 if (reactivableObject != null)
                 {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, (((1 << raycastHit.collider.gameObject.layer) & bombLayerMask) > 0));
-                    }
+                  //if (PhotonNetwork.IsMasterClient)
+                  //{
+                  //    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, (((1 << raycastHit.collider.gameObject.layer) & bombLayerMask) > 0));
+                  //}
                 }
                 yield return null;
             }
@@ -218,13 +220,4 @@ public class Bomb : MonoBehaviour, IExplosiveReactivable
         explodCollider.enabled = false;
         readyToExplode = true;
     }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            boxCollider.isTrigger = false;
-        }
-    }
-
 }
