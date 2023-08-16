@@ -1,14 +1,8 @@
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Events;
-using Photon.Chat.Demo;
-using TMPro;
-using UnityEngine.Windows;
-using Photon.Realtime;
-using UnityEngine.UI;
 
-public class PlayerMove : MonoBehaviourPun
+public class PlayerMove : MonoBehaviourPun 
 {
     private PlayerStat stat;
     private PlayerInput playerInput;
@@ -35,8 +29,6 @@ public class PlayerMove : MonoBehaviourPun
             moveDir.x = value.Get<Vector2>().x;
             moveDir.z = value.Get<Vector2>().y;
 
-
-
             if (playerChat.IsChatting == true || playerChat.IsSetting == true)
             {
                 moveDir.x = 0;
@@ -61,6 +53,5 @@ public class PlayerMove : MonoBehaviourPun
                     moveDir.x = 0;
             }
         }
-        
     }
 }
