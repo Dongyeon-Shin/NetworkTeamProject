@@ -73,10 +73,14 @@ public class PlayerStat : MonoBehaviourPunCallbacks
     private IEnumerator AllocatePlayerNumberRoutine()
     {
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
-        playerNumber =  PhotonNetwork.LocalPlayer.GetPlayerNumber();
-        yield return new WaitWhile(() => gameScene == null);
-        Debug.Log("ready");
-        gameScene.Ready(this, playerNumber);
+        playerNumber = photonView.ViewID / 1000 - 1;
+        if (gameScene == null)
+        {
+            gameScene = GameObject.FindObjectOfType<GameScene>();
+        }
+        yield return new WaitWhile(() => gameScene.LoadingProgress < 0.3f);
+        gameScene.RegisterPlayerInfo(this);
+        isAlive = true;
     }
     public void InitialSetup(GameScene gameScene)
     {
