@@ -180,7 +180,7 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
     {
         if (direction == Vector3.zero)
         {
-            explodClip.Play();   // ¿Àµð¿À ¼Ò½º
+            explodClip.Play();   // ¿?µð¿? ¼Ò½º
             GameManager.Resource.Instantiate(Resources.Load("Particle/ExplosionParticle"), transform.position, transform.rotation);
             Coroutine checkAftermathOfExplosion = StartCoroutine(CheckAftermathOfExplosionRoutine(explosionRange, direction));
             yield return new WaitForSeconds(2.5f);
