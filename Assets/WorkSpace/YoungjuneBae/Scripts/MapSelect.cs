@@ -61,6 +61,5 @@ public class MapSelect : MonoBehaviour
         MapNumber["MapNumbering"] = mapCount;
         PhotonNetwork.CurrentRoom.SetCustomProperties(MapNumber);
         mapCount = 0;
-        //PhotonNetwork.LoadLevel("GameScene");
     }
 }

@@ -11,6 +11,17 @@ namespace BaeProperty
 {
     public static class CustomProperty
     {
+        public static int GetColor(this Player player)
+        {
+            HashTabel property = player.CustomProperties;
+            return (int)property["Color"];
+        }
+        public static void SetColor(this Player player, int  color)
+        {
+            HashTabel property = player.CustomProperties;
+            property["Color"]=color;
+            player.SetCustomProperties(property);
+        }
         public static bool GetPlay(this Player player)
         {
             HashTabel property = player.CustomProperties;

@@ -59,6 +59,7 @@ public class RoomPanel : MonoBehaviourPunCallbacks
         {
             playerSpace[playerCount].SetActive(false);
             PlayerType key = (PlayerType)player.GetPlayerNumber();
+            player.SetColor((int)key);
             playerSpace[playerCount].transform.parent.GetComponentInChildren<RawImage>().texture = renderTextures[(int)key];
             playerSpace[playerCount].transform.parent.GetComponentInChildren<Text>().text = player.NickName;
             if(player.GetReady())
