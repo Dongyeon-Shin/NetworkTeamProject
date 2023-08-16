@@ -6,7 +6,6 @@ public enum Sound
     Bgm,
     Effect,
     Size,
-    Clip,
 }
 
 public class SoundManager : MonoBehaviour
