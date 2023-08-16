@@ -266,6 +266,8 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         countDownNumber.gameObject.SetActive(false);
         players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
         GameManager.Event.AddListener(EventType.Died,this);
+        GameManager.Sound.Init();
+        GameManager.Sound.Play(backGround, Sound.Bgm, 1);
         TimeOut = true;
     }
 
@@ -278,12 +280,11 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     private AudioClip backGround;
 
 
-    // 사운드폴더에 bgm 넣으면 작동
-    //private void Awake()
-    //{
-    //    GameManager.Sound.Init();
-    //    GameManager.Sound.Play(backGround, Sound.Bgm, 1);
-    //}
+     //사운드폴더에 bgm 넣으면 작동
+    private void Awake()
+    {
+       
+    }
 
     private void Timer()
     {
