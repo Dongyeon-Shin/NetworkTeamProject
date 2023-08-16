@@ -23,8 +23,7 @@ public class PlayerStat : MonoBehaviourPunCallbacks
 
 
     private void Start()
-    {
-        
+    {     
         StartCoroutine(AllocatePlayerNumberRoutine());
     }
     public void InterFaceSet(TMP_Text[] tmp)
@@ -79,7 +78,7 @@ public class PlayerStat : MonoBehaviourPunCallbacks
         {
             gameScene = GameObject.FindObjectOfType<GameScene>();
         }
-        gameScene.Ready(this, playerNumber);
+        gameScene.RegisterPlayerInfo(this, playerNumber);
         isAlive = true;
     }
     public void InitialSetup(GameScene gameScene)
