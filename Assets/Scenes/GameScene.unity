@@ -243,11 +243,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 257651931}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!222 &257651934
+CanvasRenderer:
+  m_ObjectHideFlags: 8
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_CullTransparentMesh: 1
 --- !u!1 &424507632
 GameObject:
   m_ObjectHideFlags: 0
@@ -569,7 +577,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2013505478}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1472888199
 GameObject:
@@ -772,8 +780,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3160712499281548498}
   - {fileID: 1465767934}
+  - {fileID: 3160712499281548498}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 60, y: 0, z: 0}
@@ -826,9 +834,8 @@ MonoBehaviour:
   md: {fileID: 11400000, guid: 07259ae524382684289a2c9876dff4df, type: 2}
   totalNumberOfPlayers: 2
   countDownTime: 5
-  GameOverUI: {fileID: 9160534551597793172, guid: 4ea0519026490f14987a17676535292f, type: 3}
   text_time: {fileID: 257651933}
-  inPutTime: 0
+  GameOverUI: {fileID: 9160534551597793172, guid: 4ea0519026490f14987a17676535292f, type: 3}
 --- !u!114 &2013505481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -881,7 +888,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2013505478}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!23 &4293680425832787901
 MeshRenderer:
