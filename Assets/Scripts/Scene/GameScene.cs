@@ -58,14 +58,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         }
     }
 
-    //====================== 게임끝 ==========================
-    [SerializeField] GameObject GameOverUI; // 공용리소스에 있음
-    private void GameOver()
-    {
-        if (CheckingAlive()) 
-            GameOverUI.SetActive(true);
-    }
-    //====================== 게임끝 ==========================
+   
 
     protected override IEnumerator LoadingRoutine()
     {
@@ -336,8 +329,17 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         if(eventType == EventType.Died)
         {
             CheckingAlive();
+            if (CheckingAlive())
+                GameOverUI.SetActive(true);
         }
     }
+    //====================== 게임끝 ==========================
+    [SerializeField] GameObject GameOverUI; // 공용리소스에 있음
+    public void OnExitGame()
+    {
+        PhotonNetwork.JoinLobby();
+    }
+    //====================== 게임끝 ==========================
 
     // =================================== 타이머 및 생존 체크====================================
 
