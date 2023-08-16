@@ -48,7 +48,10 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
 
     private void OnEnable()
     {
-        boxCollider.isTrigger = true;
+        if(!photonView.IsMine)
+        {
+            boxCollider.isTrigger = false;
+        }
         explodCollider.enabled = true;
         sparkParticle[0].gameObject.SetActive(true);
         sparkParticle[1].gameObject.SetActive(true);
@@ -224,6 +227,13 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
         readyToExplode = true;
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            boxCollider.isTrigger = true;
+        }
+    }
 
     private void OnTriggerExit(Collider other)
     {
