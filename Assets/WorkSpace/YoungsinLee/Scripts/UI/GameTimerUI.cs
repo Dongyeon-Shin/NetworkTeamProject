@@ -6,13 +6,13 @@ using System.Linq;
 
 public class GameTimerUI : MonoBehaviourPun, IPunObservable
 {
+    // =================================== 타이머 및 생존 체크====================================
     [SerializeField] TMP_Text text_time;// 시간을 표시할 text
     [SerializeField] float inPutTime; // 시간.
     [SerializeField] int playerCount;
     private PlayerStat[] players;
     private AudioClip backGround;
     private bool TimeOut = false;
-    private int[] playerlist;
 
     private void Awake()
     {
@@ -77,7 +77,7 @@ public class GameTimerUI : MonoBehaviourPun, IPunObservable
         }
         return false;
     }
-
+    // =================================== 타이머 및 생존 체크====================================
 
 }
 
