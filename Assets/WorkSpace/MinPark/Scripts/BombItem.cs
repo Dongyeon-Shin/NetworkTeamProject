@@ -11,13 +11,13 @@ public class BombItem : PassiveItem
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player" && PhotonNetwork.LocalPlayer.IsMasterClient)
+        if (other.tag == "Player" && PhotonNetwork.IsMasterClient)
         {
             PlayerStat stat = other.GetComponent<PlayerStat>();
             stat.Bomb = coefficient;
             stat.StatRenewal();
             stat.ItemInterfaceSet();
-            gameScene.ItemDestroy(gameObject);
+            gameScene.ItemDestroy(IDNumber);
         }
     }
 
