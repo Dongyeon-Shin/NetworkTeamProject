@@ -8,14 +8,11 @@ public abstract class PassiveItem : MonoBehaviour, IExplosiveReactivable
 {
     protected int coefficient;
     public GameObject itemArray;
-    private int bombIDNumber;
-    public int BombIDNumber { set { bombIDNumber=value; } }
     public GameScene gameScene;
     private BoxCollider boxCollider;
     public int iDNumber;
     public int IDNumber { get { return iDNumber; } set { iDNumber = value; } }
-
-    private bool check=true;
+    private int bombNumber;
 
     private void Start()
     {
@@ -24,21 +21,17 @@ public abstract class PassiveItem : MonoBehaviour, IExplosiveReactivable
         CoeffiCient();
     }
 
-    public void ExplosiveReact(int bombIDNumber)
+    private void Hit(int bombCount)
     {
-        Debug.Log("hit0");
         if (PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("hit1");
-            if (check)
-            {
-                gameScene.ItemDestroy(IDNumber);
-                check = false;
-            }
-            // boxCollider.enabled=false;
-            
-            
+            gameScene.ItemDestroy(IDNumber);
         }
+    }
+
+    public void ExplosiveReact(int bombCount)
+    {
+        Hit(bombCount);
     }
     protected abstract void CoeffiCient();
 
@@ -46,8 +39,9 @@ public abstract class PassiveItem : MonoBehaviour, IExplosiveReactivable
     {
         this.gameScene = gameScene;
     }
-    public void Destroy()
+
+    public void SetBombNumber(int bombNumber)
     {
-        Destroy(gameObject);
+        this.bombNumber = bombNumber;
     }
 }

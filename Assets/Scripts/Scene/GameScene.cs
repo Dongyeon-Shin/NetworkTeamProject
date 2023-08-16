@@ -96,11 +96,9 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
         progress = 1f;
         yield return StartCoroutine(MapLoadingRoutine());
-        Debug.Log("map");
         Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
         //yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != totalNumberOfPlayers);
         yield return StartCoroutine(PlayerLoadingRoutine());
-        Debug.Log("pla");
         yield return StartCoroutine(UILoadingRoutine());
         yield return StartCoroutine(AllocateIDNumberRoutine());
         yield return StartCoroutine(WaitingForOtherPlayersRoutine());
@@ -193,7 +191,6 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     }
     IEnumerator UIWait(GameObject inGameInterface)
     {
-        Debug.Log(LoadingProgress);
         yield return new WaitWhile(() => players[PhotonNetwork.LocalPlayer.GetPlayerNumber()] == null);
         Debug.Log(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
         players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].InterFaceSet(inGameInterface.transform.GetChild(2).GetComponentsInChildren<TMP_Text>());
@@ -214,7 +211,6 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         IExplosiveReactivable[] mapObjects = map.GetComponentsInChildren<IExplosiveReactivable>();
         explosiveReactivableObjects.AddRange(mapObjects);
         yield return new WaitWhile(() => items.Count == 0);
-        Debug.Log(explosiveReactivableObjects.Count);
         explosiveReactivableObjects.AddRange(items);
         Debug.Log(explosiveReactivableObjects.Count);
         progress = 0.7f;
@@ -398,14 +394,12 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
                 GameObject createitem = itemSet.transform.GetChild(i).GetComponent<Box>().item = itemSet.itemArray[items[i]];
                 createitem.GetComponent<PassiveItem>().GameSceneSet(this);
                 this.items.Add(createitem.GetComponent<PassiveItem>());
-                Debug.Log(this.items.Count);
             }
         }
     }
 
     public void ItemDestroy(int id)
     {
-        Debug.Log("item"+id);
         photonView.RPC("ItemDestroyRPC", RpcTarget.AllViaServer, id);
     }
 
@@ -437,22 +431,27 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         bombList.Add(bomb);
     }
 
-    public void RequestExplosiveReaction(IExplosiveReactivable target, int bombIndex, bool chainExplosion)
+    public void RequestExplosiveReaction(IExplosiveReactivable target, bool chainExplosion)
     {
-        photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, bombIndex, chainExplosion);
+        photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, chainExplosion);
     }
 
     [PunRPC]
-    private void SendExplosionResult(int explosiveReactivableObjectIndex, int bombIndex, bool chainExplosion)
+    private void SendExplosionResult(int explosiveReactivableObjectIndex, bool chainExplosion)
     {
         if (chainExplosion)
         {
-            bombList[explosiveReactivableObjectIndex].ExplosiveReact(bombIndex);
+            bombList[explosiveReactivableObjectIndex].ExplosiveReact(bombCount);
         }
         else
         {
-            explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombIndex);
+            explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombCount);
         }
+    }
+
+    public void CountBomb()
+    {
+        bombCount++;
     }
 
 }

@@ -39,6 +39,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
         {
             plantedBomb.GameScene = stat.GameScene;
         }
+        stat.GameScene.CountBomb();
         plantedBomb.ExplosivePower = explosivePower;
         if (playerNumber == stat.PlayerNumber)
         {
