@@ -4,6 +4,7 @@ using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -31,6 +32,14 @@ public class GameScene : BaseScene
         if (!PhotonNetwork.InRoom)
         {
             StartCoroutine(DebugGameStartRoutine());
+        }
+    }
+
+    private void Update()
+    {
+        if (IsTimer == true)
+        {
+            Timer();
         }
     }
 
@@ -195,8 +204,77 @@ public class GameScene : BaseScene
             yield return waitASecond;
         }
         countDownNumber.gameObject.SetActive(false);
+        TimeOut = true;
         players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
     }
+
+    // =================================== 타이머 및 생존 체크====================================
+    [SerializeField] TMP_Text text_time;  // 시간을 표시할 text
+    [SerializeField] float inPutTime;     // 시간설정
+    private bool IsTimer = false;
+    private bool TimeOut = false;
+
+    private AudioClip backGround;
+
+
+    // 사운드폴더에 bgm 넣으면 작동
+    //private void Awake()
+    //{
+    //    GameManager.Sound.Init();
+    //    GameManager.Sound.Play(backGround, Sound.Bgm, 1);
+    //}
+
+    private void Timer()
+    {
+        if(TimeOut==false)
+        {
+            if (inPutTime > 0)
+            {
+                inPutTime -= Time.deltaTime;
+                text_time.text = ((int)inPutTime).ToString();
+            }
+            else
+            {
+                text_time.text = ((int)inPutTime).ToString();
+                TimeOut = true;
+                IsTimer = false;
+                Debug.Log("타이머 종료");
+            }
+        }
+    }
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        // 요소가 두개 이상일때 순서가 중요(같은 순서로 진행해야함)
+        if (stream.IsWriting)
+        {
+            stream.SendNext(inPutTime);
+        }
+        else                  // stram.IsReading
+        {
+            inPutTime = (float)stream.ReceiveNext();
+        }
+    }
+
+    public bool CheckingAlive()
+    {
+        for (int i = 0; i < PhotonNetwork.CountOfPlayersInRooms; i++)
+        {
+            List<bool> result = new List<bool>();
+            if (players[i].IsAlive == false)
+            {
+                result.Add(false);
+                if (result.Count == PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count == PhotonNetwork.CountOfPlayersInRooms)
+                {
+                    return true;
+                }
+                else
+                    return false;
+            }
+        }
+        return false;
+    }
+    // =================================== 타이머 및 생존 체크====================================
+
 
     //private double loadTime;
     //private IEnumerator CountDownRoutine()
