@@ -273,6 +273,7 @@ public class GameScene : BaseScene
             if (itemArray.GetChild(i).GetComponent<IExplosiveReactivable>().IDNumber == id)
             {
                 Debug.Log("destroy");
+                Destroy(itemArray.GetChild(i).gameObject);
                 break;
             }
         }
