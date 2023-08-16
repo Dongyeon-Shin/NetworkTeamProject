@@ -9,5 +9,5 @@ public interface IExplosiveReactivable
         get;
         set;
     }
-    public void ExplosiveReact(Bomb bomb);
+    public void ExplosiveReact(int bombIDNumber);
 }

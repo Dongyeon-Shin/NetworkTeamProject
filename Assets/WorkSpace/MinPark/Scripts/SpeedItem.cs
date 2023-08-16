@@ -17,7 +17,7 @@ public class SpeedItem : PassiveItem
             stat.Speed = coefficient;
             stat.StatRenewal();
             stat.ItemInterfaceSet();
-            gameScene.ItemDestroy(gameObject);
+            gameScene.ItemDestroy(IDNumber);
         }
     }
 

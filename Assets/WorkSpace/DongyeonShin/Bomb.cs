@@ -63,6 +63,12 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
 
     private void Start()
     {
+        StartCoroutine(RegisterBombIDRoutine());
+    }
+
+    IEnumerator RegisterBombIDRoutine()
+    {
+        yield return new WaitWhile(() => gameScene == null);
         gameScene.RegisterBombID(this);
     }
 
@@ -115,10 +121,10 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
             if (reactivableObject != null)
             {
                 LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
-              if (PhotonNetwork.IsMasterClient)
-              {
-                  gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
-              }
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
+                }
                 if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
                 {
                     if (direction.z > 0)
@@ -174,7 +180,7 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
     {
         if (direction == Vector3.zero)
         {
-            explodClip.Play();   // ¿Àµð¿À ¼Ò½º
+            explodClip.Play();   // Â¿Ã€ÂµÃ°Â¿Ã€ Â¼Ã’Â½Âº
             GameManager.Resource.Instantiate(Resources.Load("Particle/ExplosionParticle"), transform.position, transform.rotation);
             Coroutine checkAftermathOfExplosion = StartCoroutine(CheckAftermathOfExplosionRoutine(explosionRange, direction));
             yield return new WaitForSeconds(2.5f);
@@ -216,7 +222,7 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
         }
     }
 
-    public void ExplosiveReact(Bomb bomb)
+    public void ExplosiveReact(int bombIDNumber)
     {
         Debug.Log("bombCheck");
         StopCoroutine(lightTheFuseRoutine);
