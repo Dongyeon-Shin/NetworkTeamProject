@@ -13,7 +13,7 @@ public class TestManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.InRoom)
         {
-            PhotonNetwork.LocalPlayer.SetLoad(true);
+            //PhotonNetwork.LocalPlayer.SetLoad(true);
         }
         else
         {
