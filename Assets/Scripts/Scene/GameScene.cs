@@ -23,6 +23,7 @@ public class GameScene : BaseScene
     private PlayerStat[] players;
     private bool[] playersReadyState;
     ItemSetting itemSet;
+    public float LoadingProgress { get { return loadingUI.Progress; } }
 
     private List<IExplosiveReactivable> explosiveReactivableObjects = new List<IExplosiveReactivable>();
     private List<IExplosiveReactivable> items = new List<IExplosiveReactivable>();
@@ -78,7 +79,6 @@ public class GameScene : BaseScene
     IEnumerator MapLoadingRoutine()
     {
         loadingUI.SetLoadingMessage("맵을 불러오는 중");
-        progress = 0;
         StartCoroutine(UpdateProgressRoutine(0.4f));
         // 스크립터블 오브젝트 연결
         md = GameManager.Resource.Load<MapData>("Map/MapData");
@@ -86,10 +86,10 @@ public class GameScene : BaseScene
         // 맵생성
         map = Instantiate(md.MapDatas[0].map);
         progress = 0.4f;
-        loadingUI.SetLoadingMessage("아이템을 생성하는 중");
-        itemSet = map.GetComponentInChildren<ItemSetting>();
-        itemSet.ItemSettingConnect(this);
-        yield return StartCoroutine(itemSet.ItemCreate());
+        //loadingUI.SetLoadingMessage("아이템을 생성하는 중");
+        //itemSet = map.GetComponentInChildren<ItemSetting>();
+        //itemSet.ItemSettingConnect(this);
+        //yield return StartCoroutine(itemSet.ItemCreate());
         yield return null;
         progress = 1f;
     }
@@ -97,7 +97,6 @@ public class GameScene : BaseScene
     IEnumerator PlayerLoadingRoutine()
     {
         loadingUI.SetLoadingMessage("플레이어를 생성하는 중");
-        progress = 0;
         StartCoroutine(UpdateProgressRoutine(0.5f));
         players = new PlayerStat[totalNumberOfPlayers];
         playersReadyState = new bool[totalNumberOfPlayers];
@@ -112,7 +111,6 @@ public class GameScene : BaseScene
     IEnumerator UILoadingRoutine()
     {
         loadingUI.SetLoadingMessage("UI를 불러오는 중");
-        progress = 0;
         StartCoroutine(UpdateProgressRoutine(0.6f));
         GameObject inGameInterface = GameManager.Resource.Instantiate(GameManager.Resource.Load<GameObject>("Map/GameInterFace"));
         // 타이머 없애면 쉽게 가능.
@@ -124,12 +122,16 @@ public class GameScene : BaseScene
 
     private IEnumerator AllocateIDNumberRoutine()
     {
+        Debug.Log(LoadingProgress);
         loadingUI.SetLoadingMessage("ID Number를 부여하는 중");
-        progress = 0;
         StartCoroutine(UpdateProgressRoutine(0.7f));
         // 테스트할때 빌드런, 에디터 실행을하고 얼트탭을 너무 빠르게 누르면 오류남 다시 확인해보니 그냥 그떄그때 다름
         // 그냥 지 멋대로 인듯
-        yield return new WaitWhile(() => Array.Exists(players, player => player == null));
+        while (Array.Exists(players, player => player == null))
+        {
+            yield return null;
+        }
+        //yield return new WaitWhile(() => Array.Exists(players, player => player == null));
         foreach (PlayerStat player in players)
         {
             explosiveReactivableObjects.Add(player.GetComponent<IExplosiveReactivable>());
@@ -151,7 +153,6 @@ public class GameScene : BaseScene
     private IEnumerator WaitingForOtherPlayersRoutine()
     {
         loadingUI.SetLoadingMessage("다른 플레이어를 기다리는 중");
-        progress = 0;
         StartCoroutine(UpdateProgressRoutine(0.9f));
         photonView.RPC("Ready", RpcTarget.AllViaServer, PhotonNetwork.LocalPlayer.GetPlayerNumber());
         progress = 0.2f;
@@ -219,9 +220,9 @@ public class GameScene : BaseScene
         playersReadyState[playerNumber] = true;
     }
 
-    public void RegisterPlayerInfo(PlayerStat player, int playerNumber)
+    public void RegisterPlayerInfo(PlayerStat player)
     {
-        players[playerNumber] = player;
+        players[player.PlayerNumber] = player;
     }
 
     // 배열 저장

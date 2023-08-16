@@ -78,7 +78,8 @@ public class PlayerStat : MonoBehaviourPunCallbacks
         {
             gameScene = GameObject.FindObjectOfType<GameScene>();
         }
-        gameScene.RegisterPlayerInfo(this, playerNumber);
+        yield return new WaitWhile(() => gameScene.LoadingProgress < 0.3f);
+        gameScene.RegisterPlayerInfo(this);
         isAlive = true;
     }
     public void InitialSetup(GameScene gameScene)

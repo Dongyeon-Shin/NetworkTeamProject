@@ -42,7 +42,6 @@ public abstract class BaseScene : MonoBehaviourPunCallbacks
         loadingUI.FadeOut();
         yield return new WaitForSeconds(0.5f);
         loadingUI.SetLoadingMessage("씬을 불러오는 중");
-        progress = 0;
         StartCoroutine(SetProgressTimerRoutine(3f));
         yield return StartCoroutine(UpdateProgressRoutine(0.1f));
         PhotonNetwork.LoadLevel(sceneName);
@@ -62,6 +61,7 @@ public abstract class BaseScene : MonoBehaviourPunCallbacks
 
     protected IEnumerator UpdateProgressRoutine(float targetProgress)
     {
+        progress = 0;
         float currentProgress = loadingUI.Progress;
         StartCoroutine(CountLoadingTimeRoutine());
         while (progress < 1f)
@@ -70,7 +70,7 @@ public abstract class BaseScene : MonoBehaviourPunCallbacks
             yield return null;
         }
         yield return null;
-        //progress = 0;
+        loadingUI.Progress = targetProgress;
     }
 
     private IEnumerator CountLoadingTimeRoutine()
