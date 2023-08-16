@@ -6,11 +6,19 @@ using UnityEngine;
 
 public abstract class BaseScene : MonoBehaviourPunCallbacks
 {
+    [SerializeField]
+    protected Mesh[] numbers;
+    protected MeshFilter countDownNumber;
     protected LoadingUI loadingUI;
     protected float progress;
 
     private void Awake()
     {
+        countDownNumber =GetComponentInChildren<MeshFilter>();
+        if (countDownNumber != null )
+        {
+            countDownNumber.gameObject.SetActive(false);
+        }
         LoadingUI loadingUI = Resources.Load<LoadingUI>("UI/LoadingUI");
         this.loadingUI = Instantiate(loadingUI);
         this.loadingUI.transform.SetParent(transform);
