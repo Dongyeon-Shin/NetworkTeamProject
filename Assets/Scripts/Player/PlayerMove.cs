@@ -1,14 +1,8 @@
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Events;
-using Photon.Chat.Demo;
-using TMPro;
-using UnityEngine.Windows;
-using Photon.Realtime;
-using UnityEngine.UI;
 
-public class PlayerMove : MonoBehaviourPun
+public class PlayerMove : MonoBehaviourPun 
 {
     private PlayerStat stat;
     private Rigidbody rb;
@@ -87,6 +81,5 @@ public class PlayerMove : MonoBehaviourPun
                     moveDir.x = 0;
             }
         }
-        
     }
 }
