@@ -1,4 +1,5 @@
 using ExitGames.Client.Photon;
+using JetBrains.Annotations;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using Photon.Pun.UtilityScripts;
@@ -8,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using static CustomProperty;
+using static BaeProperty.CustomProperty;
 using HashTable = ExitGames.Client.Photon.Hashtable;
 
 public class RoomPanel : MonoBehaviourPunCallbacks
@@ -17,8 +18,14 @@ public class RoomPanel : MonoBehaviourPunCallbacks
     [SerializeField] Button startButton;
     [SerializeField] List<RenderTexture> renderTextures;
     [SerializeField] GameObject selectMap;
+    [SerializeField] GameObject waitMap;
     public enum PlayerType { Color1, Color2, Color3, Color4 }
 
+    private new void OnEnable()
+    {
+        selectMap.SetActive(false);
+        waitMap.SetActive(false);
+    }
     public void PlayerLeftRoom(Player otherPlayer)
     {
         UpdatePlayerEntry();
@@ -31,6 +38,10 @@ public class RoomPanel : MonoBehaviourPunCallbacks
             UpdatePlayerEntry();
         }
         ReadyCheck();
+        if(PhotonNetwork.LocalPlayer.GetPlay())
+        {
+            WaitSelect();
+        } 
     }
 
     private void UpdatePlayerEntry()
@@ -48,6 +59,7 @@ public class RoomPanel : MonoBehaviourPunCallbacks
         {
             playerSpace[playerCount].SetActive(false);
             PlayerType key = (PlayerType)player.GetPlayerNumber();
+            player.SetColor((int)key);
             playerSpace[playerCount].transform.parent.GetComponentInChildren<RawImage>().texture = renderTextures[(int)key];
             playerSpace[playerCount].transform.parent.GetComponentInChildren<Text>().text = player.NickName;
             if(player.GetReady())
@@ -88,15 +100,30 @@ public class RoomPanel : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
     }
 
-    public void StartGame()//게임 시작 버튼
-    {
-        selectMap.SetActive(true);
-    }
-
     public void Ready()//준비 버튼
     {
         bool ready = PhotonNetwork.LocalPlayer.GetReady();
         ready = !ready;
         PhotonNetwork.LocalPlayer.SetReady(ready);
+    }
+
+    public void SelectRoom()
+    {
+        foreach(Player player in PhotonNetwork.PlayerList)
+        {
+            player.SetPlay();
+        }
+    }
+
+    public void WaitSelect()
+    {
+        if(PhotonNetwork.IsMasterClient)
+        {
+            selectMap.SetActive(true);
+        }
+        else
+        {
+            waitMap.SetActive(true);
+        }
     }
 }

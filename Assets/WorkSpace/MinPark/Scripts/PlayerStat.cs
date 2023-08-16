@@ -24,7 +24,6 @@ public class PlayerStat : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        
         StartCoroutine(AllocatePlayerNumberRoutine());
     }
     public void InterFaceSet(TMP_Text[] tmp)
@@ -48,9 +47,17 @@ public class PlayerStat : MonoBehaviourPunCallbacks
 
     public void ItemInterfaceSet()
     {
-        power_Text.text = $"{power-1}";
-        speed_Text.text = $"{speed - 1}";
-        bomb_Text.text = $"{bomb - 1}";
+        photonView.RPC("ItemInterFaceSetRPC", RpcTarget.AllViaServer);
+    }
+    [PunRPC]
+    private void ItemInterFaceSetRPC()
+    {
+        if (photonView.IsMine)
+        {
+            power_Text.text = $"{power - 1}";
+            speed_Text.text = $"{speed - 1}";
+            bomb_Text.text = $"{bomb - 1}";
+        }
     }
 
     public void StatRenewal()
@@ -74,9 +81,14 @@ public class PlayerStat : MonoBehaviourPunCallbacks
     private IEnumerator AllocatePlayerNumberRoutine()
     {
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
-        playerNumber =  PhotonNetwork.LocalPlayer.GetPlayerNumber();
-        yield return new WaitWhile(() => gameScene == null);
-        gameScene.RegisterPlayerID(gameObject, ref iDNumber);
+        playerNumber = photonView.ViewID / 1000 - 1;
+        if (gameScene == null)
+        {
+            gameScene = GameObject.FindObjectOfType<GameScene>();
+        }
+        yield return new WaitWhile(() => gameScene.LoadingProgress < 0.3f);
+        gameScene.RegisterPlayerInfo(this);
+        isAlive = true;
     }
     public void InitialSetup(GameScene gameScene)
     {
