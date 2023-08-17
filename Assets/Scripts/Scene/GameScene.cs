@@ -60,8 +60,6 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         }
     }
 
-   
-
     protected override IEnumerator LoadingRoutine()
     {
         progress = 0f;
@@ -82,6 +80,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         yield return StartCoroutine(AllocateIDNumberRoutine());
         yield return StartCoroutine(WaitingForOtherPlayersRoutine());
         yield return StartCoroutine(CountDownRoutine());
+        GameManager.Event.AddListener(EventType.Died, this);
     }
 
     private IEnumerator DebugGameStartRoutine()
@@ -261,7 +260,6 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         }
         countDownNumber.gameObject.SetActive(false);
         
-        GameManager.Event.AddListener(EventType.Died, this);
         GameManager.Sound.Init();
         GameManager.Sound.Play("Sounds/BGM/BackBGM_1", Sound.Bgm);
         IsTimer = true;
@@ -304,26 +302,28 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
             inPutTime = (float)stream.ReceiveNext();
         }
     }
-
+    List<int> result = new List<int>();
     public void CheckingAlive()
     {
-        List<bool> result = new List<bool>();
-        if (isGameOver == true)
-            photonView.RPC("GameOver", RpcTarget.AllViaServer);
-        else 
-        {
             for (int i = 0; i < PhotonNetwork.CountOfPlayersInRooms; i++)
             {
                 if (players[i].IsAlive == false)
                 {
-                    result.Add(true);
-                    if (result.Count == PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count == PhotonNetwork.CountOfPlayersInRooms)
+                    Debug.Log("큰응애");
+                    result.Add(i);
+                    if (result.Count -1 > PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count-1 == PhotonNetwork.CountOfPlayersInRooms)
                     {
+                        Debug.Log("응애");
                         isGameOver = true;
                     }
                 }
+                else
+                Debug.Log("낫응애");
+            i++;
             }
-        }
+
+        if (isGameOver == true)
+            photonView.RPC("GameOver", RpcTarget.AllViaServer);
     }
     public void OnEvent(EventType eventType, Component Sender, object Param = null)
     {
