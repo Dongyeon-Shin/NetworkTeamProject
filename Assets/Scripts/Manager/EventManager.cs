@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 public enum EventType
 {
    // Eventµé ¼±Á¤
+   Died,
 };
 
 public class EventManager : MonoBehaviour

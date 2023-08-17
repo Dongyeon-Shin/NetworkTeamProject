@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     private static ResourceManager resourceManager;
     private static UIManager uiManager;
     private static EventManager eventManager;
-    private static ShoundManager shoundManager;
+    private static SoundManager soundManager;
 
     public static GameManager Instance { get { return instance; } }
     //==============================================================
@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     public static ResourceManager Resource { get { return resourceManager; } }
     public static UIManager UI { get { return uiManager; } }
     public static EventManager Event { get { return eventManager; } }
-    public static ShoundManager Shound { get { return shoundManager; } }
+    public static SoundManager Sound { get { return soundManager; } }
 
 
     private void Awake()
@@ -63,8 +63,8 @@ public class GameManager : MonoBehaviour
         eventManager = eventObj.AddComponent<EventManager>();
 
         GameObject shoundObj = new GameObject();
-        shoundObj.name = "ShoundManager";
+        shoundObj.name = "SoundManager";
         shoundObj.transform.parent = transform;
-        shoundManager = shoundObj.AddComponent<ShoundManager>();
+        soundManager = shoundObj.AddComponent<SoundManager>();
     }
 }
