@@ -1,3 +1,4 @@
+using BaeProperty;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,13 +23,12 @@ public class LobbyScene : BaseScene
     {
         if (!PhotonNetwork.InLobby)
         {
-            
+            PhotonNetwork.LeaveRoom();
+            PhotonNetwork.LocalPlayer.SetReady(false);
+            yield return new WaitForSecondsRealtime(5f);
+            loadingUI.Progress = 1f;
         }
-        yield return null;
-    }
-
-    private void JoinLobby()
-    {
-
+        loadingUI.FadeIn();
+        yield return new WaitForSecondsRealtime(0.5f);
     }
 }

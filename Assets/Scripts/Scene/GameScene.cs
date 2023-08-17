@@ -376,15 +376,16 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     private void GameOver()
     {
         GameOverUI.SetActive(true);
-        StartCoroutine(QuitRoutine());
+        //StartCoroutine(QuitRoutine());
+        StartCoroutine(LoadSceneRoutine(0));
     }
 
-    private IEnumerator QuitRoutine()
-    {
-        yield return new WaitForSecondsRealtime(5f);
-        Application.Quit();
-    }
-
+    //private IEnumerator QuitRoutine()
+    //{
+    //    yield return new WaitForSecondsRealtime(5f);
+    //    Application.Quit();
+    //}
+    //
     //====================== 게임끝 ==========================
     [SerializeField] GameObject GameOverUI; // 공용리소스에 있음
     //====================== 게임끝 ==========================

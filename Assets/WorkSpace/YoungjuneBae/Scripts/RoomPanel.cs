@@ -17,8 +17,8 @@ public class RoomPanel : MonoBehaviourPunCallbacks
     [SerializeField] GameObject[] playerSpace;    
     [SerializeField] Button startButton;
     [SerializeField] List<RenderTexture> renderTextures;
-    [SerializeField] GameObject selectMap;
-    [SerializeField] GameObject waitMap;
+    [SerializeField] public GameObject selectMap;
+    [SerializeField] public GameObject waitMap;
     public enum PlayerType { Color1, Color2, Color3, Color4 }
 
     private new void OnEnable()
@@ -26,6 +26,7 @@ public class RoomPanel : MonoBehaviourPunCallbacks
         selectMap.SetActive(false);
         waitMap.SetActive(false);
     }
+
     public void PlayerLeftRoom(Player otherPlayer)
     {
         UpdatePlayerEntry();

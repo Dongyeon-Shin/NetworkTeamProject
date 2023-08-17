@@ -17,6 +17,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 
     private PlayerStat stat;
     private PlayerMove move;
+    private PlayerUI playerUI;
     private Animator animator;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
     public int IDNumber { get { return stat.IDNumber; } set { stat.IDNumber = value; } }
@@ -27,24 +28,28 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
         animator = GetComponent<Animator>();
         stat = GetComponent<PlayerStat>();
         move = GetComponent<PlayerMove>();
+        playerUI = GetComponent<PlayerUI>();
     }
 
     private void OnFire(InputValue value)
     {
-        if (stat.IsAlive && stat.Bomb > plantingBombs.Count)
+        if (playerUI.IsChatting == true && playerUI.IsSetting == true)
         {
-            Vector3 position = CheckStandingBlockPosition();
-            plantingBombs.Push(GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation, true).GetComponent<Bomb>());
-            CheckPlayers(position);
-            if (plantingBombs.Peek().GameScene == null)
+            if (stat.IsAlive && stat.Bomb > plantingBombs.Count)
             {
-                plantingBombs.Peek().GameScene = stat.GameScene;
-                plantingBombs.Peek().RegeisterBombID();
+                Vector3 position = CheckStandingBlockPosition();
+                plantingBombs.Push(GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation, true).GetComponent<Bomb>());
+                CheckPlayers(position);
+                if (plantingBombs.Peek().GameScene == null)
+                {
+                    plantingBombs.Peek().GameScene = stat.GameScene;
+                    plantingBombs.Peek().RegeisterBombID();
+                }
+                int explosivePower = stat.Power;
+                plantingBombs.Peek().ExplosivePower = explosivePower;
+                StartCoroutine(RetrieveBombRoutine(plantingBombs.Peek()));
+                photonView.RPC("PlantABomb", RpcTarget.Others, CheckStandingBlockPosition(), explosivePower, stat.PlayerNumber);
             }
-            int explosivePower = stat.Power;
-            plantingBombs.Peek().ExplosivePower = explosivePower;
-            StartCoroutine(RetrieveBombRoutine(plantingBombs.Peek()));
-            photonView.RPC("PlantABomb", RpcTarget.Others, CheckStandingBlockPosition(), explosivePower, stat.PlayerNumber);
         }
     }
 
