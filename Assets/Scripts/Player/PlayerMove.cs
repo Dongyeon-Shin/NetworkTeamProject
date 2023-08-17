@@ -45,7 +45,7 @@ public class PlayerMove : MonoBehaviourPun
         {
             Vector3 vecFor = new Vector3(moveDir.x, 0, moveDir.z).normalized;
             Vector3 vecRb = rb.position;
-            rb.MovePosition(vecRb + vecFor * 5 * Time.fixedDeltaTime);
+            rb.MovePosition(vecRb + vecFor * curSpeed * Time.fixedDeltaTime);
         }
 
         if (moveDir.sqrMagnitude >= 0.01f)
