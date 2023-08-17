@@ -27,7 +27,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     Transform itemArray;
     ItemSetting itemSet;
     int bombCount;
-    
+
     public float LoadingProgress { get { return loadingUI.Progress; } }
 
     private List<IExplosiveReactivable> explosiveReactivableObjects = new List<IExplosiveReactivable>();
@@ -135,10 +135,10 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         playersReadyState = new bool[totalNumberOfPlayers];
         progress = 0.3f;
         GameObject player;
-        int myCount=0;
-        foreach(Player roomPlayer in PhotonNetwork.PlayerList)
+        int myCount = 0;
+        foreach (Player roomPlayer in PhotonNetwork.PlayerList)
         {
-            if(roomPlayer == PhotonNetwork.LocalPlayer)
+            if (roomPlayer == PhotonNetwork.LocalPlayer)
             {
                 break;
             }
@@ -270,15 +270,11 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
             yield return waitASecond;
         }
         countDownNumber.gameObject.SetActive(false);
-        
+
         GameManager.Sound.Init();
         GameManager.Sound.Play("Sounds/BGM/BackBGM_2", Sound.Bgm);
         IsTimer = true;
         players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
-        if(PhotonNetwork.IsMasterClient)
-        {
-            StartCoroutine(InGameRoutine());
-        }
     }
 
     // =================================== 타이머 및 생존 체크====================================
@@ -289,14 +285,14 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
 
     private void Timer()
     {
-        if(TimeOut==false)
+        if (TimeOut == false)
         {
             if (inPutTime > 0)
             {
                 inPutTime -= Time.deltaTime;
                 text_time.text = ((int)inPutTime).ToString();
             }
-            else if(inPutTime <= 0 || isGameOver == true)
+            else if (inPutTime <= 0 || isGameOver == true)
             {
                 text_time.text = ((int)inPutTime).ToString();
                 TimeOut = true;
@@ -320,29 +316,29 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     List<int> result = new List<int>();
     public void CheckingAlive()
     {
-            for (int i = 0; i < PhotonNetwork.CountOfPlayersInRooms; i++)
+        for (int i = 0; i < PhotonNetwork.CountOfPlayersInRooms; i++)
+        {
+            if (players[i].IsAlive == false)
             {
-                if (players[i].IsAlive == false)
+                Debug.Log("큰응애");
+                result.Add(i);
+                if (result.Count - 1 > PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count - 1 == PhotonNetwork.CountOfPlayersInRooms)
                 {
-                    Debug.Log("큰응애");
-                    result.Add(i);
-                    if (result.Count -1 > PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count-1 == PhotonNetwork.CountOfPlayersInRooms)
-                    {
-                        Debug.Log("응애");
-                        isGameOver = true;
-                    }
+                    Debug.Log("응애");
+                    isGameOver = true;
                 }
-                else
+            }
+            else
                 Debug.Log("낫응애");
             i++;
-            }
+        }
 
         if (isGameOver == true)
             photonView.RPC("GameOver", RpcTarget.AllViaServer);
     }
     public void OnEvent(EventType eventType, Component Sender, object Param = null)
     {
-        if(eventType == EventType.Died)
+        if (eventType == EventType.Died)
         {
             CheckingAlive();
         }
@@ -373,7 +369,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     }
 
     [PunRPC]
-    private void GameOver() 
+    private void GameOver()
     {
         GameOverUI.SetActive(true);
         StartCoroutine(QuitRoutine());
@@ -427,7 +423,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     }
 
     // 배열 저장
-    public IEnumerator ItemSetting(int[] check, int[] items) 
+    public IEnumerator ItemSetting(int[] check, int[] items)
     {
         yield return new WaitUntil(() => PhotonNetwork.PlayerList.Length == totalNumberOfPlayers);
         yield return new WaitForSeconds(1f);
