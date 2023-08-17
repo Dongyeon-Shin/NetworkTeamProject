@@ -23,9 +23,9 @@ public class LobbyScene : BaseScene
     {
         if (!PhotonNetwork.InLobby)
         {
+            yield return new WaitForSecondsRealtime(5f);
             PhotonNetwork.LeaveRoom();
             PhotonNetwork.LocalPlayer.SetReady(false);
-            yield return new WaitForSecondsRealtime(5f);
             loadingUI.Progress = 1f;
         }
         loadingUI.FadeIn();
