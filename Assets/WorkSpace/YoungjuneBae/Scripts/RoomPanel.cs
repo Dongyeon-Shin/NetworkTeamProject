@@ -113,7 +113,7 @@ public class RoomPanel : MonoBehaviourPunCallbacks
         foreach(Player player in PhotonNetwork.PlayerList)
         {
             player.SetColor(player.GetPlayerNumber());
-            player.SetPlay();
+            player.SetPlay(true);
         }
     }
 
