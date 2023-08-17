@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour
     private Stack<PopUpUI> popUpStack;
     private void Awake()
     {
+        eventSystem = GameManager.Resource.Instantiate<EventSystem>("UI/EventSystem");
+
         popUpCanvas = GameManager.Resource.Instantiate<Canvas>("UI/Canvas");
         popUpCanvas.gameObject.name = "PopUpCanvas";
         popUpCanvas.sortingOrder = 100;
@@ -30,7 +32,7 @@ public class UIManager : MonoBehaviour
 
     public void Recreated()
     {
-
+        
         eventSystem = GameManager.Resource.Instantiate<EventSystem>("UI/EventSystem");
 
         popUpCanvas = GameManager.Resource.Instantiate<Canvas>("UI/Canvas");
@@ -131,4 +133,4 @@ public class UIManager : MonoBehaviour
         GameManager.Pool.ReleaseUI(inGameUI);
     }
 }
-
+   
