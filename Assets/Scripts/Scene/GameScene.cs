@@ -34,6 +34,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     private List<PassiveItem> items = new List<PassiveItem>();
     private List<Bomb> bombList = new List<Bomb>();
     int mapNumbering;
+    private bool isGameOver = false;
     private void Start()
     {
         HashTable mapProperty = PhotonNetwork.CurrentRoom.CustomProperties;
@@ -59,8 +60,6 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         }
     }
 
-   
-
     protected override IEnumerator LoadingRoutine()
     {
         progress = 0f;
@@ -81,6 +80,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         yield return StartCoroutine(AllocateIDNumberRoutine());
         yield return StartCoroutine(WaitingForOtherPlayersRoutine());
         yield return StartCoroutine(CountDownRoutine());
+        GameManager.Event.AddListener(EventType.Died, this);
     }
 
     private IEnumerator DebugGameStartRoutine()
@@ -264,7 +264,6 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         }
         countDownNumber.gameObject.SetActive(false);
         
-        GameManager.Event.AddListener(EventType.Died, this);
         GameManager.Sound.Init();
         GameManager.Sound.Play("Sounds/BGM/BackBGM_1", Sound.Bgm);
         IsTimer = true;
@@ -286,7 +285,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
                 inPutTime -= Time.deltaTime;
                 text_time.text = ((int)inPutTime).ToString();
             }
-            else if(inPutTime <= 0 || CheckingAlive())
+            else if(inPutTime <= 0 || isGameOver == true)
             {
                 text_time.text = ((int)inPutTime).ToString();
                 TimeOut = true;
@@ -307,34 +306,43 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
             inPutTime = (float)stream.ReceiveNext();
         }
     }
-
-    public bool CheckingAlive()
+    List<int> result = new List<int>();
+    public void CheckingAlive()
     {
-        List<bool> result = new List<bool>();
-        for (int i = 0; i < PhotonNetwork.CountOfPlayersInRooms; i++)
-        {
-            if (players[i].IsAlive == true)
+            for (int i = 0; i < PhotonNetwork.CountOfPlayersInRooms; i++)
             {
-                result.Add(false);
-                if (result.Count == PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count == PhotonNetwork.CountOfPlayersInRooms)
+                if (players[i].IsAlive == false)
                 {
-                    return true;
+                    Debug.Log("큰응애");
+                    result.Add(i);
+                    if (result.Count -1 > PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count-1 == PhotonNetwork.CountOfPlayersInRooms)
+                    {
+                        Debug.Log("응애");
+                        isGameOver = true;
+                    }
                 }
                 else
-                    return false;
+                Debug.Log("낫응애");
+            i++;
             }
-        }
-        return false;
+
+        if (isGameOver == true)
+            photonView.RPC("GameOver", RpcTarget.AllViaServer);
     }
     public void OnEvent(EventType eventType, Component Sender, object Param = null)
     {
         if(eventType == EventType.Died)
         {
             CheckingAlive();
-            if (CheckingAlive())
-                GameOverUI.SetActive(true);
         }
     }
+
+    [PunRPC]
+    private void GameOver() 
+    {
+        GameOverUI.SetActive(true);
+    }
+
     //====================== 게임끝 ==========================
     [SerializeField] GameObject GameOverUI; // 공용리소스에 있음
     public void OnExitGame()

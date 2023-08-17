@@ -100,9 +100,9 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 
     IEnumerator DeadRoutine()
     {
+        GameManager.Event.PostNotification(EventType.Died, this);
         stat.IsAlive = false;
         animator.SetBool("Die", true);
-        GameManager.Event.PostNotification(EventType.Died, this);
         yield return new WaitForSeconds(4f);
         deadState.SetActive(false);
     }
