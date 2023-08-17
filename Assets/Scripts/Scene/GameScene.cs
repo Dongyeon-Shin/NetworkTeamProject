@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Timers;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -33,17 +34,22 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     private List<PassiveItem> items = new List<PassiveItem>();
     private List<Bomb> bombList = new List<Bomb>();
     int mapNumbering;
+    private bool isGameOver = false;
     private void Start()
     {
         HashTable mapProperty = PhotonNetwork.CurrentRoom.CustomProperties;
         mapNumbering = (int)mapProperty["MapNumbering"];
         totalNumberOfPlayers = PhotonNetwork.PlayerList.Length;
+        photonView.RPC("SyncGameStart", RpcTarget.AllViaServer);
+    }
+
+    [PunRPC]
+    private void SyncGameStart()
+    {
         if (!PhotonNetwork.InRoom)
         {
-            StartCoroutine(DebugGameStartRoutine());
+            StartCoroutine(LoadingRoutine());
         }
-
-        
     }
 
     private void Update()
@@ -53,15 +59,6 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
             Timer();
         }
     }
-
-    //====================== 게임끝 ==========================
-    [SerializeField] GameObject GameOverUI; // 공용리소스에 있음
-    private void GameOver()
-    {
-        if (CheckingAlive()) 
-            GameOverUI.SetActive(true);
-    }
-    //====================== 게임끝 ==========================
 
     protected override IEnumerator LoadingRoutine()
     {
@@ -83,6 +80,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         yield return StartCoroutine(AllocateIDNumberRoutine());
         yield return StartCoroutine(WaitingForOtherPlayersRoutine());
         yield return StartCoroutine(CountDownRoutine());
+        GameManager.Event.AddListener(EventType.Died, this);
     }
 
     private IEnumerator DebugGameStartRoutine()
@@ -109,7 +107,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         loadingUI.SetLoadingMessage("맵을 불러오는 중");
         StartCoroutine(UpdateProgressRoutine(0.4f));
         // 스크립터블 오브젝트 연결
-        itemArray = transform.GetChild(0);
+        itemArray = transform.GetChild(1);
         md = GameManager.Resource.Load<MapData>("Map/MapData");
         progress = 0.1f;
         // 맵생성
@@ -216,6 +214,10 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         progress = 0.7f;
         for (int i = 0; i < explosiveReactivableObjects.Count; i++)
         {
+            if (explosiveReactivableObjects[i].GameScene == null)
+            {
+                explosiveReactivableObjects[i].GameScene = this;
+            }
             explosiveReactivableObjects[i].IDNumber = i;
             yield return null;
         }
@@ -261,22 +263,18 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
             yield return waitASecond;
         }
         countDownNumber.gameObject.SetActive(false);
-        players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
-        GameManager.Event.AddListener(EventType.Died,this);
-        // 사운드
+        
         GameManager.Sound.Init();
-        GameManager.Sound.Play(backGround, Sound.Bgm, 1);
-
-        TimeOut = true;
+        GameManager.Sound.Play("Sounds/BGM/BackBGM_1", Sound.Bgm);
+        IsTimer = true;
+        players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
     }
 
     // =================================== 타이머 및 생존 체크====================================
     [SerializeField] TMP_Text text_time;  // 시간을 표시할 text
-    [SerializeField] float inPutTime;     // 시간설정
+    private float inPutTime = 300;     // 시간설정
     private bool IsTimer = false;
     private bool TimeOut = false;
-
-    private AudioClip backGround;
 
     private void Timer()
     {
@@ -287,7 +285,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
                 inPutTime -= Time.deltaTime;
                 text_time.text = ((int)inPutTime).ToString();
             }
-            else if(inPutTime <= 0 || CheckingAlive())
+            else if(inPutTime <= 0 || isGameOver == true)
             {
                 text_time.text = ((int)inPutTime).ToString();
                 TimeOut = true;
@@ -308,24 +306,28 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
             inPutTime = (float)stream.ReceiveNext();
         }
     }
-
-    public bool CheckingAlive()
+    List<int> result = new List<int>();
+    public void CheckingAlive()
     {
-        List<bool> result = new List<bool>();
-        for (int i = 0; i < PhotonNetwork.CountOfPlayersInRooms; i++)
-        {
-            if (players[i].IsAlive == false)
+            for (int i = 0; i < PhotonNetwork.CountOfPlayersInRooms; i++)
             {
-                result.Add(false);
-                if (result.Count == PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count == PhotonNetwork.CountOfPlayersInRooms)
+                if (players[i].IsAlive == false)
                 {
-                    return true;
+                    Debug.Log("큰응애");
+                    result.Add(i);
+                    if (result.Count -1 > PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count-1 == PhotonNetwork.CountOfPlayersInRooms)
+                    {
+                        Debug.Log("응애");
+                        isGameOver = true;
+                    }
                 }
                 else
-                    return false;
+                Debug.Log("낫응애");
+            i++;
             }
-        }
-        return false;
+
+        if (isGameOver == true)
+            photonView.RPC("GameOver", RpcTarget.AllViaServer);
     }
     public void OnEvent(EventType eventType, Component Sender, object Param = null)
     {
@@ -334,6 +336,20 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
             CheckingAlive();
         }
     }
+
+    [PunRPC]
+    private void GameOver() 
+    {
+        GameOverUI.SetActive(true);
+    }
+
+    //====================== 게임끝 ==========================
+    [SerializeField] GameObject GameOverUI; // 공용리소스에 있음
+    public void OnExitGame()
+    {
+        PhotonNetwork.JoinLobby();
+    }
+    //====================== 게임끝 ==========================
 
     // =================================== 타이머 및 생존 체크====================================
 
@@ -427,27 +443,32 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         bombList.Add(bomb);
     }
 
-    public void RequestExplosiveReaction(IExplosiveReactivable target, bool chainExplosion)
+    public void RequestExplosiveReaction(IExplosiveReactivable target, int bombIDNumber, bool chainExplosion)
     {
-        photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, chainExplosion);
+        photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, bombIDNumber, chainExplosion);
     }
 
     [PunRPC]
-    private void SendExplosionResult(int explosiveReactivableObjectIndex, bool chainExplosion)
+    private void SendExplosionResult(int explosiveReactivableObjectIndex, int bombIDNumber, bool chainExplosion)
     {
         if (chainExplosion)
         {
-            bombList[explosiveReactivableObjectIndex].ExplosiveReact(bombCount);
+            bombList[explosiveReactivableObjectIndex].ExplosiveReact(bombIDNumber);
         }
         else
         {
-            explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombCount);
+            explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombIDNumber);
         }
+    }
+
+    public void ExplodeABomb(int bombIDNumber)
+    {
+        Debug.Log(bombIDNumber);
+        bombList[bombIDNumber].BombState = true;
     }
 
     public void CountBomb()
     {
         bombCount++;
     }
-
 }

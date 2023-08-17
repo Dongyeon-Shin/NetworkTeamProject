@@ -7,6 +7,7 @@ using System.Xml;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 {
@@ -16,6 +17,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     private Animator animator;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
     public int IDNumber { get { return stat.IDNumber; } set { stat.IDNumber = value; } }
+    public GameScene GameScene { get { return stat.GameScene; } set { stat.GameScene = value; } }
 
     private void Awake()
     {
@@ -27,7 +29,17 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     {
         if (stat.IsAlive && stat.Bomb > plantingBombs.Count)
         {
-            photonView.RPC("PlantABomb", RpcTarget.AllViaServer, CheckStandingBlockPosition(), stat.Power, stat.PlayerNumber);
+            Vector3 position = CheckStandingBlockPosition();
+            plantingBombs.Push(GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation, true).GetComponent<Bomb>());
+            if (plantingBombs.Peek().GameScene == null)
+            {
+                plantingBombs.Peek().GameScene = stat.GameScene;
+                plantingBombs.Peek().RegeisterBombID();
+            }
+            int explosivePower = stat.Power;
+            plantingBombs.Peek().ExplosivePower = explosivePower;
+            StartCoroutine(RetrieveBombRoutine(plantingBombs.Peek()));
+            photonView.RPC("PlantABomb", RpcTarget.Others, CheckStandingBlockPosition(), explosivePower, stat.PlayerNumber);
         }
     }
 
@@ -38,18 +50,11 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
         if (plantedBomb.GameScene == null)
         {
             plantedBomb.GameScene = stat.GameScene;
+            plantedBomb.RegeisterBombID();
         }
         stat.GameScene.CountBomb();
         plantedBomb.ExplosivePower = explosivePower;
-        if (playerNumber == stat.PlayerNumber)
-        {
-            plantingBombs.Push(plantedBomb);
-            StartCoroutine(RetrieveBombRoutine(plantedBomb));
-        }
-        else
-        {
-            StartCoroutine (plantedBomb.ExplodeRoutine());
-        }
+        StartCoroutine(plantedBomb.ExplodeRoutine());
     }
 
     IEnumerator RetrieveBombRoutine(Bomb bomb)
@@ -67,10 +72,11 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 
     public void ExplosiveReact(int bombIDNumber)
     {
+        stat.GameScene.ExplodeABomb(bombIDNumber);
         //TODO: 플레이어 피격시 반응
         photonView.RPC("DeadSet", RpcTarget.All);
     }
-    
+
     [PunRPC]
     public void DeadSet()
     {
@@ -79,9 +85,9 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 
     IEnumerator DeadRoutine()
     {
+        GameManager.Event.PostNotification(EventType.Died, this);
         stat.IsAlive = false;
         animator.SetBool("Die", true);
-        GameManager.Event.PostNotification(EventType.Died, this);
         yield return new WaitForSeconds(4f);
         deadState.SetActive(false);
     }

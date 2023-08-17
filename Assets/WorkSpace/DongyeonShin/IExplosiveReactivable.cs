@@ -9,5 +9,10 @@ public interface IExplosiveReactivable
         get;
         set;
     }
-    public void ExplosiveReact(int bombCount);
+    GameScene GameScene
+    {
+        get;
+        set;
+    }
+    public void ExplosiveReact(int bombID);
 }
