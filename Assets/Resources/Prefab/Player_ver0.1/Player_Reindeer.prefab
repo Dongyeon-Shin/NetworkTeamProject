@@ -3087,6 +3087,7 @@ GameObject:
   - component: {fileID: 2237829819984367196}
   - component: {fileID: 8901317629295330411}
   - component: {fileID: -4009454011018311169}
+  - component: {fileID: 2169433337078232357}
   m_Layer: 3
   m_Name: Player_Reindeer
   m_TagString: Player
@@ -3248,7 +3249,7 @@ MonoBehaviour:
   iDNumber: -1
   power: 1
   bomb: 1
-  speed: 1
+  speed: 4
 --- !u!114 &2237829819984367196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3304,6 +3305,22 @@ Rigidbody:
   m_Interpolate: 2
   m_Constraints: 116
   m_CollisionDetection: 1
+--- !u!114 &2169433337078232357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7288310759521063980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters: []
+  m_SynchronizeLayers: []
 --- !u!1 &7288310759521228860
 GameObject:
   m_ObjectHideFlags: 0

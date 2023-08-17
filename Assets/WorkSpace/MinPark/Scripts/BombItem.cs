@@ -11,7 +11,7 @@ public class BombItem : PassiveItem
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player" && PhotonNetwork.IsMasterClient)
+        if (other.tag == "Player" && PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             PlayerStat stat = other.GetComponent<PlayerStat>();
             stat.Bomb = coefficient;
