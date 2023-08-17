@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,10 +11,14 @@ public class SpeedItem : PassiveItem
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "Player"&& PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            other.GetComponent<PlayerStat>().Speed += coefficient;
-            Destroy(gameObject);
+            PlayerStat stat = other.GetComponent<PlayerStat>();
+            stat.Speed = coefficient;
+            stat.StatRenewal();
+            stat.ItemInterfaceSet();
+            gameScene.ItemDestroy(IDNumber);
         }
     }
+
 }

@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec2ed2b5d1bcefb4ca690d0e10336214, type: 3}
+  m_Name: MapData
+  m_EditorClassIdentifier: 
+  mapData:
+  - maxPlayer: 4
+    position:
+    - {x: -3.5, y: 0, z: 4.5}
+    - {x: 8.5, y: 0, z: 4.5}
+    - {x: -3.5, y: 0, z: -5.5}
+    - {x: 8.5, y: 0, z: -5.5}
+    map: {fileID: 7709033139920916050, guid: 285f42b3cbd2756489c3a61991ce4c6c, type: 3}
+  - maxPlayer: 4
+    position:
+    - {x: -4.5, y: 0, z: 3.5}
+    - {x: 8.5, y: 0, z: 2.5}
+    - {x: 9.5, y: 0, z: -4.5}
+    - {x: -3.5, y: 0, z: -3.5}
+    map: {fileID: 243911659558846006, guid: 000084f0991d17c43a61588a4c794c4a, type: 3}
+  - maxPlayer: 4
+    position:
+    - {x: -2.5, y: 0, z: 4.5}
+    - {x: 8.5, y: 0, z: 4.5}
+    - {x: 8.5, y: 0, z: -4.5}
+    - {x: -2.5, y: 0, z: -4.5}
+    map: {fileID: 2061810081490885815, guid: ebdca7ccbeff7a241870cb9ee0708a0b, type: 3}

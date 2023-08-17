@@ -15,10 +15,10 @@ public class SoundManager : MonoBehaviour
 
     public void Init()
     {
-        GameObject root = GameObject.Find("@Sound");
+        GameObject root = GameObject.Find("Sound");
         if (root == null)
         {
-            root = new GameObject { name = "@Sound" };
+            root = new GameObject { name = "Sound" };
             Object.DontDestroyOnLoad(root);
 
             string[] soundNames = System.Enum.GetNames(typeof(Sound)); // "Bgm", "Effect"
@@ -44,6 +44,7 @@ public class SoundManager : MonoBehaviour
         // 효과음 Dictionary 비우기
         _audioClips.Clear();
     }
+
     public void Play(AudioClip audioClip, Sound type = Sound.Effect, float pitch = 1.0f)
     {
         if (audioClip == null)
