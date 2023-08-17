@@ -265,7 +265,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         countDownNumber.gameObject.SetActive(false);
         
         GameManager.Sound.Init();
-        GameManager.Sound.Play("Sounds/BGM/BackBGM_1", Sound.Bgm);
+        GameManager.Sound.Play("Sounds/BGM/BackBGM_2", Sound.Bgm);
         IsTimer = true;
         players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
     }
