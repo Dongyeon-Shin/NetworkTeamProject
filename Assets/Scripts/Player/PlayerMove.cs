@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -76,5 +77,18 @@ public class PlayerMove : MonoBehaviourPun
                 else if (moveDir.z < 0 && moveDir.x > 0 || moveDir.x < 0)
                     moveDir.x = 0;
         }
+    }
+
+    public IEnumerator PassThroughRoutine(Vector3 position)
+    {
+        Debug.Log(false);
+        while (Vector3.Distance(transform.position, position) < 0.5f)
+        {
+            Debug.Log(true);
+            boxCollider.isTrigger = true;
+            yield return null;
+        }
+        boxCollider.isTrigger = false;
+        yield return null;
     }
 }

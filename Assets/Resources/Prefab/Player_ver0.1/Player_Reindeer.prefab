@@ -3202,6 +3202,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deadState: {fileID: 7288310759521053448}
+  playerLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &4272329599306467410
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,8 +12,11 @@ using UnityEngine.UIElements;
 public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 {
     [SerializeField] GameObject deadState;
+    [SerializeField]
+    private LayerMask playerLayerMask;
 
     private PlayerStat stat;
+    private PlayerMove move;
     private Animator animator;
     private Stack<Bomb> plantingBombs = new Stack<Bomb>();
     public int IDNumber { get { return stat.IDNumber; } set { stat.IDNumber = value; } }
@@ -23,6 +26,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     {
         animator = GetComponent<Animator>();
         stat = GetComponent<PlayerStat>();
+        move = GetComponent<PlayerMove>();
     }
 
     private void OnFire(InputValue value)
@@ -31,6 +35,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
         {
             Vector3 position = CheckStandingBlockPosition();
             plantingBombs.Push(GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation, true).GetComponent<Bomb>());
+            CheckPlayers(position);
             if (plantingBombs.Peek().GameScene == null)
             {
                 plantingBombs.Peek().GameScene = stat.GameScene;
@@ -47,6 +52,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     private void PlantABomb(Vector3 position, int explosivePower, int playerNumber)
     {
         Bomb plantedBomb = GameManager.Resource.Instantiate(Resources.Load("Prefab/Bomb"), position, transform.rotation, true).GetComponent<Bomb>();
+        CheckPlayers(position);
         if (plantedBomb.GameScene == null)
         {
             plantedBomb.GameScene = stat.GameScene;
@@ -55,6 +61,15 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
         stat.GameScene.CountBomb();
         plantedBomb.ExplosivePower = explosivePower;
         StartCoroutine(plantedBomb.ExplodeRoutine());
+    }
+
+    public void CheckPlayers(Vector3 position)
+    {
+        Collider[] players = Physics.OverlapSphere(position, 0.5f, playerLayerMask);
+        foreach (Collider collider in players)
+        {
+            StartCoroutine(collider.GetComponent<PlayerMove>().PassThroughRoutine(position));
+        }
     }
 
     IEnumerator RetrieveBombRoutine(Bomb bomb)
