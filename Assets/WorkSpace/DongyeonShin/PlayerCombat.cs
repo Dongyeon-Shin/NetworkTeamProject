@@ -33,7 +33,7 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
 
     private void OnFire(InputValue value)
     {
-        if (playerUI.IsChatting == true && playerUI.IsSetting == true)
+        if (playerUI.IsChatting == false && playerUI.IsSetting == false)
         {
             if (stat.IsAlive && stat.Bomb > plantingBombs.Count)
             {
