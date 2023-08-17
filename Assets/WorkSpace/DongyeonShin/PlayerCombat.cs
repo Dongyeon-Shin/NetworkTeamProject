@@ -89,20 +89,23 @@ public class PlayerCombat : MonoBehaviourPun, IExplosiveReactivable
     {
         stat.GameScene.ExplodeABomb(bombIDNumber);
         //TODO: 플레이어 피격시 반응
-        photonView.RPC("DeadSet", RpcTarget.All);
+        stat.IsAlive = false;
+        animator.SetBool("Die", true);
+        photonView.RPC("DeadSet", RpcTarget.All, stat.PlayerNumber);
     }
 
     [PunRPC]
-    public void DeadSet()
+    public void DeadSet(int playerNumber)
     {
-        StartCoroutine(DeadRoutine());
+        if (playerNumber == stat.PlayerNumber)
+        {
+            stat.IsAlive = false;
+            StartCoroutine(DeadRoutine(playerNumber));
+        }
     }
 
-    IEnumerator DeadRoutine()
+    IEnumerator DeadRoutine(int playerNumber)
     {
-        GameManager.Event.PostNotification(EventType.Died, this);
-        stat.IsAlive = false;
-        animator.SetBool("Die", true);
         yield return new WaitForSeconds(4f);
         deadState.SetActive(false);
     }
