@@ -106,18 +106,14 @@ public class PlayerUI : MonoBehaviourPun
     }
     public void ClickExit()
     {
-        if(!stat.IsAlive)
-        {
-            PhotonNetwork.LoadLevel("LobbyScene");
-        }
-        else
             StartCoroutine(ExitRoutine());
+            PhotonNetwork.LoadLevel("LobbyScene");
     }
 
     IEnumerator ExitRoutine()
     {
         photonView.RPC("ExitDead", RpcTarget.All);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.5f);
     }
 
     [PunRPC]
@@ -125,5 +121,6 @@ public class PlayerUI : MonoBehaviourPun
     {
         stat.IsAlive = false;
         animator.SetBool("Die", true);
+        GameManager.Event.PostNotification(EventType.Died, this);
     }
 }

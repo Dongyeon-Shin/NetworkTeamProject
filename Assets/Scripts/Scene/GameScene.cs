@@ -34,6 +34,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     private List<PassiveItem> items = new List<PassiveItem>();
     private List<Bomb> bombList = new List<Bomb>();
     int mapNumbering;
+    private bool isGameOver = false;
     private void Start()
     {
         HashTable mapProperty = PhotonNetwork.CurrentRoom.CustomProperties;
@@ -282,7 +283,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
                 inPutTime -= Time.deltaTime;
                 text_time.text = ((int)inPutTime).ToString();
             }
-            else if(inPutTime <= 0 || CheckingAlive())
+            else if(inPutTime <= 0 || isGameOver == true)
             {
                 text_time.text = ((int)inPutTime).ToString();
                 TimeOut = true;
@@ -304,33 +305,40 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         }
     }
 
-    public bool CheckingAlive()
+    public void CheckingAlive()
     {
         List<bool> result = new List<bool>();
-        for (int i = 0; i < PhotonNetwork.CountOfPlayersInRooms; i++)
+        if (isGameOver == true)
+            photonView.RPC("GameOver", RpcTarget.AllViaServer);
+        else 
         {
-            if (players[i].IsAlive == true)
+            for (int i = 0; i < PhotonNetwork.CountOfPlayersInRooms; i++)
             {
-                result.Add(false);
-                if (result.Count == PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count == PhotonNetwork.CountOfPlayersInRooms)
+                if (players[i].IsAlive == false)
                 {
-                    return true;
+                    result.Add(true);
+                    if (result.Count == PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count == PhotonNetwork.CountOfPlayersInRooms)
+                    {
+                        isGameOver = true;
+                    }
                 }
-                else
-                    return false;
             }
         }
-        return false;
     }
     public void OnEvent(EventType eventType, Component Sender, object Param = null)
     {
         if(eventType == EventType.Died)
         {
             CheckingAlive();
-            if (CheckingAlive())
-                GameOverUI.SetActive(true);
         }
     }
+
+    [PunRPC]
+    private void GameOver() 
+    {
+        GameOverUI.SetActive(true);
+    }
+
     //====================== 게임끝 ==========================
     [SerializeField] GameObject GameOverUI; // 공용리소스에 있음
     public void OnExitGame()
