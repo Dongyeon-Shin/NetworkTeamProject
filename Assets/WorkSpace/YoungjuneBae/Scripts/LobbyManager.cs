@@ -82,13 +82,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.LocalPlayer.SetReady(false);
         PhotonNetwork.LocalPlayer.SetLoad(false);
-        PhotonNetwork.LocalPlayer.SetPlay(false);
 
         PhotonNetwork.AutomaticallySyncScene = true;
     }
     public override void OnLeftRoom()           //방에서 나가기
     {
-        
+        PhotonNetwork.LocalPlayer.SetPlay(false);
         PhotonNetwork.AutomaticallySyncScene = false;
         SetActivePanel(Panel.Menu);
     }
