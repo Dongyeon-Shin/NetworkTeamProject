@@ -89,25 +89,25 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         GameManager.Event.AddListener(EventType.Died, this);
     }
 
-    private IEnumerator DebugGameStartRoutine()
-    {
-        loadingUI.SetLoadingMessage("Debug 모드 접속확인. 서버에 연결하는 중");
-        StartCoroutine(UpdateProgressRoutine(0.2f));
-        PhotonNetwork.LocalPlayer.NickName = $"DebugPlayer {UnityEngine.Random.Range(1000, 10000)}";
-        PhotonNetwork.ConnectUsingSettings();
-        yield return new WaitUntil(() => PhotonNetwork.InRoom);
-        progress = 0.5f;
-        yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
-        progress = 1f;
-        yield return StartCoroutine(MapLoadingRoutine());
-        Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
-        //yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != totalNumberOfPlayers);
-        yield return StartCoroutine(PlayerLoadingRoutine());
-        yield return StartCoroutine(UILoadingRoutine());
-        yield return StartCoroutine(AllocateIDNumberRoutine());
-        yield return StartCoroutine(WaitingForOtherPlayersRoutine());
-        yield return StartCoroutine(CountDownRoutine());
-    }
+   //private IEnumerator DebugGameStartRoutine()
+   //{
+   //    loadingUI.SetLoadingMessage("Debug 모드 접속확인. 서버에 연결하는 중");
+   //    StartCoroutine(UpdateProgressRoutine(0.2f));
+   //    PhotonNetwork.LocalPlayer.NickName = $"DebugPlayer {UnityEngine.Random.Range(1000, 10000)}";
+   //    PhotonNetwork.ConnectUsingSettings();
+   //    yield return new WaitUntil(() => PhotonNetwork.InRoom);
+   //    progress = 0.5f;
+   //    yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
+   //    progress = 1f;
+   //    yield return StartCoroutine(MapLoadingRoutine());
+   //    Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
+   //    //yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != totalNumberOfPlayers);
+   //    yield return StartCoroutine(PlayerLoadingRoutine());
+   //    yield return StartCoroutine(UILoadingRoutine());
+   //    yield return StartCoroutine(AllocateIDNumberRoutine());
+   //    yield return StartCoroutine(WaitingForOtherPlayersRoutine());
+   //    yield return StartCoroutine(CountDownRoutine());
+   //}
     IEnumerator MapLoadingRoutine()
     {
         loadingUI.SetLoadingMessage("맵을 불러오는 중");

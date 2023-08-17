@@ -864,7 +864,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 128847948, guid: 3e6f69c89f60d1941ada1154d8a3c7ad, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 467619456, guid: 3e6f69c89f60d1941ada1154d8a3c7ad, type: 3}
       propertyPath: m_OnDidEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target

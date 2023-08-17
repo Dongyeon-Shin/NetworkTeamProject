@@ -21,10 +21,12 @@ public class LobbyScene : BaseScene
 
     protected override IEnumerator LoadingRoutine()
     {
+        
         if (!PhotonNetwork.InLobby)
         {
-            yield return new WaitForSecondsRealtime(5f);
+            yield return new WaitForSecondsRealtime(3f);
             PhotonNetwork.LeaveRoom();
+            PhotonNetwork.JoinLobby();
             PhotonNetwork.LocalPlayer.SetReady(false);
             loadingUI.Progress = 1f;
         }
