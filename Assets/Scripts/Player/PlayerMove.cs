@@ -36,7 +36,15 @@ public class PlayerMove : MonoBehaviourPun
 
     void Move()
     {
-        curSpeed = stat.Speed;
+        if(curSpeed < 8)
+        {
+            curSpeed = stat.Speed;
+        }
+        else
+        {
+            curSpeed = 8;
+        }
+       
 
         Vector3 vecFor = new Vector3(moveDir.x, 0, moveDir.z).normalized;
         Vector3 vecRb = rb.position;
