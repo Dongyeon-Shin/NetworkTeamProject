@@ -71,6 +71,12 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         yield return null;
     }
 
+    public void ExitGame()
+    {
+        Debug.Log(true);
+        Application.Quit();
+    }
+
     private IEnumerator GameStartRoutine()
     {
         yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
@@ -250,6 +256,7 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     //TODO: waitingforotherplayerRoutine으로 타이밍이 맞는지 테스트해보고 안될시 밑의 주석처리된 코드를 사용
     private IEnumerator CountDownRoutine()
     {
+        GameOverUI.SetActive(false);
         loadingUI.Progress = 1f;
         loadingUI.SetLoadingMessage("게임시작 준비 완료");
         yield return new WaitForSecondsRealtime(0.5f);
@@ -268,6 +275,10 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         GameManager.Sound.Play("Sounds/BGM/BackBGM_2", Sound.Bgm);
         IsTimer = true;
         players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
+        if(PhotonNetwork.IsMasterClient)
+        {
+            StartCoroutine(InGameRoutine());
+        }
     }
 
     // =================================== 타이머 및 생존 체크====================================
@@ -337,18 +348,45 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         }
     }
 
+    private IEnumerator InGameRoutine()
+    {
+        bool isGameRunning = true;
+        while (isGameRunning)
+        {
+            yield return null;
+            int count = totalNumberOfPlayers;
+            foreach (PlayerStat player in players)
+            {
+                if (!player.IsAlive)
+                {
+                    count--;
+                }
+                yield return null;
+            }
+            if (count == 1)
+            {
+                isGameRunning = false;
+            }
+        }
+        Debug.Log("GameFinish");
+        photonView.RPC("GameOver", RpcTarget.AllViaServer);
+    }
+
     [PunRPC]
     private void GameOver() 
     {
         GameOverUI.SetActive(true);
+        StartCoroutine(QuitRoutine());
+    }
+
+    private IEnumerator QuitRoutine()
+    {
+        yield return new WaitForSecondsRealtime(5f);
+        Application.Quit();
     }
 
     //====================== 게임끝 ==========================
     [SerializeField] GameObject GameOverUI; // 공용리소스에 있음
-    public void OnExitGame()
-    {
-        PhotonNetwork.JoinLobby();
-    }
     //====================== 게임끝 ==========================
 
     // =================================== 타이머 및 생존 체크====================================
