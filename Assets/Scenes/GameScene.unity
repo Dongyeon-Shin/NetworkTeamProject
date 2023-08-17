@@ -415,11 +415,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 9160534551597793173, guid: 4ea0519026490f14987a17676535292f, type: 3}
   m_PrefabInstance: {fileID: 718735830}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &718735832 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9160534551597793172, guid: 4ea0519026490f14987a17676535292f, type: 3}
-  m_PrefabInstance: {fileID: 718735830}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1465767933
 GameObject:
   m_ObjectHideFlags: 0
@@ -712,7 +707,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -824,7 +819,7 @@ MonoBehaviour:
   totalNumberOfPlayers: 2
   countDownTime: 5
   text_time: {fileID: 1886274475}
-  GameOverUI: {fileID: 718735832}
+  GameOverUI: {fileID: 9160534551597793172, guid: 4ea0519026490f14987a17676535292f, type: 3}
 --- !u!114 &2013505481
 MonoBehaviour:
   m_ObjectHideFlags: 0

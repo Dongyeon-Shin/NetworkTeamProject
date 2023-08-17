@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,6 +13,9 @@ public class PlayerMove : MonoBehaviourPun
     private BoxCollider boxCollider;
     private Rigidbody rb;
     private float curSpeed;
+    private bool isTransferable = true;
+    [SerializeField]
+    private LayerMask obstacleLayerMask;
 
     private void Awake()
     {
@@ -36,19 +40,13 @@ public class PlayerMove : MonoBehaviourPun
 
     void Move()
     {
-        if(curSpeed < 8)
+        curSpeed = stat.Speed;
+        if (isTransferable)
         {
-            curSpeed = stat.Speed;
+            Vector3 vecFor = new Vector3(moveDir.x, 0, moveDir.z).normalized;
+            Vector3 vecRb = rb.position;
+            rb.MovePosition(vecRb + vecFor * 5 * Time.fixedDeltaTime);
         }
-        else
-        {
-            curSpeed = 8;
-        }
-       
-
-        Vector3 vecFor = new Vector3(moveDir.x, 0, moveDir.z).normalized;
-        Vector3 vecRb = rb.position;
-        rb.MovePosition(vecRb + vecFor * curSpeed * Time.fixedDeltaTime);
 
         if (moveDir.sqrMagnitude >= 0.01f)
             transform.rotation = Quaternion.LookRotation(moveDir);
@@ -84,5 +82,27 @@ public class PlayerMove : MonoBehaviourPun
                 else if (moveDir.z < 0 && moveDir.x > 0 || moveDir.x < 0)
                     moveDir.x = 0;
         }
+    }
+
+    public IEnumerator PassThroughRoutine(Vector3 position)
+    {
+        while (Vector3.Distance(transform.position, position) < 0.6f)
+        {
+            isTransferable = CheckFront();
+            boxCollider.isTrigger = true;
+            yield return null;
+        }
+        boxCollider.isTrigger = false;
+        yield return null;
+        isTransferable = true;
+    }
+
+    private bool CheckFront()
+    {
+        if (Physics.Raycast(transform.position + new Vector3(0f, 0.5f, 0f), transform.forward, 0.3f, obstacleLayerMask))
+        {
+            return false;
+        }
+        return true;
     }
 }

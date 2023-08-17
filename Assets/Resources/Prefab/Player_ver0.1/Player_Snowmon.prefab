@@ -3161,6 +3161,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1540d1c5f3d00469cc9a54410bbb35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 65
 --- !u!114 &4524093292333535904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3174,6 +3177,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deadState: {fileID: 7868365166561728092}
+  playerLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &4272329599306467410
 MonoBehaviour:
   m_ObjectHideFlags: 0

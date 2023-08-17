@@ -50,7 +50,7 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
 
     private void OnEnable()
     {
-        boxCollider.isTrigger = true;
+        //boxCollider.isTrigger = true;
         explodCollider.enabled = true;
         sparkParticle[0].gameObject.SetActive(true);
         sparkParticle[1].gameObject.SetActive(true);
@@ -89,6 +89,8 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
     {
         lightTheFuseRoutine = StartCoroutine(LightTheFuseRoutine());
         yield return new WaitUntil(()=>  readyToExplode);
+        Collider[] collider = Physics.OverlapSphere(transform.position + new Vector3(0f, 0.5f, 0f), 0.5f);
+        CheckObjectsInExplosionRange(Vector3.zero);
         StartCoroutine(ActualExplodeRoutine(0, Vector3.zero));
         CheckObjectsInExplosionRange(Vector3.forward);
         CheckObjectsInExplosionRange(Vector3.back);
@@ -112,72 +114,87 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
 
     private void CheckObjectsInExplosionRange(Vector3 direction)
     {
-
-        RaycastHit[] objectsInRange = Physics.RaycastAll(transform.position + new Vector3(0f, 0.5f, 0f), direction, explosivePower);
-        if (objectsInRange.Length == 0)
+        if (PhotonNetwork.IsMasterClient)
         {
-            StartCoroutine(ActualExplodeRoutine(explosivePower, direction));
-            return;
-        }
-        foreach (RaycastHit raycastHit in objectsInRange)
-        {
-            IExplosiveReactivable reactivableObject = raycastHit.collider.GetComponent<IExplosiveReactivable>();
-            if (reactivableObject != null)
+            if (direction == Vector3.zero)
             {
-                LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
-                if (PhotonNetwork.IsMasterClient)
+                Collider[] objects = Physics.OverlapSphere(transform.position + new Vector3(0f, 0.5f, 0f), 0.5f);
+                foreach (Collider obj in objects)
                 {
-                    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
-                }
-                if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
-                {
-                    if (direction.z > 0)
+                    IExplosiveReactivable reactivableObject = obj.GetComponent<IExplosiveReactivable>();
+                    if (reactivableObject != null)
                     {
-                        StartCoroutine(ActualExplodeRoutine(raycastHit.transform.position.z - transform.position.z -1, direction));
-                        return;
-                    }
-                    else if (direction.z < 0)
-                    {
-                        StartCoroutine(ActualExplodeRoutine(transform.position.z - raycastHit.transform.position.z - 1, direction));
-                        return;
-                    }
-                    else if (direction.x > 0)
-                    {
-                        StartCoroutine(ActualExplodeRoutine(raycastHit.transform.position.x - transform.position.x - 1, direction));
-                        return;
-                    }
-                    else
-                    {
-                        StartCoroutine(ActualExplodeRoutine(transform.position.x - raycastHit.transform.position.x - 1, direction));
-                        return;
-                    }
-                }
-                else if ((reactivableObjectLayerMask & boxLayerMask) > 0)
-                {
-                    if (direction.z > 0)
-                    {
-                        StartCoroutine(ActualExplodeRoutine(raycastHit.transform.position.z - transform.position.z, direction));
-                        return;                                                       
-                    }                                                                 
-                    else if (direction.z < 0)                                         
-                    {
-                        StartCoroutine(ActualExplodeRoutine(transform.position.z - raycastHit.transform.position.z, direction));
-                        return;                                                       
-                    }                                                                 
-                    else if (direction.x > 0)                                         
-                    {
-                        StartCoroutine(ActualExplodeRoutine(raycastHit.transform.position.x - transform.position.x, direction));
-                        return;                                                       
-                    }                                                                 
-                    else                                                              
-                    {
-                        StartCoroutine(ActualExplodeRoutine(transform.position.x - raycastHit.transform.position.x, direction));
-                        return;
+                        LayerMask reactivableObjectLayerMask = (1 << obj.gameObject.layer);
+                        gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
                     }
                 }
             }
+            RaycastHit[] objectsInRange = Physics.RaycastAll(transform.position + new Vector3(0f, 0.5f, 0f), direction, explosivePower);
+            if (objectsInRange.Length == 0)
+            {
+                StartCoroutine(ActualExplodeRoutine(explosivePower, direction));
+                return;
+            }
+            foreach (RaycastHit raycastHit in objectsInRange)
+            {
+                IExplosiveReactivable reactivableObject = raycastHit.collider.GetComponent<IExplosiveReactivable>();
+                if (reactivableObject != null)
+                {
+                    LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
+                    }
+                    if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
+                    {
+                        if (direction.z > 0)
+                        {
+                            StartCoroutine(ActualExplodeRoutine(raycastHit.transform.position.z - transform.position.z - 1, direction));
+                            return;
+                        }
+                        else if (direction.z < 0)
+                        {
+                            StartCoroutine(ActualExplodeRoutine(transform.position.z - raycastHit.transform.position.z - 1, direction));
+                            return;
+                        }
+                        else if (direction.x > 0)
+                        {
+                            StartCoroutine(ActualExplodeRoutine(raycastHit.transform.position.x - transform.position.x - 1, direction));
+                            return;
+                        }
+                        else
+                        {
+                            StartCoroutine(ActualExplodeRoutine(transform.position.x - raycastHit.transform.position.x - 1, direction));
+                            return;
+                        }
+                    }
+                    else if ((reactivableObjectLayerMask & boxLayerMask) > 0)
+                    {
+                        if (direction.z > 0)
+                        {
+                            StartCoroutine(ActualExplodeRoutine(raycastHit.transform.position.z - transform.position.z, direction));
+                            return;
+                        }
+                        else if (direction.z < 0)
+                        {
+                            StartCoroutine(ActualExplodeRoutine(transform.position.z - raycastHit.transform.position.z, direction));
+                            return;
+                        }
+                        else if (direction.x > 0)
+                        {
+                            StartCoroutine(ActualExplodeRoutine(raycastHit.transform.position.x - transform.position.x, direction));
+                            return;
+                        }
+                        else
+                        {
+                            StartCoroutine(ActualExplodeRoutine(transform.position.x - raycastHit.transform.position.x, direction));
+                            return;
+                        }
+                    }
+                }
+            }
+            StartCoroutine(ActualExplodeRoutine(explosivePower, direction));
         }
-        StartCoroutine(ActualExplodeRoutine(explosivePower, direction));
     }
 
     private IEnumerator ActualExplodeRoutine(float explosionRange, Vector3 direction)
@@ -236,11 +253,11 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
         readyToExplode = true;
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            boxCollider.isTrigger = false;
-        }
-    }
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+    //    {
+    //        boxCollider.isTrigger = false;
+    //    }
+    //}
 }
