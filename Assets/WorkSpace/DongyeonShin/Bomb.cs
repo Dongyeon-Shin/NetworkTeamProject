@@ -129,6 +129,7 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
                     }
                 }
             }
+        }
             RaycastHit[] objectsInRange = Physics.RaycastAll(transform.position + new Vector3(0f, 0.5f, 0f), direction, explosivePower);
             if (objectsInRange.Length == 0)
             {
@@ -194,7 +195,6 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
                 }
             }
             StartCoroutine(ActualExplodeRoutine(explosivePower, direction));
-        }
     }
 
     private IEnumerator ActualExplodeRoutine(float explosionRange, Vector3 direction)
