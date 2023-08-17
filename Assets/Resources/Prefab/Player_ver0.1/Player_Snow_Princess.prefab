@@ -3172,7 +3172,7 @@ MonoBehaviour:
   iDNumber: -1
   power: 1
   bomb: 1
-  speed: 1
+  speed: 4
 --- !u!114 &2237829819984367196
 MonoBehaviour:
   m_ObjectHideFlags: 0
