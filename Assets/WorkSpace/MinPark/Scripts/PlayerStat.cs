@@ -14,7 +14,7 @@ public class PlayerStat : MonoBehaviourPunCallbacks
     private bool isAlive = true;
     public bool IsAlive { get { return isAlive; } set { isAlive = value; } }
     private GameScene gameScene;
-    public GameScene GameScene {  get { return gameScene; } }
+    public GameScene GameScene { get { return gameScene; } set { gameScene = value; } }
     private int playerNumber;
     public int PlayerNumber { get { return playerNumber; } }
     [SerializeField]

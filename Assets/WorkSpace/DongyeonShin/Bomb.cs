@@ -32,6 +32,8 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
     private Coroutine lightTheFuseRoutine;
     private MeshRenderer bombRenderer;
     private AudioSource explodClip;
+    private bool bombState;
+    public bool BombState { set { bombState = value; } }
 
 
     private void Awake()
@@ -59,16 +61,11 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
         {
             t.localScale = new Vector3(2f, 2f, 2f);
         }
+        bombState = false;
     }
 
-    private void Start()
+    public void RegeisterBombID()
     {
-        StartCoroutine(RegisterBombIDRoutine());
-    }
-
-    IEnumerator RegisterBombIDRoutine()
-    {
-        yield return new WaitWhile(() => gameScene == null);
         gameScene.RegisterBombID(this);
     }
 
@@ -97,13 +94,20 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
         CheckObjectsInExplosionRange(Vector3.back);
         CheckObjectsInExplosionRange(Vector3.right);
         CheckObjectsInExplosionRange(Vector3.left);
-        yield return null;
+        StartCoroutine(CheckNoReactionRoutine());
+        yield return new WaitUntil(() => bombState);
         sparkParticle[0].gameObject.SetActive(false);
         sparkParticle[1].gameObject.SetActive(false);
         sparkParticle[2].gameObject.SetActive(false);
         sparkParticle[3].gameObject.SetActive(false);
         bombRenderer.enabled = false;
         GameManager.Resource.Destroy(gameObject, explosionEffectContinuanceTime);
+    }
+
+    private IEnumerator CheckNoReactionRoutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        bombState = true;
     }
 
     private void CheckObjectsInExplosionRange(Vector3 direction)
@@ -123,7 +127,7 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
                 LayerMask reactivableObjectLayerMask = (1 << raycastHit.collider.gameObject.layer);
                 if (PhotonNetwork.IsMasterClient)
                 {
-                    gameScene.RequestExplosiveReaction(reactivableObject, ((reactivableObjectLayerMask & bombLayerMask) > 0));
+                    gameScene.RequestExplosiveReaction(reactivableObject, iDNumber, ((reactivableObjectLayerMask & bombLayerMask) > 0));
                 }
                 if ((reactivableObjectLayerMask & unPenetratedObjectsLayerMask) > 0)
                 {
@@ -178,13 +182,14 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
 
     private IEnumerator ActualExplodeRoutine(float explosionRange, Vector3 direction)
     {
+        yield return new WaitUntil(() => bombState);
         if (direction == Vector3.zero)
         {
-            explodClip.Play();   // ¿?µð¿? ¼Ò½º
+            explodClip.Play();
             GameManager.Resource.Instantiate(Resources.Load("Particle/ExplosionParticle"), transform.position, transform.rotation);
-            Coroutine checkAftermathOfExplosion = StartCoroutine(CheckAftermathOfExplosionRoutine(explosionRange, direction));
-            yield return new WaitForSeconds(2.5f);
-            StopCoroutine(checkAftermathOfExplosion);
+            //Coroutine checkAftermathOfExplosion = StartCoroutine(CheckAftermathOfExplosionRoutine(explosionRange, direction));
+            //yield return new WaitForSeconds(2.5f);
+            //StopCoroutine(checkAftermathOfExplosion);
         }
         else
         {
@@ -194,9 +199,9 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
                 position += direction;
                 GameManager.Resource.Instantiate(Resources.Load("Particle/ExplosionParticle"), position, transform.rotation);
             }
-            Coroutine checkAftermathOfExplosion = StartCoroutine(CheckAftermathOfExplosionRoutine(explosionRange, direction));
-            yield return new WaitForSeconds(2.5f);
-            StopCoroutine(checkAftermathOfExplosion);
+            //Coroutine checkAftermathOfExplosion = StartCoroutine(CheckAftermathOfExplosionRoutine(explosionRange, direction));
+            //yield return new WaitForSeconds(2.5f);
+            //StopCoroutine(checkAftermathOfExplosion);
         }
     }
 
@@ -223,9 +228,9 @@ public class Bomb : MonoBehaviourPun, IExplosiveReactivable
         yield return null;
     }
 
-    public void ExplosiveReact(int bombIDNumber)
+    public void ExplosiveReact(int bombID)
     {
-        Debug.Log("bombCheck");
+        gameScene.ExplodeABomb(bombID);
         StopCoroutine(lightTheFuseRoutine);
         explodCollider.enabled = false;
         readyToExplode = true;

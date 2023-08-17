@@ -214,6 +214,10 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         progress = 0.7f;
         for (int i = 0; i < explosiveReactivableObjects.Count; i++)
         {
+            if (explosiveReactivableObjects[i].GameScene == null)
+            {
+                explosiveReactivableObjects[i].GameScene = this;
+            }
             explosiveReactivableObjects[i].IDNumber = i;
             yield return null;
         }
@@ -431,27 +435,32 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         bombList.Add(bomb);
     }
 
-    public void RequestExplosiveReaction(IExplosiveReactivable target, bool chainExplosion)
+    public void RequestExplosiveReaction(IExplosiveReactivable target, int bombIDNumber, bool chainExplosion)
     {
-        photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, chainExplosion);
+        photonView.RPC("SendExplosionResult", RpcTarget.AllViaServer, target.IDNumber, bombIDNumber, chainExplosion);
     }
 
     [PunRPC]
-    private void SendExplosionResult(int explosiveReactivableObjectIndex, bool chainExplosion)
+    private void SendExplosionResult(int explosiveReactivableObjectIndex, int bombIDNumber, bool chainExplosion)
     {
         if (chainExplosion)
         {
-            bombList[explosiveReactivableObjectIndex].ExplosiveReact(bombCount);
+            bombList[explosiveReactivableObjectIndex].ExplosiveReact(bombIDNumber);
         }
         else
         {
-            explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombCount);
+            explosiveReactivableObjects[explosiveReactivableObjectIndex].ExplosiveReact(bombIDNumber);
         }
+    }
+
+    public void ExplodeABomb(int bombIDNumber)
+    {
+        Debug.Log(bombIDNumber);
+        bombList[bombIDNumber].BombState = true;
     }
 
     public void CountBomb()
     {
         bombCount++;
     }
-
 }
