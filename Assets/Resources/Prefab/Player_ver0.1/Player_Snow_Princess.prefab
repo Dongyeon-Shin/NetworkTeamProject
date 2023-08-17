@@ -3019,7 +3019,7 @@ GameObject:
   - component: {fileID: 4665869996280475242}
   m_Layer: 3
   m_Name: Player_Snow_Princess
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

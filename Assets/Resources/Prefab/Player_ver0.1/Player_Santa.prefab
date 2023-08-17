@@ -3195,7 +3195,7 @@ GameObject:
   - component: {fileID: 59829832773177527}
   m_Layer: 3
   m_Name: Player_Santa
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
