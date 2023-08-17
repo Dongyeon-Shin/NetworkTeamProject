@@ -13,6 +13,9 @@ public class PlayerMove : MonoBehaviourPun
     private BoxCollider boxCollider;
     private Rigidbody rb;
     private float curSpeed;
+    private bool isTransferable = true;
+    [SerializeField]
+    private LayerMask obstacleLayerMask;
 
     private void Awake()
     {
@@ -38,10 +41,12 @@ public class PlayerMove : MonoBehaviourPun
     void Move()
     {
         curSpeed = stat.Speed;
-
-        Vector3 vecFor = new Vector3(moveDir.x, 0, moveDir.z).normalized;
-        Vector3 vecRb = rb.position;
-        rb.MovePosition(vecRb + vecFor * 5 * Time.fixedDeltaTime);
+        if (isTransferable)
+        {
+            Vector3 vecFor = new Vector3(moveDir.x, 0, moveDir.z).normalized;
+            Vector3 vecRb = rb.position;
+            rb.MovePosition(vecRb + vecFor * 5 * Time.fixedDeltaTime);
+        }
 
         if (moveDir.sqrMagnitude >= 0.01f)
             transform.rotation = Quaternion.LookRotation(moveDir);
@@ -81,14 +86,23 @@ public class PlayerMove : MonoBehaviourPun
 
     public IEnumerator PassThroughRoutine(Vector3 position)
     {
-        Debug.Log(false);
-        while (Vector3.Distance(transform.position, position) < 0.5f)
+        while (Vector3.Distance(transform.position, position) < 0.6f)
         {
-            Debug.Log(true);
+            isTransferable = CheckFront();
             boxCollider.isTrigger = true;
             yield return null;
         }
         boxCollider.isTrigger = false;
         yield return null;
+        isTransferable = true;
+    }
+
+    private bool CheckFront()
+    {
+        if (Physics.Raycast(transform.position + new Vector3(0f, 0.5f, 0f), transform.forward, 0.3f, obstacleLayerMask))
+        {
+            return false;
+        }
+        return true;
     }
 }
