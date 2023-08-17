@@ -118,7 +118,7 @@ public class RoomPanel : MonoBehaviourPunCallbacks
 
     public void WaitSelect()
     {
-        PhotonNetwork.CurrentRoom.IsOpen=false;
+        PhotonNetwork.CurrentRoom.IsOpen = false;
         if(PhotonNetwork.IsMasterClient)
         {
             selectMap.SetActive(true);
