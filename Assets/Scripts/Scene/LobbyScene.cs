@@ -25,7 +25,7 @@ public class LobbyScene : BaseScene
         loadingUI.Progress = 0.1f;
         if (!PhotonNetwork.InLobby)
         {
-            loadingUI.SetLoadingMessage("로비 들어가는 중");
+            loadingUI.SetLoadingMessage("로비로 돌아가는 중");
             StartCoroutine(UpdateProgressRoutine(1f));
             yield return new WaitForSecondsRealtime(1f);
             progress = 0.5f;

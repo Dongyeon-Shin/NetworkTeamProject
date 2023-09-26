@@ -275,6 +275,10 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         GameManager.Sound.Play("Sounds/BGM/BackBGM_2", Sound.Bgm);
         IsTimer = true;
         players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            StartCoroutine(InGameRoutine());
+        }
     }
 
     // =================================== 타이머 및 생존 체크====================================
@@ -297,7 +301,6 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
                 text_time.text = ((int)inPutTime).ToString();
                 TimeOut = true;
                 IsTimer = false;
-                Debug.Log("타이머 종료");
             }
         }
     }
@@ -320,16 +323,13 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         {
             if (players[i].IsAlive == false)
             {
-                Debug.Log("큰응애");
                 result.Add(i);
                 if (result.Count - 1 > PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count - 1 == PhotonNetwork.CountOfPlayersInRooms)
                 {
-                    Debug.Log("응애");
                     isGameOver = true;
                 }
             }
             else
-                Debug.Log("낫응애");
             i++;
         }
 
@@ -364,7 +364,6 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
                 isGameRunning = false;
             }
         }
-        Debug.Log("GameFinish");
         photonView.RPC("GameOver", RpcTarget.AllViaServer);
     }
 
@@ -372,7 +371,13 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     private void GameOver()
     {
         GameOverUI.SetActive(true);
-        //StartCoroutine(QuitRoutine());
+        StartCoroutine(GameOverRoutine());
+        
+    }
+
+    private IEnumerator GameOverRoutine()
+    {
+        yield return new WaitForSeconds(3f);
         StartCoroutine(LoadSceneRoutine(0));
     }
 
