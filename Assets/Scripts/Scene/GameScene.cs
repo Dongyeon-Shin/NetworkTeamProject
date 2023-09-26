@@ -89,25 +89,25 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         GameManager.Event.AddListener(EventType.Died, this);
     }
 
-    private IEnumerator DebugGameStartRoutine()
-    {
-        loadingUI.SetLoadingMessage("Debug 모드 접속확인. 서버에 연결하는 중");
-        StartCoroutine(UpdateProgressRoutine(0.2f));
-        PhotonNetwork.LocalPlayer.NickName = $"DebugPlayer {UnityEngine.Random.Range(1000, 10000)}";
-        PhotonNetwork.ConnectUsingSettings();
-        yield return new WaitUntil(() => PhotonNetwork.InRoom);
-        progress = 0.5f;
-        yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
-        progress = 1f;
-        yield return StartCoroutine(MapLoadingRoutine());
-        Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
-        //yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != totalNumberOfPlayers);
-        yield return StartCoroutine(PlayerLoadingRoutine());
-        yield return StartCoroutine(UILoadingRoutine());
-        yield return StartCoroutine(AllocateIDNumberRoutine());
-        yield return StartCoroutine(WaitingForOtherPlayersRoutine());
-        yield return StartCoroutine(CountDownRoutine());
-    }
+   //private IEnumerator DebugGameStartRoutine()
+   //{
+   //    loadingUI.SetLoadingMessage("Debug 모드 접속확인. 서버에 연결하는 중");
+   //    StartCoroutine(UpdateProgressRoutine(0.2f));
+   //    PhotonNetwork.LocalPlayer.NickName = $"DebugPlayer {UnityEngine.Random.Range(1000, 10000)}";
+   //    PhotonNetwork.ConnectUsingSettings();
+   //    yield return new WaitUntil(() => PhotonNetwork.InRoom);
+   //    progress = 0.5f;
+   //    yield return new WaitWhile(() => PhotonNetwork.LocalPlayer.GetPlayerNumber() == -1);
+   //    progress = 1f;
+   //    yield return StartCoroutine(MapLoadingRoutine());
+   //    Debug.Log(PhotonNetwork.LocalPlayer.GetPlayerNumber());
+   //    //yield return new WaitWhile(() => PhotonNetwork.PlayerList.Length != totalNumberOfPlayers);
+   //    yield return StartCoroutine(PlayerLoadingRoutine());
+   //    yield return StartCoroutine(UILoadingRoutine());
+   //    yield return StartCoroutine(AllocateIDNumberRoutine());
+   //    yield return StartCoroutine(WaitingForOtherPlayersRoutine());
+   //    yield return StartCoroutine(CountDownRoutine());
+   //}
     IEnumerator MapLoadingRoutine()
     {
         loadingUI.SetLoadingMessage("맵을 불러오는 중");
@@ -301,7 +301,6 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
                 text_time.text = ((int)inPutTime).ToString();
                 TimeOut = true;
                 IsTimer = false;
-                Debug.Log("타이머 종료");
             }
         }
     }
@@ -324,16 +323,13 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         {
             if (players[i].IsAlive == false)
             {
-                Debug.Log("큰응애");
                 result.Add(i);
                 if (result.Count - 1 > PhotonNetwork.CountOfPlayersInRooms - 1 || result.Count - 1 == PhotonNetwork.CountOfPlayersInRooms)
                 {
-                    Debug.Log("응애");
                     isGameOver = true;
                 }
             }
             else
-                Debug.Log("낫응애");
             i++;
         }
 
@@ -368,7 +364,6 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
                 isGameRunning = false;
             }
         }
-        Debug.Log("GameFinish");
         photonView.RPC("GameOver", RpcTarget.AllViaServer);
     }
 
@@ -376,15 +371,22 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
     private void GameOver()
     {
         GameOverUI.SetActive(true);
-        StartCoroutine(QuitRoutine());
+        StartCoroutine(GameOverRoutine());
+        
     }
 
-    private IEnumerator QuitRoutine()
+    private IEnumerator GameOverRoutine()
     {
-        yield return new WaitForSecondsRealtime(5f);
-        Application.Quit();
+        yield return new WaitForSeconds(3f);
+        StartCoroutine(LoadSceneRoutine(0));
     }
 
+    //private IEnumerator QuitRoutine()
+    //{
+    //    yield return new WaitForSecondsRealtime(5f);
+    //    Application.Quit();
+    //}
+    //
     //====================== 게임끝 ==========================
     [SerializeField] GameObject GameOverUI; // 공용리소스에 있음
     //====================== 게임끝 ==========================

@@ -103,11 +103,11 @@ public class PlayerUI : MonoBehaviourPun
     public void ClickBack()
     {
         settingUI.SetActive(false);
+        isSetting = false;
     }
     public void ClickExit()
     {
-            StartCoroutine(ExitRoutine());
-            PhotonNetwork.LoadLevel("LobbyScene");
+        StartCoroutine(ExitRoutine());
     }
 
     IEnumerator ExitRoutine()

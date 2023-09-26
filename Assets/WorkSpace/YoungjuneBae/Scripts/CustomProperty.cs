@@ -32,10 +32,10 @@ namespace BaeProperty
             else
             { return false; }
         }
-        public static void SetPlay(this Player player)
+        public static void SetPlay(this Player player,bool playrwait)
         {
             HashTabel property = player.CustomProperties;
-            property["roomReady"] = true;
+            property["roomReady"] = playrwait;
             player.SetCustomProperties(property);
         }
         public static bool GetReady(this Player player)
