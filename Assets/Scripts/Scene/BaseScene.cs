@@ -33,6 +33,8 @@ public abstract class BaseScene : MonoBehaviourPunCallbacks
     public IEnumerator LoadSceneRoutine(int sceneNumber)
     {
         PhotonNetwork.AutomaticallySyncScene = true;
+        progress = 0f;
+        loadingUI.Progress = 0f;
         loadingUI.gameObject.SetActive(true);
         loadingUI.FadeOut();
         yield return new WaitForSeconds(0.5f);
