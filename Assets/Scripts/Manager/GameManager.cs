@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     private static UIManager uiManager;
     private static EventManager eventManager;
     private static SoundManager soundManager;
+    private static SceneManager sceneManager;
 
     public static GameManager Instance { get { return instance; } }
     //==============================================================
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
     public static UIManager UI { get { return uiManager; } }
     public static EventManager Event { get { return eventManager; } }
     public static SoundManager Sound { get { return soundManager; } }
+    public static SceneManager Scene { get { return sceneManager; } }
 
 
     private void Awake()
@@ -62,9 +64,14 @@ public class GameManager : MonoBehaviour
         eventObj.transform.parent = transform;
         eventManager = eventObj.AddComponent<EventManager>();
 
-        GameObject shoundObj = new GameObject();
-        shoundObj.name = "SoundManager";
-        shoundObj.transform.parent = transform;
-        soundManager = shoundObj.AddComponent<SoundManager>();
+        GameObject soundObj = new GameObject();
+        soundObj.name = "SoundManager";
+        soundObj.transform.parent = transform;
+        soundManager = soundObj.AddComponent<SoundManager>();
+
+        GameObject sceneObj = new GameObject();
+        sceneObj.name = "SceneManager";
+        sceneObj.transform.parent = transform;
+        sceneManager = sceneObj.AddComponent<SceneManager>();
     }
 }
