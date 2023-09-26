@@ -275,10 +275,6 @@ public class GameScene : BaseScene, IPunObservable, IEventListener
         GameManager.Sound.Play("Sounds/BGM/BackBGM_2", Sound.Bgm);
         IsTimer = true;
         players[PhotonNetwork.LocalPlayer.GetPlayerNumber()].GetComponent<PlayerInput>().enabled = true;
-        if (PhotonNetwork.IsMasterClient)
-        {
-            StartCoroutine(InGameRoutine());
-        }
     }
 
     // =================================== 타이머 및 생존 체크====================================
